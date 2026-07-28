@@ -182,6 +182,20 @@ nav{display:flex;gap:4px;align-items:center;}
 .field textarea{resize:vertical;min-height:90px;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 
+.phone-row{display:grid;grid-template-columns:auto 1fr;gap:10px;}
+.dial-select{width:auto;max-width:150px;}
+.btn-geo{
+  background:var(--paper-soft);border:1.5px solid var(--line);color:var(--ink);
+  padding:11px 16px;border-radius:10px;font-weight:700;font-size:0.9rem;width:100%;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-geo:hover{border-color:var(--gold);}
+.btn-geo:disabled{opacity:0.7;}
+.geo-result{margin-top:8px;font-size:0.85rem;color:var(--ink-soft);}
+.geo-result a{color:var(--wine);font-weight:700;text-decoration:none;}
+.geo-result a:hover{text-decoration:underline;}
+.field-hint{font-size:0.78rem;color:var(--ink-soft);margin-top:4px;}
+
 .photo-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
 .photo-slot{aspect-ratio:1/1;border:1.5px dashed var(--line);border-radius:12px;position:relative;overflow:hidden;background:var(--paper-soft);}
 .photo-slot img{width:100%;height:100%;object-fit:cover;}
@@ -244,6 +258,8 @@ nav{display:flex;gap:4px;align-items:center;}
 .offer-item .info,.cand-admin-item .info{font-size:0.92rem;}
 .offer-item .info b,.cand-admin-item .info b{display:block;font-size:1rem;margin-bottom:3px;}
 .mini-actions{display:flex;gap:8px;flex-shrink:0;}
+.admin-docs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.admin-docs .btn-mini{font-size:0.72rem;padding:5px 9px;border-radius:6px;}
 .btn-mini{border:none;padding:8px 14px;border-radius:8px;font-size:0.8rem;font-weight:700;white-space:nowrap;}
 .btn-approve{background:#E8F3E6;color:#2C6B2F;}
 .btn-reject{background:#FBE7E7;color:var(--wine);}
@@ -440,7 +456,18 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             </div>
             <div class="field-row">
               <div class="field"><label>Ville</label><input type="text" id="c-ville" required></div>
-              <div class="field"><label>WhatsApp</label><input type="tel" id="c-whatsapp" placeholder="+225 07 00 00 00 00" required></div>
+              <div class="field">
+                <label>WhatsApp</label>
+                <div class="phone-row">
+                  <select id="c-dial" class="dial-select"></select>
+                  <input type="tel" id="c-whatsapp" placeholder="07 00 00 00 00" required>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Localisation (optionnel)</label>
+              <button type="button" class="btn-geo" id="c-geo-btn" onclick="getGeoLocation('c')">📍 Activer ma localisation</button>
+              <div class="geo-result" id="c-geo-result"></div>
             </div>
             <div class="field">
               <label>Catégorie</label>
@@ -458,6 +485,16 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <div class="field">
               <label>Photos (jusqu'à 3)</label>
               <div class="photo-slots" id="photo-slots"></div>
+            </div>
+            <div class="field">
+              <label>CV (optionnel)</label>
+              <input type="file" id="c-cv" accept=".pdf,.doc,.docx">
+              <div class="field-hint">PDF ou Word, 900 Ko maximum.</div>
+            </div>
+            <div class="field">
+              <label>Autres documents (optionnel)</label>
+              <input type="file" id="c-docs" accept=".pdf,.doc,.docx,image/*" multiple>
+              <div class="field-hint">Portfolio, book, lettre de motivation… 900 Ko maximum par fichier.</div>
             </div>
             <button type="submit" class="btn-submit" id="c-submit-btn">
               <span class="spinner" id="c-spinner"></span>
@@ -520,7 +557,18 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               </div>
               <div class="field-row">
                 <div class="field"><label>Date limite</label><input type="date" id="o-date"></div>
-                <div class="field"><label>Contact WhatsApp</label><input type="tel" id="o-contact" required></div>
+                <div class="field">
+                  <label>Contact WhatsApp</label>
+                  <div class="phone-row">
+                    <select id="o-dial" class="dial-select"></select>
+                    <input type="tel" id="o-contact" placeholder="07 00 00 00 00" required>
+                  </div>
+                </div>
+              </div>
+              <div class="field">
+                <label>Localisation (optionnel)</label>
+                <button type="button" class="btn-geo" id="o-geo-btn" onclick="getGeoLocation('o')">📍 Activer ma localisation</button>
+                <div class="geo-result" id="o-geo-result"></div>
               </div>
               <button type="submit" class="btn-submit" id="o-submit-btn">
                 <span class="spinner" id="o-spinner"></span>
@@ -677,6 +725,95 @@ async function fbDelete(path){
   await fetch(`${FIREBASE_URL}/${path}.json`,{method:'DELETE'});
 }
 
+/* ============ INDICATIFS TÉLÉPHONIQUES (pays du monde) ============ */
+const COUNTRIES = [
+["Afghanistan","93"],["Afrique du Sud","27"],["Albanie","355"],["Algérie","213"],["Allemagne","49"],
+["Andorre","376"],["Angola","244"],["Anguilla","1264"],["Antigua-et-Barbuda","1268"],["Arabie saoudite","966"],
+["Argentine","54"],["Arménie","374"],["Aruba","297"],["Australie","61"],["Autriche","43"],
+["Azerbaïdjan","994"],["Bahamas","1242"],["Bahreïn","973"],["Bangladesh","880"],["Barbade","1246"],
+["Belgique","32"],["Belize","501"],["Bénin","229"],["Bermudes","1441"],["Bhoutan","975"],
+["Biélorussie","375"],["Birmanie (Myanmar)","95"],["Bolivie","591"],["Bosnie-Herzégovine","387"],["Botswana","267"],
+["Brésil","55"],["Brunei","673"],["Bulgarie","359"],["Burkina Faso","226"],["Burundi","257"],
+["Cambodge","855"],["Cameroun","237"],["Canada","1"],["Cap-Vert","238"],["Chili","56"],
+["Chine","86"],["Chypre","357"],["Colombie","57"],["Comores","269"],["Congo-Brazzaville","242"],
+["Congo (RDC)","243"],["Corée du Nord","850"],["Corée du Sud","82"],["Costa Rica","506"],["Côte d'Ivoire","225"],
+["Croatie","385"],["Cuba","53"],["Danemark","45"],["Djibouti","253"],["Dominique","1767"],
+["Égypte","20"],["Émirats arabes unis","971"],["Équateur","593"],["Érythrée","291"],["Espagne","34"],
+["Estonie","372"],["Eswatini","268"],["États-Unis","1"],["Éthiopie","251"],["Fidji","679"],
+["Finlande","358"],["France","33"],["Gabon","241"],["Gambie","220"],["Géorgie","995"],
+["Ghana","233"],["Gibraltar","350"],["Grèce","30"],["Grenade","1473"],["Groenland","299"],
+["Guadeloupe","590"],["Guatemala","502"],["Guinée","224"],["Guinée-Bissau","245"],["Guinée équatoriale","240"],
+["Guyana","592"],["Guyane française","594"],["Haïti","509"],["Honduras","504"],["Hong Kong","852"],
+["Hongrie","36"],["Îles Caïmans","1345"],["Îles Cook","682"],["Îles Féroé","298"],["Îles Marshall","692"],
+["Îles Salomon","677"],["Inde","91"],["Indonésie","62"],["Irak","964"],["Iran","98"],
+["Irlande","353"],["Islande","354"],["Israël","972"],["Italie","39"],["Jamaïque","1876"],
+["Japon","81"],["Jordanie","962"],["Kazakhstan","7"],["Kenya","254"],["Kirghizistan","996"],
+["Kiribati","686"],["Koweït","965"],["Laos","856"],["Lesotho","266"],["Lettonie","371"],
+["Liban","961"],["Liberia","231"],["Libye","218"],["Liechtenstein","423"],["Lituanie","370"],
+["Luxembourg","352"],["Macédoine du Nord","389"],["Madagascar","261"],["Malaisie","60"],["Malawi","265"],
+["Maldives","960"],["Mali","223"],["Malte","356"],["Maroc","212"],["Martinique","596"],
+["Maurice","230"],["Mauritanie","222"],["Mayotte","262"],["Mexique","52"],["Micronésie","691"],
+["Moldavie","373"],["Monaco","377"],["Mongolie","976"],["Monténégro","382"],["Mozambique","258"],
+["Namibie","264"],["Nauru","674"],["Népal","977"],["Nicaragua","505"],["Niger","227"],
+["Nigeria","234"],["Niué","683"],["Norvège","47"],["Nouvelle-Calédonie","687"],["Nouvelle-Zélande","64"],
+["Oman","968"],["Ouganda","256"],["Ouzbékistan","998"],["Pakistan","92"],["Palaos","680"],
+["Palestine","970"],["Panama","507"],["Papouasie-Nouvelle-Guinée","675"],["Paraguay","595"],["Pays-Bas","31"],
+["Pérou","51"],["Philippines","63"],["Pologne","48"],["Polynésie française","689"],["Porto Rico","1787"],
+["Portugal","351"],["Qatar","974"],["République centrafricaine","236"],["République dominicaine","1809"],["République tchèque","420"],
+["Réunion","262"],["Roumanie","40"],["Royaume-Uni","44"],["Russie","7"],["Rwanda","250"],
+["Saint-Kitts-et-Nevis","1869"],["Saint-Marin","378"],["Saint-Vincent-et-les-Grenadines","1784"],["Sainte-Lucie","1758"],["Salvador","503"],
+["Samoa","685"],["Sao Tomé-et-Principe","239"],["Sénégal","221"],["Serbie","381"],["Seychelles","248"],
+["Sierra Leone","232"],["Singapour","65"],["Slovaquie","421"],["Slovénie","386"],["Somalie","252"],
+["Soudan","249"],["Soudan du Sud","211"],["Sri Lanka","94"],["Suède","46"],["Suisse","41"],
+["Suriname","597"],["Syrie","963"],["Tadjikistan","992"],["Taïwan","886"],["Tanzanie","255"],
+["Tchad","235"],["Thaïlande","66"],["Timor oriental","670"],["Togo","228"],["Tonga","676"],
+["Trinité-et-Tobago","1868"],["Tunisie","216"],["Turkménistan","993"],["Turquie","90"],["Tuvalu","688"],
+["Ukraine","380"],["Uruguay","598"],["Vanuatu","678"],["Vatican","379"],["Venezuela","58"],
+["Vietnam","84"],["Yémen","967"],["Zambie","260"],["Zimbabwe","263"]
+];
+function populateDialSelects(){
+  const opts = COUNTRIES.map(c=>`<option value="${c[1]}">${c[0]} (+${c[1]})</option>`).join('');
+  ['c-dial','o-dial'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ el.innerHTML = opts; el.value = '225'; }
+  });
+}
+populateDialSelects();
+
+/* ============ GÉOLOCALISATION (avec consentement du navigateur) ============ */
+let candidateGeo = null;
+let offreGeo = null;
+function getGeoLocation(prefix){
+  const btn = document.getElementById(prefix+'-geo-btn');
+  const result = document.getElementById(prefix+'-geo-result');
+  if(!navigator.geolocation){
+    result.textContent = "La géolocalisation n'est pas prise en charge par ce navigateur.";
+    return;
+  }
+  btn.disabled = true; result.textContent = 'Localisation en cours…';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat = pos.coords.latitude, lng = pos.coords.longitude;
+    if(prefix==='c'){ candidateGeo = {lat,lng}; } else { offreGeo = {lat,lng}; }
+    result.innerHTML = `<a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank">📍 Voir ma position sur Google Maps</a>`;
+    btn.textContent = 'Localisation activée ✓';
+    btn.disabled = false;
+  }, ()=>{
+    result.textContent = "Localisation refusée ou indisponible.";
+    btn.disabled = false;
+  });
+}
+
+/* ============ FICHIERS (CV / documents en base64) ============ */
+const MAX_FILE_SIZE = 900*1024; // 900 Ko par fichier
+function fileToBase64(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 /* ============ NAVIGATION TABS ============ */
 function openSpace(name){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
@@ -755,13 +892,32 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
   const msg = document.getElementById('c-msg');
   msg.className='form-msg'; msg.textContent='';
 
-  const whatsapp = document.getElementById('c-whatsapp').value.trim();
-  if(!/^[+\d][\d\s]{7,}$/.test(whatsapp)){
+  const dial = document.getElementById('c-dial').value;
+  const localNum = document.getElementById('c-whatsapp').value.trim().replace(/\D/g,'');
+  if(localNum.length < 6){
     msg.className='form-msg err'; msg.textContent="Merci de vérifier le numéro WhatsApp.";
+    return;
+  }
+  const whatsapp = '+'+dial+localNum;
+
+  const cvFile = document.getElementById('c-cv').files[0];
+  if(cvFile && cvFile.size > MAX_FILE_SIZE){
+    msg.className='form-msg err'; msg.textContent="Le CV est trop volumineux (900 Ko maximum).";
+    return;
+  }
+  const docFiles = Array.from(document.getElementById('c-docs').files);
+  if(docFiles.some(f=>f.size > MAX_FILE_SIZE)){
+    msg.className='form-msg err'; msg.textContent="Un des documents est trop volumineux (900 Ko maximum par fichier).";
     return;
   }
 
   btn.disabled = true; spinner.classList.add('show'); label.textContent='Envoi…';
+
+  let cv = null;
+  if(cvFile){ cv = {name:cvFile.name, data: await fileToBase64(cvFile)}; }
+  const documents = [];
+  for(const f of docFiles){ documents.push({name:f.name, data: await fileToBase64(f)}); }
+
   const data = {
     nom: document.getElementById('c-nom').value.trim(),
     age: document.getElementById('c-age').value,
@@ -770,6 +926,9 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     categorie: document.getElementById('c-categorie').value,
     bio: document.getElementById('c-bio').value.trim(),
     photos: candidatePhotos.filter(Boolean),
+    cv,
+    documents,
+    geo: candidateGeo,
     statut: 'en_attente',
     date: new Date().toISOString()
   };
@@ -779,6 +938,10 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     e.target.reset();
     candidatePhotos[0]=candidatePhotos[1]=candidatePhotos[2]=null;
     buildPhotoSlots();
+    populateDialSelects();
+    candidateGeo = null;
+    document.getElementById('c-geo-result').innerHTML='';
+    document.getElementById('c-geo-btn').textContent='📍 Activer ma localisation';
   }catch(err){
     msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
   }
@@ -805,6 +968,15 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
   const spinner = document.getElementById('o-spinner');
   const label = document.getElementById('o-submit-label');
   const msg = document.getElementById('o-msg');
+
+  const dial = document.getElementById('o-dial').value;
+  const localNum = document.getElementById('o-contact').value.trim().replace(/\D/g,'');
+  if(localNum.length < 6){
+    msg.className='form-msg err'; msg.textContent="Merci de vérifier le numéro de contact.";
+    return;
+  }
+  const contact = '+'+dial+localNum;
+
   btn.disabled=true; spinner.classList.add('show'); label.textContent='Publication…';
   const data = {
     titre: document.getElementById('o-titre').value.trim(),
@@ -812,7 +984,8 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
     categorie: document.getElementById('o-categorie').value,
     ville: document.getElementById('o-ville').value.trim(),
     dateLimite: document.getElementById('o-date').value,
-    contact: document.getElementById('o-contact').value.trim(),
+    contact,
+    geo: offreGeo,
     statut: 'active',
     date: new Date().toISOString()
   };
@@ -820,6 +993,10 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
     await fbPush('offres', data);
     msg.className='form-msg ok'; msg.textContent="Votre offre est publiée.";
     e.target.reset();
+    populateDialSelects();
+    offreGeo = null;
+    document.getElementById('o-geo-result').innerHTML='';
+    document.getElementById('o-geo-btn').textContent='📍 Activer ma localisation';
   }catch(err){
     msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
   }
@@ -884,28 +1061,36 @@ function renderAdminCandidates(all, statut, elId, showActions){
   const el = document.getElementById(elId);
   const entries = Object.entries(all).filter(([id,c])=>c.statut===statut);
   if(entries.length===0){ el.innerHTML = '<p class="empty-state">Rien à afficher ici.</p>'; return; }
-  el.innerHTML = entries.map(([id,c])=>`
+  el.innerHTML = entries.map(([id,c])=>{
+    const docs = [c.cv ? {...c.cv, label:'CV'} : null, ...(c.documents||[]).map(d=>({...d, label:'Document'}))].filter(Boolean);
+    const docsHtml = docs.length ? `<div class="admin-docs">${docs.map(d=>`<a href="${d.data}" download="${d.name}" class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;">📎 ${d.label}</a>`).join(' ')}</div>` : '';
+    const geoHtml = c.geo ? ` · <a href="https://www.google.com/maps?q=${c.geo.lat},${c.geo.lng}" target="_blank">📍 Localisation</a>` : '';
+    return `
     <div class="cand-admin-item">
-      <div class="info"><b>${c.nom||''}</b>${c.categorie||''} · ${c.ville||''} · ${c.age||'–'} ans · ${c.whatsapp||''}</div>
+      <div class="info"><b>${c.nom||''}</b>${c.categorie||''} · ${c.ville||''} · ${c.age||'–'} ans · ${c.whatsapp||''}${geoHtml}${docsHtml}</div>
       <div class="mini-actions">
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(c.whatsapp||'').replace(/\D/g,'')}">Contacter</a>
         ${showActions ? `<button class="btn-mini btn-approve" onclick="approveCandidate('${id}')">Valider</button>
         <button class="btn-mini btn-reject" onclick="rejectCandidate('${id}')">Rejeter</button>` : `<button class="btn-mini btn-reject" onclick="rejectCandidate('${id}')">Retirer</button>`}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 function renderAdminOffres(offres){
   const el = document.getElementById('list-offres');
   const entries = Object.entries(offres);
   if(entries.length===0){ el.innerHTML = '<p class="empty-state">Aucune offre publiée.</p>'; return; }
-  el.innerHTML = entries.map(([id,o])=>`
+  el.innerHTML = entries.map(([id,o])=>{
+    const geoHtml = o.geo ? ` · <a href="https://www.google.com/maps?q=${o.geo.lat},${o.geo.lng}" target="_blank">📍 Localisation</a>` : '';
+    return `
     <div class="offer-item">
-      <div class="info"><b>${o.titre||''}</b>${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· limite '+o.dateLimite : ''}</div>
+      <div class="info"><b>${o.titre||''}</b>${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· limite '+o.dateLimite : ''}${geoHtml}</div>
       <div class="mini-actions">
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(o.contact||'').replace(/\D/g,'')}">Contacter</a>
         <button class="btn-mini btn-reject" onclick="deleteOffer('${id}')">Supprimer</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 function renderStats(all, offres){
   const vals = Object.values(all);

@@ -80,7 +80,7 @@ header{
 }
 @keyframes lbFade{from{opacity:0;}to{opacity:1;}}
 
-/* ---------- CHAT WIDGET (assistant IA du site) ---------- */
+/* ---------- CHAT WIDGET (assistant du site) ---------- */
 .chat-bubble{
   position:fixed;bottom:22px;right:22px;width:58px;height:58px;border-radius:50%;
   background:var(--wine);color:#fff;display:flex;align-items:center;justify-content:center;
@@ -102,7 +102,10 @@ header{
 .chat-msg{max-width:82%;padding:9px 13px;border-radius:14px;font-size:0.87rem;line-height:1.4;white-space:pre-wrap;}
 .chat-msg.bot{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px;}
 .chat-msg.user{background:var(--wine);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
-.chat-typing{font-size:0.78rem;color:var(--ink-soft);font-style:italic;padding:0 4px;}
+.chat-quick{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start;max-width:92%;}
+.chat-quick button{background:#fff;border:1.3px solid var(--gold);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:0.78rem;font-weight:700;}
+.chat-quick button:hover{background:var(--gold-light);}
+.chat-typing{font-size:0.78rem;color:var(--ink-soft);font-style:italic;padding:0 4px;align-self:flex-start;}
 .chat-input-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);background:#fff;}
 .chat-input-row input{flex:1;padding:10px 12px;border-radius:999px;border:1.5px solid var(--line);font-size:0.87rem;font-family:var(--font-body);}
 .chat-input-row input:focus{outline:2px solid var(--gold);border-color:var(--gold);}
@@ -316,7 +319,7 @@ nav{display:flex;gap:4px;align-items:center;}
 .btn-mini{border:none;padding:8px 14px;border-radius:8px;font-size:0.8rem;font-weight:700;white-space:nowrap;}
 .btn-approve{background:#E8F3E6;color:#2C6B2F;}
 .btn-reject{background:#FBE7E7;color:var(--wine);}
-.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
 .stat-card{background:var(--paper-soft);border-radius:var(--radius);padding:22px;text-align:center;}
 .stat-card .n{font-family:var(--font-display);font-size:2.1rem;font-weight:700;color:var(--wine);}
 .stat-card .l{font-size:0.8rem;color:var(--ink-soft);font-weight:600;margin-top:4px;}
@@ -378,13 +381,11 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
     <div class="chat-head-avatar">SC</div>
     <div>
       <div class="t">SHAMAN CHOOZ</div>
-      <div class="s">Répond en quelques instants</div>
+      <div class="s">Assistant virtuel · répond aussitôt</div>
     </div>
     <button class="chat-close" onclick="toggleChat()" aria-label="Fermer">✕</button>
   </div>
-  <div class="chat-body" id="chat-body">
-    <div class="chat-msg bot">Bonjour 👋 Je suis l'assistant de SHAMAN CHOOZ PRODUCTION. Vous cherchez à vous inscrire comme candidat, ou vous recrutez pour un casting ?</div>
-  </div>
+  <div class="chat-body" id="chat-body"></div>
   <div class="chat-input-row">
     <input type="text" id="chat-input" placeholder="Écrivez votre message…" onkeydown="if(event.key==='Enter')sendChatMessage()">
     <button onclick="sendChatMessage()">Envoyer</button>
@@ -504,21 +505,6 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
         <h3>Suivi de candidature</h3>
         <p>Le candidat sait toujours où en est son dossier.</p>
-      </div>
-      <div class="feat-card">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.3-7-11.5A7 7 0 0112 2a7 7 0 017 7.5C19 14.7 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
-        <h3>Géolocalisation</h3>
-        <p>Candidat et recruteur peuvent partager leur position pour faciliter la mise en relation.</p>
-      </div>
-      <div class="feat-card">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V4h10v4"/><rect x="5" y="8" width="14" height="8" rx="1.5"/><path d="M7 16h10v5H7z"/></svg>
-        <h3>Dossier imprimable</h3>
-        <p>Photos, CV et documents rassemblés en un dossier prêt à imprimer pour vos castings.</p>
-      </div>
-      <div class="feat-card">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1.2"/><path d="M5 9v9a1.5 1.5 0 001.5 1.5h11A1.5 1.5 0 0019 18V9"/><line x1="10" y1="13" x2="14" y2="13"/></svg>
-        <h3>Vivier de talents</h3>
-        <p>Les profils non retenus restent archivés et peuvent être réintégrés pour un futur casting.</p>
       </div>
     </div>
   </div>
@@ -718,7 +704,6 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <button class="sub-tab-btn active" data-sub="valider" onclick="openAdminSub('valider')">À valider</button>
             <button class="sub-tab-btn" data-sub="valides" onclick="openAdminSub('valides')">Candidats validés</button>
             <button class="sub-tab-btn" data-sub="offres" onclick="openAdminSub('offres')">Offres publiées</button>
-            <button class="sub-tab-btn" data-sub="vivier" onclick="openAdminSub('vivier')">Vivier</button>
             <button class="sub-tab-btn" data-sub="stats" onclick="openAdminSub('stats')">Statistiques</button>
           </div>
           <button class="sub-tab-btn" onclick="loadAdminData()" title="Recharger les dernières données">🔄 Actualiser</button>
@@ -736,11 +721,6 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <h3>Offres publiées</h3>
           <div id="list-offres"><p class="empty-state">Chargement…</p></div>
         </div>
-        <div id="adm-vivier" class="sub-panel card">
-          <h3>Vivier de talents (profils non retenus)</h3>
-          <p class="hint">Ces candidats ne sont pas visibles des recruteurs. Réintégrez-les pour un futur casting si besoin.</p>
-          <div id="list-vivier"><p class="empty-state">Chargement…</p></div>
-        </div>
         <div id="adm-stats" class="sub-panel card">
           <h3>Statistiques</h3>
           <div class="stats-grid" id="stats-grid">
@@ -748,7 +728,6 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <div class="stat-card"><div class="n" id="stat-valides">–</div><div class="l">Candidats validés</div></div>
             <div class="stat-card"><div class="n" id="stat-attente">–</div><div class="l">En attente</div></div>
             <div class="stat-card"><div class="n" id="stat-offres">–</div><div class="l">Offres actives</div></div>
-            <div class="stat-card"><div class="n" id="stat-vivier">–</div><div class="l">Dans le vivier</div></div>
           </div>
         </div>
       </div>
@@ -799,9 +778,6 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
 // ⚠️ Remplacez cette URL par celle de VOTRE base Firebase Realtime Database
 // (Firebase console → Realtime Database → copiez l'URL en haut, sans le "/" final)
 const FIREBASE_URL = "https://shaman-chooz-production-prest-default-rtdb.firebaseio.com";
-
-// ⚠️ Remplacez cette URL par celle de votre backend une fois déployé (voir README du dossier shaman-chooz-bot)
-const BOT_BACKEND_URL = "https://VOTRE-BACKEND.onrender.com";
 
 // ⚠️ Changez ce code avant de mettre le site en ligne (protection légère, pas un vrai mot de passe sécurisé)
 const ADMIN_CODE = "Shaman123chooz";
@@ -1025,6 +1001,181 @@ function populateCategorySelects(){
 }
 populateCategorySelects();
 
+/* ============ LIGHTBOX (zoom photos) ============ */
+function openLightbox(src){
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('active');
+}
+
+/* ============ ASSISTANT VIRTUEL (chat) ============ */
+// Liste à plat de tous les métiers + index de recherche par racine de mot (tolère singulier/pluriel/masculin/féminin)
+const ALL_METIERS = Object.values(CATEGORIES).flat();
+const STEM_LEN = 5;
+function stemWord(w){
+  return w.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().slice(0,STEM_LEN);
+}
+const METIER_STEM_INDEX = {};
+ALL_METIERS.forEach(metier=>{
+  const words = metier.split(/[^a-zA-ZàâäéèêëïîôöùûüçÀÂÄÉÈÊËÏÎÔÖÙÛÜÇ]+/).filter(w=>w.length>=4);
+  words.forEach(w=>{
+    const s = stemWord(w);
+    if(!METIER_STEM_INDEX[s]) METIER_STEM_INDEX[s] = metier;
+  });
+});
+function findMetierMatch(text){
+  const words = text.split(/[^a-zA-ZàâäéèêëïîôöùûüçÀÂÄÉÈÊËÏÎÔÖÙÛÜÇ]+/).filter(w=>w.length>=4);
+  for(const w of words){
+    const s = stemWord(w);
+    if(METIER_STEM_INDEX[s]) return METIER_STEM_INDEX[s];
+  }
+  return null;
+}
+
+let chatStarted = false;
+function toggleChat(){
+  const panel = document.getElementById('chat-panel');
+  panel.classList.toggle('active');
+  if(panel.classList.contains('active') && !chatStarted){
+    chatStarted = true;
+    addBotMessage("Bonjour 👋 Je suis l'assistant virtuel de SHAMAN CHOOZ PRODUCTION. Nous plaçons des talents dans plus de 300 métiers (travaux domestiques, hôtellerie, bâtiment, santé, sécurité, événementiel, et bien plus).\n\nÊtes-vous candidat ou recruteur/client ?");
+    addQuickReplies(["Je suis candidat","Je recrute","Voir les métiers","Contacter directement"]);
+  }
+}
+function addUserMessage(text){
+  const body = document.getElementById('chat-body');
+  const div = document.createElement('div');
+  div.className = 'chat-msg user';
+  div.textContent = text;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+function addBotMessage(text){
+  const body = document.getElementById('chat-body');
+  const div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  div.textContent = text;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+function addQuickReplies(options){
+  const body = document.getElementById('chat-body');
+  const div = document.createElement('div');
+  div.className = 'chat-quick';
+  div.innerHTML = options.map(o=>`<button type="button" onclick="handleQuickReply(this)">${o}</button>`).join('');
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+function handleQuickReply(btn){
+  const text = btn.textContent;
+  btn.parentElement.remove();
+  addUserMessage(text);
+  respondToMessage(text);
+}
+function showTyping(){
+  const body = document.getElementById('chat-body');
+  const div = document.createElement('div');
+  div.className = 'chat-typing';
+  div.id = 'chat-typing-indicator';
+  div.textContent = "L'assistant écrit…";
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+function hideTyping(){
+  const el = document.getElementById('chat-typing-indicator');
+  if(el) el.remove();
+}
+function sendChatMessage(){
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if(!text) return;
+  addUserMessage(text);
+  input.value = '';
+  respondToMessage(text);
+}
+function respondToMessage(rawText){
+  showTyping();
+  setTimeout(()=>{
+    hideTyping();
+    const {reply, quick} = buildReply(rawText);
+    addBotMessage(reply);
+    if(quick && quick.length) addQuickReplies(quick);
+  }, 550);
+}
+
+function buildReply(rawText){
+  const t = rawText.toLowerCase().trim();
+
+  // Salutations
+  if(/^(bonjour|salut|bonsoir|coucou|hello|slt|cc)\b/.test(t)){
+    return { reply:"Bonjour ! Ravi de vous accueillir chez SHAMAN CHOOZ PRODUCTION 🙏 Êtes-vous candidat à la recherche d'une mission, ou recruteur/client à la recherche d'un profil ?", quick:["Je suis candidat","Je recrute"] };
+  }
+
+  // Voir les métiers / liste des catégories
+  if(/(voir|liste|quels?) (les )?métiers|catégories|secteurs d'activité/.test(t)){
+    const secteurs = Object.keys(CATEGORIES).join(', ');
+    return { reply:`Nous couvrons plus de 300 métiers répartis en ${Object.keys(CATEGORIES).length} secteurs :\n${secteurs}.\n\nDites-moi un métier ou un secteur précis, je vous confirme s'il est disponible.`, quick:["Je suis candidat","Je recrute"] };
+  }
+
+  // Intention recruteur explicite (prioritaire, signal fort)
+  if(/recrut|j'ai besoin (d'|de )|je cherche (quelqu'un|une personne)|embauch|employeur/.test(t)){
+    return {
+      reply:"Très bien ! En tant que recruteur/client, vous avez deux options :\n1️⃣ Publier une offre dans l'onglet « Client / Recruteur » → « Publier une offre »\n2️⃣ Parcourir directement les profils validés dans « Parcourir les candidats », avec filtres par métier et par ville\n\nQuel type de profil recherchez-vous ?",
+      quick:["Ménage / domestique","Hôtellerie / restauration","Sécurité","Autre besoin"]
+    };
+  }
+
+  // Recherche d'un métier précis parmi les 300+ (avant l'intention candidat générique, plus utile)
+  const metierTrouve = findMetierMatch(t);
+  if(metierTrouve){
+    return {
+      reply:`Oui, « ${metierTrouve} » fait bien partie de nos 300+ métiers ! Êtes-vous candidat pour ce poste, ou recruteur à la recherche de ce profil ?`,
+      quick:["Je suis candidat","Je recrute"]
+    };
+  }
+
+  // Intention candidat générique
+  if(/candidat|cherch\w* (un|une|du|de |d')? ?(emploi|travail|job|mission)|je veux travailler|inscri|postul/.test(t)){
+    return {
+      reply:"Parfait ! Pour vous inscrire comme candidat :\n1️⃣ Allez dans l'onglet « Candidats » en haut du site\n2️⃣ Remplissez vos informations (nom, ville, WhatsApp, catégorie de métier)\n3️⃣ Ajoutez vos photos et, si vous le souhaitez, votre CV\n4️⃣ Envoyez — notre équipe valide chaque profil avant sa mise en ligne\n\nDans quel métier ou secteur cherchez-vous une mission ?",
+      quick:["Ménage / domestique","Hôtellerie / restauration","Sécurité","Autre métier"]
+    };
+  }
+
+  // Documents / CV
+  if(/\bcv\b|document|photo|dossier/.test(t)){
+    return { reply:"Le CV et les documents sont optionnels lors de l'inscription — vous pouvez les ajouter par photo (avec l'appareil) ou en choisissant un fichier PDF/Word depuis votre téléphone. Jusqu'à 10 photos, plus une photo d'identité et une photo entière si vous le souhaitez.", quick:["Je suis candidat"] };
+  }
+
+  // Tarifs / prix
+  if(/tarif|prix|combien|coût|payant|gratuit/.test(t)){
+    return { reply:"L'inscription sur la plateforme est gratuite, aussi bien pour les candidats que pour les recruteurs. Les conditions liées à une mission précise sont à discuter directement avec l'équipe SHAMAN CHOOZ selon le type de placement.", quick:["Contacter directement"] };
+  }
+
+  // Délai / validation
+  if(/délai|attente|combien de temps|validation|quand/.test(t)){
+    return { reply:"Chaque profil et chaque offre sont vérifiés par notre équipe avant publication. Ce n'est pas instantané, mais vous pouvez suivre l'état de votre candidature à tout moment via « Suivre ma candidature » avec votre numéro WhatsApp.", quick:["Je suis candidat"] };
+  }
+
+  // Contact direct / whatsapp / numéro
+  if(/whatsapp|numéro|contact|joindre|appeler|téléphone/.test(t)){
+    return { reply:"Vous pouvez nous joindre directement sur WhatsApp via les numéros affichés en bas de page (section contact). Un conseiller vous répondra personnellement dès que possible.", quick:[] };
+  }
+
+  // Remerciement / au revoir
+  if(/merci|au revoir|bye|à bientôt/.test(t)){
+    return { reply:"Avec plaisir ! N'hésitez pas à revenir si vous avez d'autres questions. Un conseiller SHAMAN CHOOZ prendra le relais dès que possible pour finaliser votre demande. 🙏", quick:[] };
+  }
+
+  // Repli par défaut
+  return {
+    reply:"Je note votre message — un conseiller SHAMAN CHOOZ vous répondra personnellement dès que possible. En attendant, dites-moi si vous êtes candidat ou recruteur, et pour quel métier, pour que je vous oriente au mieux.",
+    quick:["Je suis candidat","Je recrute","Voir les métiers"]
+  };
+}
+
 /* ============ GÉOLOCALISATION (avec consentement du navigateur) ============ */
 let candidateGeo = null;
 let offreGeo = null;
@@ -1064,65 +1215,6 @@ async function uploadToCloudinary(file){
   if(!res.ok){ throw new Error('Échec de l\'envoi vers Cloudinary'); }
   const data = await res.json();
   return data.secure_url;
-}
-
-/* ============ LIGHTBOX (photos en plein écran) ============ */
-function openLightbox(src){
-  document.getElementById('lightbox-img').src = src;
-  document.getElementById('lightbox').classList.add('active');
-}
-function closeLightbox(){
-  document.getElementById('lightbox').classList.remove('active');
-}
-
-/* ============ CHAT DU SITE (assistant IA) ============ */
-let chatHistory = [];
-
-function toggleChat(){
-  document.getElementById('chat-panel').classList.toggle('active');
-  document.getElementById('chat-input').focus();
-}
-
-function escapeHtml(str){
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-async function sendChatMessage(){
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
-  if(!text) return;
-  const body = document.getElementById('chat-body');
-
-  body.insertAdjacentHTML('beforeend', `<div class="chat-msg user">${escapeHtml(text)}</div>`);
-  input.value = '';
-  body.scrollTop = body.scrollHeight;
-
-  const typing = document.createElement('div');
-  typing.className = 'chat-typing';
-  typing.id = 'chat-typing-indicator';
-  typing.textContent = 'SHAMAN CHOOZ écrit…';
-  body.appendChild(typing);
-  body.scrollTop = body.scrollHeight;
-
-  try{
-    const res = await fetch(`${BOT_BACKEND_URL}/chat`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ message: text, history: chatHistory })
-    });
-    const data = await res.json();
-    document.getElementById('chat-typing-indicator')?.remove();
-    const reply = data.reply || "Merci pour votre message, notre équipe revient vers vous rapidement.";
-    body.insertAdjacentHTML('beforeend', `<div class="chat-msg bot">${escapeHtml(reply)}</div>`);
-    chatHistory.push({role:'user', content:text}, {role:'assistant', content:reply});
-    if(chatHistory.length > 12) chatHistory = chatHistory.slice(-12);
-  }catch(err){
-    document.getElementById('chat-typing-indicator')?.remove();
-    body.insertAdjacentHTML('beforeend', `<div class="chat-msg bot">Désolé, une erreur est survenue. Contactez-nous directement sur WhatsApp via le bouton en bas de page.</div>`);
-  }
-  body.scrollTop = body.scrollHeight;
 }
 
 /* ============ NAVIGATION TABS ============ */
@@ -1450,24 +1542,8 @@ async function loadAdminData(){
   renderAdminCandidates(all, 'en_attente', 'list-valider', true);
   renderAdminCandidates(all, 'valide', 'list-valides', false);
   renderAdminOffres(offres);
-  renderVivier(all);
   renderStats(all, offres);
 }
-function renderVivier(all){
-  const el = document.getElementById('list-vivier');
-  const entries = Object.entries(all).filter(([id,c])=>c.statut==='rejete');
-  if(entries.length===0){ el.innerHTML = '<p class="empty-state">Aucun profil archivé pour le moment.</p>'; return; }
-  el.innerHTML = entries.map(([id,c])=>`
-    <div class="cand-admin-item">
-      <div class="info"><b>${c.nom||''}</b>${c.categorie||''} · ${c.ville||''} · ${c.age||'–'} ans · ${c.whatsapp||''}</div>
-      <div class="mini-actions">
-        <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(c.whatsapp||'').replace(/\D/g,'')}">Contacter</a>
-        <button class="btn-mini btn-print" onclick="printCandidateDossier('${id}')">🖨️ Imprimer</button>
-        <button class="btn-mini btn-approve" onclick="reactivateCandidate('${id}')">Réintégrer</button>
-      </div>
-    </div>`).join('');
-}
-async function reactivateCandidate(id){ await fbPatch('candidats/'+id, {statut:'en_attente'}); loadAdminData(); }
 function renderAdminCandidates(all, statut, elId, showActions){
   const el = document.getElementById(elId);
   const entries = Object.entries(all).filter(([id,c])=>c.statut===statut);
@@ -1511,7 +1587,6 @@ function renderStats(all, offres){
   document.getElementById('stat-valides').textContent = vals.filter(c=>c.statut==='valide').length;
   document.getElementById('stat-attente').textContent = vals.filter(c=>c.statut==='en_attente').length;
   document.getElementById('stat-offres').textContent = Object.values(offres).filter(o=>o.statut==='active').length;
-  document.getElementById('stat-vivier').textContent = vals.filter(c=>c.statut==='rejete').length;
 }
 async function approveCandidate(id){ await fbPatch('candidats/'+id, {statut:'valide'}); loadAdminData(); }
 async function rejectCandidate(id){ await fbPatch('candidats/'+id, {statut:'rejete'}); loadAdminData(); }

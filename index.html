@@ -483,12 +483,12 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <div class="field">
               <label>CV (optionnel)</label>
               <input type="file" id="c-cv" accept=".pdf,.doc,.docx">
-              <div class="field-hint">PDF ou Word, 900 Ko maximum.</div>
+              <div class="field-hint">PDF ou Word, 8 Mo maximum.</div>
             </div>
             <div class="field">
               <label>Autres documents (optionnel)</label>
               <input type="file" id="c-docs" accept=".pdf,.doc,.docx,image/*" multiple>
-              <div class="field-hint">Portfolio, book, lettre de motivation… 900 Ko maximum par fichier.</div>
+              <div class="field-hint">Portfolio, book, lettre de motivation… 8 Mo maximum par fichier.</div>
             </div>
             <button type="submit" class="btn-submit" id="c-submit-btn">
               <span class="spinner" id="c-spinner"></span>
@@ -927,15 +927,22 @@ function getGeoLocation(prefix){
   });
 }
 
-/* ============ FICHIERS (CV / documents en base64) ============ */
-const MAX_FILE_SIZE = 900*1024; // 900 Ko par fichier
-function fileToBase64(file){
-  return new Promise((resolve, reject)=>{
-    const reader = new FileReader();
-    reader.onload = ()=>resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+/* ============ FICHIERS (CV / documents envoyés vers Cloudinary) ============ */
+const CLOUDINARY_CLOUD_NAME = "fm4n311j";
+const CLOUDINARY_UPLOAD_PRESET = "shaman chooz production prestataire de services";
+const MAX_FILE_SIZE = 8*1024*1024; // 8 Mo par fichier
+
+async function uploadToCloudinary(file){
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, {
+    method: 'POST',
+    body: fd
   });
+  if(!res.ok){ throw new Error('Échec de l\'envoi vers Cloudinary'); }
+  const data = await res.json();
+  return data.secure_url;
 }
 
 /* ============ NAVIGATION TABS ============ */
@@ -1026,21 +1033,27 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
 
   const cvFile = document.getElementById('c-cv').files[0];
   if(cvFile && cvFile.size > MAX_FILE_SIZE){
-    msg.className='form-msg err'; msg.textContent="Le CV est trop volumineux (900 Ko maximum).";
+    msg.className='form-msg err'; msg.textContent="Le CV est trop volumineux (8 Mo maximum).";
     return;
   }
   const docFiles = Array.from(document.getElementById('c-docs').files);
   if(docFiles.some(f=>f.size > MAX_FILE_SIZE)){
-    msg.className='form-msg err'; msg.textContent="Un des documents est trop volumineux (900 Ko maximum par fichier).";
+    msg.className='form-msg err'; msg.textContent="Un des documents est trop volumineux (8 Mo maximum par fichier).";
     return;
   }
 
   btn.disabled = true; spinner.classList.add('show'); label.textContent='Envoi…';
 
   let cv = null;
-  if(cvFile){ cv = {name:cvFile.name, data: await fileToBase64(cvFile)}; }
-  const documents = [];
-  for(const f of docFiles){ documents.push({name:f.name, data: await fileToBase64(f)}); }
+  let documents = [];
+  try{
+    if(cvFile){ cv = {name:cvFile.name, url: await uploadToCloudinary(cvFile)}; }
+    for(const f of docFiles){ documents.push({name:f.name, url: await uploadToCloudinary(f)}); }
+  }catch(err){
+    msg.className='form-msg err'; msg.textContent="Erreur lors de l'envoi du CV/documents, réessayez.";
+    btn.disabled=false; spinner.classList.remove('show'); label.textContent='Envoyer ma candidature';
+    return;
+  }
 
   const data = {
     nom: document.getElementById('c-nom').value.trim(),
@@ -1187,7 +1200,7 @@ function renderAdminCandidates(all, statut, elId, showActions){
   if(entries.length===0){ el.innerHTML = '<p class="empty-state">Rien à afficher ici.</p>'; return; }
   el.innerHTML = entries.map(([id,c])=>{
     const docs = [c.cv ? {...c.cv, label:'CV'} : null, ...(c.documents||[]).map(d=>({...d, label:'Document'}))].filter(Boolean);
-    const docsHtml = docs.length ? `<div class="admin-docs">${docs.map(d=>`<a href="${d.data}" download="${d.name}" class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;">📎 ${d.label}</a>`).join(' ')}</div>` : '';
+    const docsHtml = docs.length ? `<div class="admin-docs">${docs.map(d=>`<a href="${d.url}" target="_blank" rel="noopener" class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;">📎 ${d.label}</a>`).join(' ')}</div>` : '';
     const geoHtml = c.geo ? ` · <a href="https://www.google.com/maps?q=${c.geo.lat},${c.geo.lng}" target="_blank">📍 Localisation</a>` : '';
     return `
     <div class="cand-admin-item">

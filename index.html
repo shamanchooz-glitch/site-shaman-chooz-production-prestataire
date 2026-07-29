@@ -473,12 +473,6 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               <label>Catégorie</label>
               <select id="c-categorie" required>
                 <option value="">Choisir…</option>
-                <option>Mannequin</option>
-                <option>Acteur / Actrice</option>
-                <option>Figuration</option>
-                <option>Événementiel</option>
-                <option>Voix / Doublage</option>
-                <option>Autre</option>
               </select>
             </div>
             <div class="field"><label>Présentation courte</label><textarea id="c-bio" placeholder="Expérience, taille, disponibilités…"></textarea></div>
@@ -545,12 +539,6 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
                   <label>Catégorie recherchée</label>
                   <select id="o-categorie" required>
                     <option value="">Choisir…</option>
-                    <option>Mannequin</option>
-                    <option>Acteur / Actrice</option>
-                    <option>Figuration</option>
-                    <option>Événementiel</option>
-                    <option>Voix / Doublage</option>
-                    <option>Autre</option>
                   </select>
                 </div>
                 <div class="field"><label>Ville</label><input type="text" id="o-ville" required></div>
@@ -592,12 +580,6 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <div class="filter-bar">
           <select id="filter-categorie" onchange="renderCandidateGrid()">
             <option value="">Toutes les catégories</option>
-            <option>Mannequin</option>
-            <option>Acteur / Actrice</option>
-            <option>Figuration</option>
-            <option>Événementiel</option>
-            <option>Voix / Doublage</option>
-            <option>Autre</option>
           </select>
           <select id="filter-ville" onchange="renderCandidateGrid()">
             <option value="">Toutes les villes</option>
@@ -680,10 +662,10 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
     <div class="contact-numbers" style="padding:30px 0;border-top:1px solid rgba(251,244,230,0.14);">
       <h3 style="font-family:var(--font-display);font-weight:600;font-size:1.15rem;margin-bottom:14px;color:var(--paper);">Nous contacter sur WhatsApp</h3>
       <div style="display:flex;flex-wrap:wrap;gap:10px;">
-        <a class="share-btn" target="_blank" href="https://wa.me/225748935686">+225 07 48 93 56 86</a>
-        <a class="share-btn" target="_blank" href="https://wa.me/225173773939">+225 01 73 77 39 39</a>
-        <a class="share-btn" target="_blank" href="https://wa.me/225574533636">+225 05 74 53 36 36</a>
-        <a class="share-btn" target="_blank" href="https://wa.me/225749970918">+225 07 49 97 09 18</a>
+        <a class="share-btn" target="_blank" href="https://wa.me/2250748935686">+225 07 48 93 56 86</a>
+        <a class="share-btn" target="_blank" href="https://wa.me/2250173773939">+225 01 73 77 39 39</a>
+        <a class="share-btn" target="_blank" href="https://wa.me/2250574533636">+225 05 74 53 36 36</a>
+        <a class="share-btn" target="_blank" href="https://wa.me/2250749970918">+225 07 49 97 09 18</a>
       </div>
       <p style="margin-top:14px;font-size:0.85rem;color:rgba(251,244,230,0.7);">Ligne fixe : +225 27 23 29 25 67</p>
     </div>
@@ -779,6 +761,148 @@ function populateDialSelects(){
   });
 }
 populateDialSelects();
+
+// La Côte d'Ivoire (depuis 2021) garde le "0" initial dans le numéro complet.
+// La plupart des autres pays retirent ce "0" (préfixe interurbain) à l'international.
+function buildInternationalNumber(dial, rawDigits){
+  let n = rawDigits;
+  if(dial !== '225' && n.startsWith('0')){ n = n.substring(1); }
+  return '+'+dial+n;
+}
+
+/* ============ CATÉGORIES DE MÉTIERS (secteurs d'activité) ============ */
+const CATEGORIES = {
+  "Travaux domestiques": [
+    "Aide-ménagère / Fille de ménage","Homme de ménage","Nounou / Garde d'enfants","Baby-sitter",
+    "Cuisinier(ère) à domicile","Chef à domicile","Jardinier(ère)","Chauffeur particulier",
+    "Garde-malade à domicile","Aide-soignant(e) à domicile","Repasseuse / Repasseur","Blanchisseur(se)",
+    "Femme de chambre","Majordome","Gouvernante","Dame de compagnie","Garde d'animaux / Pet-sitter",
+    "Homme à tout faire","Agent d'entretien à domicile","Cuisinière traditionnelle"
+  ],
+  "Nettoyage & entretien": [
+    "Agent de nettoyage","Agent de nettoyage industriel","Technicien de surface","Laveur de vitres",
+    "Nettoyeur de tapis / moquettes","Agent de propreté urbaine","Éboueur","Agent de désinfection",
+    "Nettoyeur de piscine","Agent d'entretien d'espaces verts","Cantonnier","Balayeur",
+    "Agent de blanchisserie industrielle","Femme / Homme de ménage en entreprise","Nettoyeur après chantier"
+  ],
+  "Hôtellerie & restauration": [
+    "Cuisinier(ère)","Chef cuisinier","Second de cuisine","Commis de cuisine","Pâtissier(ère)",
+    "Boulanger(ère)","Serveur(se)","Barman / Barmaid","Réceptionniste d'hôtel","Femme / Valet de chambre",
+    "Concierge","Maître d'hôtel","Sommelier(ère)","Plongeur(se)","Traiteur","Chef de rang",
+    "Gouvernante d'hôtel","Agent de restauration collective","Livreur de repas","Gérant de restaurant"
+  ],
+  "Bâtiment & construction": [
+    "Maçon","Menuisier","Électricien bâtiment","Plombier","Peintre en bâtiment","Carreleur",
+    "Charpentier","Couvreur","Soudeur","Ferrailleur","Coffreur","Chef de chantier",
+    "Conducteur d'engins","Grutier","Étancheur","Plâtrier","Vitrier","Poseur de placo",
+    "Maçon carreleur","Manœuvre BTP"
+  ],
+  "Mécanique & automobile": [
+    "Mécanicien automobile","Mécanicien moto","Électricien auto","Carrossier","Peintre automobile",
+    "Vidangeur","Vulcanisateur","Dépanneur auto","Diagnostiqueur auto","Technicien poids lourds",
+    "Laveur de véhicules","Vendeur pièces détachées"
+  ],
+  "Transport & logistique": [
+    "Chauffeur de taxi","Chauffeur VTC","Chauffeur poids lourd","Chauffeur de bus","Livreur moto",
+    "Coursier","Magasinier","Cariste","Agent logistique","Déménageur","Convoyeur",
+    "Agent de manutention","Coordinateur transport","Agent de fret","Motard livreur"
+  ],
+  "Sécurité": [
+    "Agent de sécurité","Vigile","Maître-chien","Agent de sûreté aéroportuaire","Garde du corps",
+    "Agent de surveillance","Portier","Agent de sécurité incendie","Contrôleur d'accès",
+    "Agent de sécurité événementielle"
+  ],
+  "Santé & bien-être": [
+    "Infirmier(ère)","Aide-soignant(e)","Sage-femme","Kinésithérapeute","Pharmacien(ne)",
+    "Préparateur en pharmacie","Dentiste","Assistant(e) dentaire","Psychologue","Nutritionniste",
+    "Masseur(se)","Ambulancier(ère)","Technicien de laboratoire","Opticien(ne)","Sophrologue",
+    "Naturopathe","Auxiliaire de puériculture","Brancardier"
+  ],
+  "Beauté & esthétique": [
+    "Coiffeur(se)","Coiffeur(se) tresseuse","Barbier","Esthéticien(ne)","Manucure","Maquilleur(se)",
+    "Prothésiste ongulaire","Spa thérapeute","Onglerie","Extension de cils","Cosméticien(ne)",
+    "Styliste capillaire","Perruquier(ère)","Masseur bien-être","Conseiller(ère) beauté"
+  ],
+  "Éducation & formation": [
+    "Enseignant(e) primaire","Enseignant(e) secondaire","Professeur particulier","Répétiteur",
+    "Éducateur(trice)","Formateur(trice) professionnel","Animateur(trice) pédagogique",
+    "Bibliothécaire","Documentaliste","Surveillant(e) scolaire","Conseiller d'orientation",
+    "Professeur de langue","Instituteur(trice)","Assistant(e) maternelle","Directeur(trice) d'école"
+  ],
+  "Informatique & technologie": [
+    "Développeur web","Développeur mobile","Technicien informatique","Administrateur système",
+    "Administrateur réseau","Data analyst","Community manager","Designer graphique","Webmaster",
+    "Technicien maintenance informatique","Développeur logiciel","Expert cybersécurité",
+    "Chef de projet IT","Testeur QA","Monteur vidéo","Infographiste","Photographe","Technicien audiovisuel"
+  ],
+  "Commerce & vente": [
+    "Vendeur(se)","Caissier(ère)","Commercial(e)","Représentant commercial","Merchandiser",
+    "Responsable de magasin","Gérant(e) de boutique","Télévendeur(se)","Agent commercial",
+    "Chargé(e) de clientèle","Démonstrateur(trice)","Négociateur immobilier","Agent immobilier",
+    "Courtier","Distributeur","Vendeur ambulant","Marchand(e)","Grossiste"
+  ],
+  "Agriculture & élevage": [
+    "Agriculteur(trice)","Ouvrier agricole","Éleveur(se)","Maraîcher(ère)","Pêcheur",
+    "Aviculteur(trice)","Apiculteur(trice)","Planteur","Cacaoculteur","Producteur de vivriers",
+    "Technicien agricole","Vétérinaire","Assistant vétérinaire","Horticulteur(trice)","Agent forestier"
+  ],
+  "Industrie & production": [
+    "Ouvrier de production","Technicien de maintenance industrielle","Chef d'équipe production",
+    "Contrôleur qualité","Agent de conditionnement","Opérateur de machine","Technicien chimiste",
+    "Soudeur industriel","Monteur assembleur","Régleur machine","Agent de fabrication",
+    "Technicien méthodes","Responsable de production","Ingénieur industriel","Manutentionnaire"
+  ],
+  "Administration & bureau": [
+    "Secrétaire","Assistant(e) administratif(ve)","Réceptionniste","Standardiste","Comptable",
+    "Aide-comptable","Gestionnaire de paie","Ressources humaines","Chargé(e) de recrutement",
+    "Assistant(e) de direction","Archiviste","Agent d'accueil","Agent de saisie","Data entry","Office manager"
+  ],
+  "Finance & juridique": [
+    "Comptable","Auditeur(trice)","Analyste financier","Conseiller bancaire","Agent de change",
+    "Notaire","Avocat(e)","Huissier","Juriste","Assistant(e) juridique","Fiscaliste","Contrôleur de gestion"
+  ],
+  "Artistique & spectacle": [
+    "Mannequin","Acteur / Actrice","Figurant(e)","Danseur(se)","Chanteur(se)","Musicien(ne)",
+    "Comédien(ne)","Humoriste","Animateur(trice) événementiel","Voix off / Doublage",
+    "Photographe modèle","Régisseur","Metteur en scène","Chorégraphe","Costumier(ère)",
+    "Maquilleur de plateau","Cascadeur(se)","DJ"
+  ],
+  "Événementiel & accueil": [
+    "Hôte / Hôtesse d'accueil","Hôtesse de l'air","Steward","Organisateur(trice) d'événements",
+    "Wedding planner","Traiteur événementiel","Technicien son et lumière","Décorateur événementiel",
+    "Agent de billetterie","Animateur de rue","Photographe événementiel","Vidéaste événementiel"
+  ],
+  "Textile & artisanat": [
+    "Couturier(ère)","Tailleur","Styliste modéliste","Cordonnier(ère)","Tisserand(e)",
+    "Teinturier(ère)","Brodeur(se)","Tricoteur(se)","Artisan bijoutier","Sculpteur","Menuisier d'art","Céramiste"
+  ],
+  "Communication & marketing": [
+    "Chargé(e) de communication","Community manager","Attaché(e) de presse","Rédacteur(trice) web",
+    "Traducteur(trice)","Interprète","Chargé(e) de marketing","Publicitaire","Consultant(e) en image",
+    "Relations publiques","Copywriter","Growth hacker"
+  ],
+  "Électricité, plomberie & technique": [
+    "Électricien","Plombier","Climaticien","Frigoriste","Technicien solaire","Technicien télécom",
+    "Installateur antennes","Serrurier","Technicien ascenseur","Chauffagiste"
+  ],
+  "Divers / autres services": [
+    "Extra / Standby","Traducteur assermenté","Guide touristique","Interprète de conférence",
+    "Coach sportif","Coach de vie","Consultant(e) indépendant(e)","Freelance polyvalent(e)",
+    "Bénévole","Autre"
+  ]
+};
+function populateCategorySelects(){
+  const groupsHtml = Object.entries(CATEGORIES).map(([groupe, items])=>
+    `<optgroup label="${groupe}">` + items.map(i=>`<option>${i}</option>`).join('') + '</optgroup>'
+  ).join('');
+  ['c-categorie','o-categorie'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = '<option value="">Choisir…</option>' + groupsHtml;
+  });
+  const filterEl = document.getElementById('filter-categorie');
+  if(filterEl) filterEl.innerHTML = '<option value="">Toutes les catégories</option>' + groupsHtml;
+}
+populateCategorySelects();
 
 /* ============ GÉOLOCALISATION (avec consentement du navigateur) ============ */
 let candidateGeo = null;
@@ -898,7 +1022,7 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     msg.className='form-msg err'; msg.textContent="Merci de vérifier le numéro WhatsApp.";
     return;
   }
-  const whatsapp = '+'+dial+localNum;
+  const whatsapp = buildInternationalNumber(dial, localNum);
 
   const cvFile = document.getElementById('c-cv').files[0];
   if(cvFile && cvFile.size > MAX_FILE_SIZE){
@@ -975,7 +1099,7 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
     msg.className='form-msg err'; msg.textContent="Merci de vérifier le numéro de contact.";
     return;
   }
-  const contact = '+'+dial+localNum;
+  const contact = buildInternationalNumber(dial, localNum);
 
   btn.disabled=true; spinner.classList.add('show'); label.textContent='Publication…';
   const data = {

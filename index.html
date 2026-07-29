@@ -203,6 +203,15 @@ nav{display:flex;gap:4px;align-items:center;}
 .slot-btn{background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:0.7rem;font-weight:700;display:flex;align-items:center;gap:4px;color:var(--ink-soft);}
 .slot-btn:hover{border-color:var(--gold);color:var(--ink);}
 .photo-slot input[type=file]{display:none;}
+.photo-slot .photo-remove{position:absolute;top:4px;right:4px;background:rgba(20,20,20,0.75);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:1rem;line-height:1;cursor:pointer;z-index:2;}
+.photo-slots.single{grid-template-columns:1fr;max-width:200px;}
+.dual-upload{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+.dual-upload .slot-btn{position:static;padding:9px 14px;}
+.dual-upload input[type=file]{display:none;}
+.file-chip,.file-chip-list{display:flex;flex-wrap:wrap;gap:8px;}
+.file-chip span,.file-chip-list span{background:var(--paper-soft);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:0.78rem;display:inline-flex;align-items:center;gap:6px;}
+.file-chip button,.file-chip-list button{background:none;border:none;color:var(--ink-soft);font-weight:800;cursor:pointer;font-size:0.95rem;padding:0;}
+.btn-print{background:var(--ink);color:var(--paper);}
 
 .btn-submit{
   width:100%;background:var(--wine);color:var(--paper);border:none;padding:15px;border-radius:10px;
@@ -477,17 +486,35 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             </div>
             <div class="field"><label>Présentation courte</label><textarea id="c-bio" placeholder="Expérience, taille, disponibilités…"></textarea></div>
             <div class="field">
-              <label>Photos (jusqu'à 3)</label>
+              <label>Photos (jusqu'à 10, optionnel)</label>
               <div class="photo-slots" id="photo-slots"></div>
             </div>
             <div class="field">
+              <label>Photo d'identité (optionnel)</label>
+              <div class="photo-slots single" id="slot-id-photo"></div>
+              <div class="field-hint">Photo type identité — utile pour votre dossier physique.</div>
+            </div>
+            <div class="field">
+              <label>Photo entière (optionnel)</label>
+              <div class="photo-slots single" id="slot-full-photo"></div>
+              <div class="field-hint">Photo de vous en pied — utile pour votre dossier physique.</div>
+            </div>
+            <div class="field">
               <label>CV (optionnel)</label>
-              <input type="file" id="c-cv" accept=".pdf,.doc,.docx">
-              <div class="field-hint">PDF ou Word, 8 Mo maximum.</div>
+              <div class="dual-upload">
+                <label class="slot-btn">📷 Prendre en photo<input type="file" id="c-cv-camera" accept="image/*" capture="environment"></label>
+                <label class="slot-btn">📁 Choisir un fichier<input type="file" id="c-cv-file" accept=".pdf,.doc,.docx,image/*"></label>
+              </div>
+              <div class="file-chip" id="c-cv-chip"></div>
+              <div class="field-hint">PDF, Word ou photo du document, 8 Mo maximum.</div>
             </div>
             <div class="field">
               <label>Autres documents (optionnel)</label>
-              <input type="file" id="c-docs" accept=".pdf,.doc,.docx,image/*" multiple>
+              <div class="dual-upload">
+                <label class="slot-btn">📷 Prendre une photo<input type="file" id="c-docs-camera" accept="image/*" capture="environment"></label>
+                <label class="slot-btn">📁 Sélect. fichiers<input type="file" id="c-docs-file" accept=".pdf,.doc,.docx,image/*" multiple></label>
+              </div>
+              <div class="file-chip-list" id="c-docs-chips"></div>
               <div class="field-hint">Portfolio, book, lettre de motivation… 8 Mo maximum par fichier.</div>
             </div>
             <button type="submit" class="btn-submit" id="c-submit-btn">
@@ -969,20 +996,26 @@ function openAdminSub(name){
 }
 
 /* ============ PHOTO SLOTS (candidat) ============ */
-const candidatePhotos = [null,null,null];
+const MAX_PHOTOS = 10;
+let candidatePhotos = [];
 function buildPhotoSlots(){
   const wrap = document.getElementById('photo-slots');
   wrap.innerHTML = '';
-  for(let i=0;i<3;i++){
+  candidatePhotos.forEach((dataUrl, i)=>{
     const slot = document.createElement('div');
     slot.className='photo-slot';
-    slot.id='slot-'+i;
-    slot.innerHTML = `
-      <div class="slot-actions">
-        <label class="slot-btn">📷 Photo<input type="file" accept="image/*" capture="environment" onchange="handlePhoto(${i}, this.files[0])"></label>
-        <label class="slot-btn">🖼️ Galerie<input type="file" accept="image/*" onchange="handlePhoto(${i}, this.files[0])"></label>
-      </div>`;
+    slot.innerHTML = `<img src="${dataUrl}" alt="Photo candidat"><button type="button" class="photo-remove" onclick="removeGalleryPhoto(${i})">×</button>`;
     wrap.appendChild(slot);
+  });
+  if(candidatePhotos.length < MAX_PHOTOS){
+    const addSlot = document.createElement('div');
+    addSlot.className='photo-slot';
+    addSlot.innerHTML = `
+      <div class="slot-actions">
+        <label class="slot-btn">📷 Photo<input type="file" accept="image/*" capture="environment" onchange="addGalleryPhoto(this.files[0])"></label>
+        <label class="slot-btn">🖼️ Galerie<input type="file" accept="image/*" onchange="addGalleryPhoto(this.files[0])"></label>
+      </div>`;
+    wrap.appendChild(addSlot);
   }
 }
 function compressImage(file, maxWidth=700, quality=0.72){
@@ -1005,14 +1038,75 @@ function compressImage(file, maxWidth=700, quality=0.72){
     reader.readAsDataURL(file);
   });
 }
-async function handlePhoto(index, file){
-  if(!file) return;
+async function addGalleryPhoto(file){
+  if(!file || candidatePhotos.length >= MAX_PHOTOS) return;
   const dataUrl = await compressImage(file);
-  candidatePhotos[index] = dataUrl;
-  const slot = document.getElementById('slot-'+index);
-  slot.innerHTML = `<img src="${dataUrl}" alt="Photo candidat">`;
+  candidatePhotos.push(dataUrl);
+  buildPhotoSlots();
+}
+function removeGalleryPhoto(i){
+  candidatePhotos.splice(i,1);
+  buildPhotoSlots();
 }
 buildPhotoSlots();
+
+/* ============ PHOTO D'IDENTITÉ & PHOTO ENTIÈRE (dossier physique) ============ */
+const singlePhotos = { id: null, full: null };
+function renderSingleSlot(key, elId){
+  const wrap = document.getElementById(elId);
+  const val = singlePhotos[key];
+  if(val){
+    wrap.innerHTML = `<div class="photo-slot"><img src="${val}" alt="Photo"><button type="button" class="photo-remove" onclick="removeSinglePhoto('${key}','${elId}')">×</button></div>`;
+  } else {
+    wrap.innerHTML = `
+      <div class="photo-slot">
+        <div class="slot-actions">
+          <label class="slot-btn">📷 Photo<input type="file" accept="image/*" capture="environment" onchange="handleSinglePhoto('${key}','${elId}', this.files[0])"></label>
+          <label class="slot-btn">🖼️ Galerie<input type="file" accept="image/*" onchange="handleSinglePhoto('${key}','${elId}', this.files[0])"></label>
+        </div>
+      </div>`;
+  }
+}
+async function handleSinglePhoto(key, elId, file){
+  if(!file) return;
+  singlePhotos[key] = await compressImage(file, 1000, 0.85);
+  renderSingleSlot(key, elId);
+}
+function removeSinglePhoto(key, elId){
+  singlePhotos[key] = null;
+  renderSingleSlot(key, elId);
+}
+renderSingleSlot('id','slot-id-photo');
+renderSingleSlot('full','slot-full-photo');
+
+/* ============ CV & AUTRES DOCUMENTS (photo ou fichier) ============ */
+let cvSelectedFile = null;
+function setCvFile(file){
+  if(!file) return;
+  cvSelectedFile = file;
+  document.getElementById('c-cv-chip').innerHTML = `<span>📎 ${file.name} <button type="button" onclick="clearCvFile()">×</button></span>`;
+}
+function clearCvFile(){
+  cvSelectedFile = null;
+  document.getElementById('c-cv-chip').innerHTML = '';
+}
+document.getElementById('c-cv-camera').addEventListener('change', function(){ setCvFile(this.files[0]); this.value=''; });
+document.getElementById('c-cv-file').addEventListener('change', function(){ setCvFile(this.files[0]); this.value=''; });
+
+let docsSelectedFiles = [];
+function addDocFiles(files){
+  docsSelectedFiles.push(...files);
+  renderDocsChips();
+}
+function removeDocFile(i){
+  docsSelectedFiles.splice(i,1);
+  renderDocsChips();
+}
+function renderDocsChips(){
+  document.getElementById('c-docs-chips').innerHTML = docsSelectedFiles.map((f,i)=>`<span>📎 ${f.name} <button type="button" onclick="removeDocFile(${i})">×</button></span>`).join('');
+}
+document.getElementById('c-docs-camera').addEventListener('change', function(){ addDocFiles(Array.from(this.files)); this.value=''; });
+document.getElementById('c-docs-file').addEventListener('change', function(){ addDocFiles(Array.from(this.files)); this.value=''; });
 
 /* ============ FORM: CANDIDAT ============ */
 document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
@@ -1031,12 +1125,12 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
   }
   const whatsapp = buildInternationalNumber(dial, localNum);
 
-  const cvFile = document.getElementById('c-cv').files[0];
+  const cvFile = cvSelectedFile;
   if(cvFile && cvFile.size > MAX_FILE_SIZE){
     msg.className='form-msg err'; msg.textContent="Le CV est trop volumineux (8 Mo maximum).";
     return;
   }
-  const docFiles = Array.from(document.getElementById('c-docs').files);
+  const docFiles = docsSelectedFiles;
   if(docFiles.some(f=>f.size > MAX_FILE_SIZE)){
     msg.className='form-msg err'; msg.textContent="Un des documents est trop volumineux (8 Mo maximum par fichier).";
     return;
@@ -1062,7 +1156,9 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     whatsapp,
     categorie: document.getElementById('c-categorie').value,
     bio: document.getElementById('c-bio').value.trim(),
-    photos: candidatePhotos.filter(Boolean),
+    photos: candidatePhotos,
+    photoIdentite: singlePhotos.id,
+    photoEntiere: singlePhotos.full,
     cv,
     documents,
     geo: candidateGeo,
@@ -1073,8 +1169,15 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     await fbPush('candidats', data);
     msg.className='form-msg ok'; msg.textContent="Votre candidature a bien été envoyée. Vous serez contacté sur WhatsApp après validation.";
     e.target.reset();
-    candidatePhotos[0]=candidatePhotos[1]=candidatePhotos[2]=null;
+    candidatePhotos = [];
     buildPhotoSlots();
+    singlePhotos.id = null; singlePhotos.full = null;
+    renderSingleSlot('id','slot-id-photo');
+    renderSingleSlot('full','slot-full-photo');
+    cvSelectedFile = null;
+    document.getElementById('c-cv-chip').innerHTML = '';
+    docsSelectedFiles = [];
+    renderDocsChips();
     populateDialSelects();
     candidateGeo = null;
     document.getElementById('c-geo-result').innerHTML='';
@@ -1189,6 +1292,8 @@ function checkAdminCode(){
 async function loadAdminData(){
   const all = await fbGet('candidats');
   const offres = await fbGet('offres');
+  window._adminCandidats = all || {};
+  window._adminOffres = offres || {};
   renderAdminCandidates(all, 'en_attente', 'list-valider', true);
   renderAdminCandidates(all, 'valide', 'list-valides', false);
   renderAdminOffres(offres);
@@ -1207,6 +1312,7 @@ function renderAdminCandidates(all, statut, elId, showActions){
       <div class="info"><b>${c.nom||''}</b>${c.categorie||''} · ${c.ville||''} · ${c.age||'–'} ans · ${c.whatsapp||''}${geoHtml}${docsHtml}</div>
       <div class="mini-actions">
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(c.whatsapp||'').replace(/\D/g,'')}">Contacter</a>
+        <button class="btn-mini btn-print" onclick="printCandidateDossier('${id}')">🖨️ Imprimer</button>
         ${showActions ? `<button class="btn-mini btn-approve" onclick="approveCandidate('${id}')">Valider</button>
         <button class="btn-mini btn-reject" onclick="rejectCandidate('${id}')">Rejeter</button>` : `<button class="btn-mini btn-reject" onclick="rejectCandidate('${id}')">Retirer</button>`}
       </div>
@@ -1224,6 +1330,7 @@ function renderAdminOffres(offres){
       <div class="info"><b>${o.titre||''}</b>${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· limite '+o.dateLimite : ''}${geoHtml}</div>
       <div class="mini-actions">
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(o.contact||'').replace(/\D/g,'')}">Contacter</a>
+        <button class="btn-mini btn-print" onclick="printOfferDossier('${id}')">🖨️ Imprimer</button>
         <button class="btn-mini btn-reject" onclick="deleteOffer('${id}')">Supprimer</button>
       </div>
     </div>`;
@@ -1239,6 +1346,82 @@ function renderStats(all, offres){
 async function approveCandidate(id){ await fbPatch('candidats/'+id, {statut:'valide'}); loadAdminData(); }
 async function rejectCandidate(id){ await fbPatch('candidats/'+id, {statut:'rejete'}); loadAdminData(); }
 async function deleteOffer(id){ await fbDelete('offres/'+id); loadAdminData(); }
+
+/* ============ IMPRESSION DES DOSSIERS (physique, pour l'agence) ============ */
+function printCandidateDossier(id){
+  const c = (window._adminCandidats||{})[id];
+  if(!c) return;
+  const photosHtml = (c.photos||[]).map(p=>`<img src="${p}" style="width:140px;height:140px;object-fit:cover;border-radius:8px;margin:4px;">`).join('');
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html><head><title>Dossier candidat — ${c.nom||''}</title>
+    <style>
+      body{font-family:Georgia,serif;padding:30px;color:#1a1a1a;}
+      h1{font-size:1.4rem;margin-bottom:2px;}
+      .sub{color:#555;margin-bottom:20px;}
+      table{border-collapse:collapse;width:100%;margin-bottom:20px;}
+      td{padding:6px 10px;border-bottom:1px solid #ddd;vertical-align:top;}
+      td.label{font-weight:bold;width:180px;}
+      .id-photos{display:flex;gap:20px;margin-bottom:20px;}
+      .id-photos div{text-align:center;font-size:0.8rem;color:#555;}
+      .id-photos img{width:160px;height:200px;object-fit:cover;border-radius:6px;border:1px solid #ccc;}
+      .gallery{margin-top:10px;}
+    </style></head>
+    <body>
+      <h1>SHAMAN CHOOZ PRODUCTION — Dossier candidat</h1>
+      <div class="sub">Imprimé le ${new Date().toLocaleDateString('fr-FR')}</div>
+      <div class="id-photos">
+        ${c.photoIdentite ? `<div><img src="${c.photoIdentite}"><br>Photo d'identité</div>` : ''}
+        ${c.photoEntiere ? `<div><img src="${c.photoEntiere}"><br>Photo entière</div>` : ''}
+      </div>
+      <table>
+        <tr><td class="label">Nom &amp; prénoms</td><td>${c.nom||''}</td></tr>
+        <tr><td class="label">Âge</td><td>${c.age||'–'}</td></tr>
+        <tr><td class="label">Ville</td><td>${c.ville||''}</td></tr>
+        <tr><td class="label">Catégorie</td><td>${c.categorie||''}</td></tr>
+        <tr><td class="label">WhatsApp</td><td>${c.whatsapp||''}</td></tr>
+        <tr><td class="label">Statut</td><td>${c.statut||''}</td></tr>
+        <tr><td class="label">Présentation</td><td>${c.bio||''}</td></tr>
+        <tr><td class="label">CV</td><td>${c.cv ? c.cv.name : '—'}</td></tr>
+        <tr><td class="label">Documents joints</td><td>${(c.documents||[]).map(d=>d.name).join(', ') || '—'}</td></tr>
+      </table>
+      <div class="gallery">${photosHtml}</div>
+      <script>window.onload = () => window.print();<\/script>
+    </body></html>
+  `);
+  win.document.close();
+}
+function printOfferDossier(id){
+  const o = (window._adminOffres||{})[id];
+  if(!o) return;
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html><head><title>Dossier recruteur — ${o.titre||''}</title>
+    <style>
+      body{font-family:Georgia,serif;padding:30px;color:#1a1a1a;}
+      h1{font-size:1.4rem;margin-bottom:2px;}
+      .sub{color:#555;margin-bottom:20px;}
+      table{border-collapse:collapse;width:100%;}
+      td{padding:6px 10px;border-bottom:1px solid #ddd;vertical-align:top;}
+      td.label{font-weight:bold;width:180px;}
+    </style></head>
+    <body>
+      <h1>SHAMAN CHOOZ PRODUCTION — Dossier recruteur / offre</h1>
+      <div class="sub">Imprimé le ${new Date().toLocaleDateString('fr-FR')}</div>
+      <table>
+        <tr><td class="label">Titre de l'offre</td><td>${o.titre||''}</td></tr>
+        <tr><td class="label">Catégorie recherchée</td><td>${o.categorie||''}</td></tr>
+        <tr><td class="label">Ville</td><td>${o.ville||''}</td></tr>
+        <tr><td class="label">Date limite</td><td>${o.dateLimite||'—'}</td></tr>
+        <tr><td class="label">Contact WhatsApp</td><td>${o.contact||''}</td></tr>
+        <tr><td class="label">Statut</td><td>${o.statut||''}</td></tr>
+        <tr><td class="label">Description</td><td>${o.description||''}</td></tr>
+      </table>
+      <script>window.onload = () => window.print();<\/script>
+    </body></html>
+  `);
+  win.document.close();
+}
 
 /* ============ QR CODE + PARTAGE ============ */
 window.addEventListener('DOMContentLoaded', ()=>{

@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7A1F30">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{
@@ -79,6 +81,16 @@ header{
   box-shadow:0 30px 70px rgba(0,0,0,0.55);object-fit:contain;
 }
 @keyframes lbFade{from{opacity:0;}to{opacity:1;}}
+
+/* ---------- MODE HORS-LIGNE (bannière + badge) ---------- */
+.offline-banner{
+  display:none;position:sticky;top:0;z-index:60;
+  background:var(--wine);color:#fff;text-align:center;
+  font-size:0.82rem;font-weight:700;padding:9px 16px;line-height:1.4;
+}
+.offline-banner.show{display:block;}
+.offline-banner .n{background:rgba(255,255,255,0.22);border-radius:999px;padding:2px 9px;margin-left:6px;}
+.offline-banner button{background:#fff;color:var(--wine);border:none;border-radius:999px;padding:5px 12px;font-size:0.76rem;font-weight:700;margin-left:10px;}
 
 /* ---------- CHAT WIDGET (assistant du site) ---------- */
 .chat-bubble{
@@ -341,6 +353,10 @@ nav{display:flex;gap:4px;align-items:center;}
 .btn-mini{border:none;padding:8px 14px;border-radius:8px;font-size:0.8rem;font-weight:700;white-space:nowrap;}
 .btn-approve{background:#E8F3E6;color:#2C6B2F;}
 .btn-reject{background:#FBE7E7;color:var(--wine);}
+.btn-block{background:#FCEFD9;color:#8A5A12;}
+.btn-unblock{background:#E3F0E8;color:#1E6B3E;}
+.btn-delete{background:#7A1F30;color:#fff;}
+.badge-bloque{background:#FCEFD9;color:#8A5A12;font-size:0.68rem;font-weight:700;padding:3px 8px;border-radius:999px;margin-left:6px;text-transform:uppercase;letter-spacing:0.04em;vertical-align:middle;}
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .stat-card{background:var(--paper-soft);border-radius:var(--radius);padding:22px;text-align:center;}
 .stat-card .n{font-family:var(--font-display);font-size:2.1rem;font-weight:700;color:var(--wine);}
@@ -390,6 +406,12 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
 </style>
 </head>
 <body>
+
+<div class="offline-banner" id="offline-banner">
+  <span id="offline-banner-text">Connexion indisponible — vous pouvez continuer</span>
+  <span class="n" id="offline-banner-count" style="display:none;"></span>
+  <button type="button" onclick="syncOfflineQueue()">🔄 Réessayer</button>
+</div>
 
 <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
   <img id="lightbox-img" src="" alt="Photo en plein écran">
@@ -588,10 +610,6 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             </div>
             <div class="field"><label>Présentation courte</label><textarea id="c-bio" placeholder="Expérience, taille, disponibilités…"></textarea></div>
             <div class="field">
-              <label>Photos (jusqu'à 10, optionnel)</label>
-              <div class="photo-slots" id="photo-slots"></div>
-            </div>
-            <div class="field">
               <label>Photo d'identité (optionnel)</label>
               <div class="photo-slots single" id="slot-id-photo"></div>
               <div class="field-hint">Photo type identité — utile pour votre dossier physique.</div>
@@ -600,6 +618,10 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               <label>Photo entière (optionnel)</label>
               <div class="photo-slots single" id="slot-full-photo"></div>
               <div class="field-hint">Photo de vous en pied — utile pour votre dossier physique.</div>
+            </div>
+            <div class="field">
+              <label>Photos (jusqu'à 10, optionnel)</label>
+              <div class="photo-slots" id="photo-slots"></div>
             </div>
             <div class="field">
               <label>CV (optionnel)</label>
@@ -763,13 +785,16 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <h3>Espace administrateur</h3>
         <p class="hint">Réservé à l'équipe SHAMAN CHOOZ.</p>
         <div class="field">
-          <label>Code d'accès</label>
+          <label>Mot de passe</label>
           <div class="password-row">
-            <input type="password" id="admin-code" placeholder="••••••">
+            <input type="password" id="admin-password" placeholder="••••••••" autocomplete="current-password">
             <button type="button" class="btn-eye" onclick="togglePasswordVisibility()" aria-label="Afficher/masquer le mot de passe" id="admin-eye-btn">🔒</button>
           </div>
         </div>
-        <button class="btn-submit" onclick="checkAdminCode()">Entrer</button>
+        <button class="btn-submit" id="admin-login-btn" onclick="checkAdminLogin()">
+          <span class="spinner" id="admin-login-spinner"></span>
+          <span id="admin-login-label">Se connecter</span>
+        </button>
         <div class="form-msg" id="admin-msg"></div>
       </div>
 
@@ -778,6 +803,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <input type="text" id="admin-search" placeholder="🔍 Rechercher un nom, un numéro, une ville…" oninput="filterAdminSearch()">
           <button class="sub-tab-btn" onclick="exportCandidatsCSV()" title="Télécharger la liste des candidats">📥 Export candidats</button>
           <button class="sub-tab-btn" onclick="exportOffresCSV()" title="Télécharger la liste des offres">📥 Export offres</button>
+          <button class="sub-tab-btn" onclick="adminLogout()" title="Se déconnecter">🚪 Déconnexion</button>
         </div>
         <div class="sub-tabs" style="justify-content:space-between;">
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -796,6 +822,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         </div>
         <div id="adm-valides" class="sub-panel card">
           <h3>Candidats validés</h3>
+          <p class="hint">Les profils bloqués n'apparaissent plus dans la liste consultée par les recruteurs, mais restent conservés ici.</p>
           <div id="list-valides"><p class="empty-state">Chargement…</p></div>
         </div>
         <div id="adm-offres-attente" class="sub-panel card">
@@ -804,6 +831,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         </div>
         <div id="adm-offres" class="sub-panel card">
           <h3>Offres validées</h3>
+          <p class="hint">Les offres bloquées n'apparaissent plus publiquement, mais restent conservées ici.</p>
           <div id="list-offres"><p class="empty-state">Chargement…</p></div>
         </div>
         <div id="adm-stats" class="sub-panel card">
@@ -865,8 +893,86 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
 // (Firebase console → Realtime Database → copiez l'URL en haut, sans le "/" final)
 const FIREBASE_URL = "https://shaman-chooz-production-prest-default-rtdb.firebaseio.com";
 
-// ⚠️ Changez ce code avant de mettre le site en ligne (protection légère, pas un vrai mot de passe sécurisé)
-const ADMIN_CODE = "Shaman123chooz";
+// ⚠️ Clé Web API de VOTRE projet Firebase (Console Firebase → ⚙️ Paramètres du projet
+// → onglet Général → section "Vos applications" → application Web → "Clé API Web").
+// Cette clé n'est PAS secrète, elle identifie juste votre projet ; la vraie protection
+// vient de l'authentification + des règles de sécurité configurées dans la base.
+const FIREBASE_API_KEY = "AIzaSyAFab3CU1j4b3cFWaZDn-hxq9BkKezHQ9I";
+
+// Identifiant technique du compte admin Firebase (invisible à l'écran : vous ne tapez
+// que le mot de passe). Doit correspondre EXACTEMENT à l'email du compte créé dans
+// Firebase Console → Authentication → Users. Vous pouvez le changer si vous voulez,
+// tant qu'il correspond au compte créé côté Firebase.
+const ADMIN_EMAIL = "admin@shaman-chooz-production.local";
+
+/* ============ AUTHENTIFICATION ADMIN (Firebase Auth par mot de passe) ============
+   Remplace l'ancien "code d'accès" écrit en clair dans le fichier. Le compte admin se
+   crée dans Firebase Console → Authentication → Sign-in method → Email/mot de passe,
+   puis onglet Users → Add user, avec l'email ADMIN_EMAIL ci-dessus et le mot de passe
+   de votre choix. Les actions sensibles (valider/rejeter/bloquer/débloquer/supprimer/notes)
+   passent ensuite par un jeton d'identité vérifié par les règles de sécurité Firebase.
+   La session est gardée en mémoire sur l'appareil (localStorage) pour éviter de se
+   reconnecter à chaque ouverture ; "Déconnexion" l'efface. */
+const ADMIN_SESSION_KEY = 'scp_admin_session';
+let _adminIdToken = null;
+let _adminRefreshToken = null;
+let _adminIdTokenExpiry = 0;
+
+function loadAdminSession(){
+  try{
+    const raw = localStorage.getItem(ADMIN_SESSION_KEY);
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    _adminIdToken = s.idToken; _adminRefreshToken = s.refreshToken; _adminIdTokenExpiry = s.expiry;
+  }catch(e){}
+}
+function saveAdminSession(){
+  try{
+    localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify({
+      idToken:_adminIdToken, refreshToken:_adminRefreshToken, expiry:_adminIdTokenExpiry
+    }));
+  }catch(e){}
+}
+function clearAdminSession(){
+  _adminIdToken = null; _adminRefreshToken = null; _adminIdTokenExpiry = 0;
+  try{ localStorage.removeItem(ADMIN_SESSION_KEY); }catch(e){}
+}
+function adminIsLoggedIn(){ return !!(_adminIdToken || _adminRefreshToken); }
+async function adminSignIn(email, password){
+  const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({email, password, returnSecureToken:true})
+  });
+  const data = await res.json();
+  if(data.error) throw new Error(data.error.message || 'Échec de connexion');
+  _adminIdToken = data.idToken;
+  _adminRefreshToken = data.refreshToken;
+  _adminIdTokenExpiry = Date.now() + (parseInt(data.expiresIn,10)*1000) - 60000;
+  saveAdminSession();
+}
+async function ensureAdminToken(){
+  if(_adminIdToken && Date.now() < _adminIdTokenExpiry) return _adminIdToken;
+  if(!_adminRefreshToken) return null;
+  try{
+    const res = await fetch(`https://securetoken.googleapis.com/v1/token?key=${FIREBASE_API_KEY}`, {
+      method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:`grant_type=refresh_token&refresh_token=${encodeURIComponent(_adminRefreshToken)}`
+    });
+    const data = await res.json();
+    if(data.error){ clearAdminSession(); return null; }
+    _adminIdToken = data.id_token;
+    _adminRefreshToken = data.refresh_token;
+    _adminIdTokenExpiry = Date.now() + (parseInt(data.expires_in,10)*1000) - 60000;
+    saveAdminSession();
+    return _adminIdToken;
+  }catch(e){ return null; }
+}
+function adminLogout(){
+  clearAdminSession();
+  document.getElementById('admin-dashboard').style.display='none';
+  document.getElementById('admin-gate').style.display='block';
+  document.getElementById('admin-password').value='';
+}
 
 /* ============ FIREBASE HELPERS (REST via fetch) ============ */
 async function fbGet(path){
@@ -880,14 +986,138 @@ async function fbPush(path, data){
   });
   return res.json();
 }
+// fbPatch et fbDelete servent uniquement aux actions admin (valider, rejeter, bloquer,
+// débloquer, supprimer, notes internes) : elles joignent le jeton Firebase Auth, exigé
+// par les règles de sécurité pour toute modification/suppression.
 async function fbPatch(path, data){
-  const res = await fetch(`${FIREBASE_URL}/${path}.json`,{
+  const token = await ensureAdminToken();
+  const url = `${FIREBASE_URL}/${path}.json` + (token ? `?auth=${token}` : '');
+  const res = await fetch(url,{
     method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
   });
   return res.json();
 }
 async function fbDelete(path){
-  await fetch(`${FIREBASE_URL}/${path}.json`,{method:'DELETE'});
+  const token = await ensureAdminToken();
+  const url = `${FIREBASE_URL}/${path}.json` + (token ? `?auth=${token}` : '');
+  await fetch(url,{method:'DELETE'});
+}
+
+/* ============ MODE FAIBLE CONNEXION / HORS-LIGNE ============
+   Objectif : permettre à un candidat de postuler et à un recruteur de publier
+   une offre même sans wifi ni données mobiles, notamment via l'app installée
+   sur le téléphone. Les envois sont mis en file d'attente sur l'appareil
+   (IndexedDB) puis synchronisés automatiquement dès que la connexion revient. */
+const OFFLINE_DB_NAME = 'scp_offline_db';
+const OFFLINE_DB_VERSION = 1;
+const OFFLINE_STORE = 'pending_submissions';
+let _offlineSyncRunning = false;
+
+function openOfflineDB(){
+  return new Promise((resolve, reject)=>{
+    if(!('indexedDB' in window)){ reject(new Error('indexedDB indisponible')); return; }
+    const req = indexedDB.open(OFFLINE_DB_NAME, OFFLINE_DB_VERSION);
+    req.onupgradeneeded = ()=>{
+      const db = req.result;
+      if(!db.objectStoreNames.contains(OFFLINE_STORE)){
+        db.createObjectStore(OFFLINE_STORE, {keyPath:'localId', autoIncrement:true});
+      }
+    };
+    req.onsuccess = ()=>resolve(req.result);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+async function queueOfflineSubmission(type, data, cvFile, docFiles){
+  const db = await openOfflineDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(OFFLINE_STORE, 'readwrite');
+    tx.objectStore(OFFLINE_STORE).add({
+      type, data,
+      cvFile: cvFile || null,
+      docFiles: docFiles || [],
+      createdAt: Date.now()
+    });
+    tx.oncomplete = ()=>resolve();
+    tx.onerror = ()=>reject(tx.error);
+  });
+}
+async function getAllOfflineSubmissions(){
+  const db = await openOfflineDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(OFFLINE_STORE, 'readonly');
+    const req = tx.objectStore(OFFLINE_STORE).getAll();
+    req.onsuccess = ()=>resolve(req.result || []);
+    req.onerror = ()=>reject(req.error);
+  });
+}
+async function deleteOfflineSubmission(localId){
+  const db = await openOfflineDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(OFFLINE_STORE, 'readwrite');
+    tx.objectStore(OFFLINE_STORE).delete(localId);
+    tx.oncomplete = ()=>resolve();
+    tx.onerror = ()=>reject(tx.error);
+  });
+}
+async function countOfflineSubmissions(){
+  try{ return (await getAllOfflineSubmissions()).length; }catch(e){ return 0; }
+}
+async function updateOfflineBanner(){
+  const banner = document.getElementById('offline-banner');
+  const text = document.getElementById('offline-banner-text');
+  const countEl = document.getElementById('offline-banner-count');
+  if(!banner) return;
+  const n = await countOfflineSubmissions();
+  const isOffline = !navigator.onLine;
+  if(isOffline){
+    text.textContent = 'Pas de connexion — vous pouvez quand même postuler ou publier une offre, ce sera envoyé automatiquement plus tard';
+  } else if(n > 0){
+    text.textContent = 'Connexion revenue — envoi de vos éléments en attente…';
+  }
+  if(n > 0){
+    countEl.style.display = 'inline-block';
+    countEl.textContent = n + ' en attente';
+  } else {
+    countEl.style.display = 'none';
+  }
+  banner.classList.toggle('show', isOffline || n > 0);
+}
+async function syncOfflineQueue(){
+  if(_offlineSyncRunning || !navigator.onLine) { updateOfflineBanner(); return; }
+  _offlineSyncRunning = true;
+  try{
+    const all = await getAllOfflineSubmissions();
+    for(const item of all){
+      try{
+        let cv = item.data.cv || null;
+        let documents = item.data.documents || [];
+        if(item.cvFile){ cv = {name:item.cvFile.name, url: await uploadToCloudinary(item.cvFile)}; }
+        if(item.docFiles && item.docFiles.length){
+          documents = [];
+          for(const f of item.docFiles){ documents.push({name:f.name, url: await uploadToCloudinary(f)}); }
+        }
+        await fbPush(item.type, {...item.data, cv, documents});
+        await deleteOfflineSubmission(item.localId);
+      }catch(err){
+        // Toujours pas de connexion fiable : on garde l'élément, nouvel essai plus tard
+        break;
+      }
+    }
+  }finally{
+    _offlineSyncRunning = false;
+    updateOfflineBanner();
+  }
+}
+window.addEventListener('online', syncOfflineQueue);
+window.addEventListener('offline', updateOfflineBanner);
+window.addEventListener('DOMContentLoaded', ()=>{ updateOfflineBanner(); syncOfflineQueue(); });
+setInterval(syncOfflineQueue, 40000);
+
+/* ============ SERVICE WORKER (permet l'ouverture de l'appli hors-ligne) ============ */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{ /* pas grave si indisponible */ });
+  });
 }
 
 /* ============ INDICATIFS TÉLÉPHONIQUES (pays du monde) ============ */
@@ -1409,7 +1639,7 @@ function openSpace(name){
   if(name==='admin' && document.getElementById('admin-dashboard').style.display!=='none') loadAdminData();
 }
 function togglePasswordVisibility(){
-  const input = document.getElementById('admin-code');
+  const input = document.getElementById('admin-password');
   const btn = document.getElementById('admin-eye-btn');
   if(input.type === 'password'){
     input.type = 'text';
@@ -1672,17 +1902,6 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
 
   btn.disabled = true; spinner.classList.add('show'); label.textContent='Envoi…';
 
-  let cv = null;
-  let documents = [];
-  try{
-    if(cvFile){ cv = {name:cvFile.name, url: await uploadToCloudinary(cvFile)}; }
-    for(const f of docFiles){ documents.push({name:f.name, url: await uploadToCloudinary(f)}); }
-  }catch(err){
-    msg.className='form-msg err'; msg.textContent="Erreur lors de l'envoi du CV/documents, réessayez.";
-    btn.disabled=false; spinner.classList.remove('show'); label.textContent='Envoyer ma candidature';
-    return;
-  }
-
   const data = {
     nom: document.getElementById('c-nom').value.trim(),
     age: document.getElementById('c-age').value,
@@ -1693,15 +1912,14 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     photos: candidatePhotos,
     photoIdentite: singlePhotos.id,
     photoEntiere: singlePhotos.full,
-    cv,
-    documents,
+    cv: null,
+    documents: [],
     geo: candidateGeo,
     statut: 'en_attente',
     date: new Date().toISOString()
   };
-  try{
-    await fbPush('candidats', data);
-    msg.className='form-msg ok'; msg.textContent="Votre candidature a bien été envoyée. Vous serez contacté sur WhatsApp après validation.";
+
+  const resetForm = ()=>{
     e.target.reset();
     candidatePhotos = [];
     buildPhotoSlots();
@@ -1716,8 +1934,28 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     candidateGeo = null;
     document.getElementById('c-geo-result').innerHTML='';
     document.getElementById('c-geo-btn').textContent='📍 Activer ma localisation';
+  };
+
+  try{
+    if(!navigator.onLine) throw new Error('offline');
+    let cv = null;
+    let documents = [];
+    if(cvFile){ cv = {name:cvFile.name, url: await uploadToCloudinary(cvFile)}; }
+    for(const f of docFiles){ documents.push({name:f.name, url: await uploadToCloudinary(f)}); }
+    await fbPush('candidats', {...data, cv, documents});
+    msg.className='form-msg ok'; msg.textContent="Votre candidature a bien été envoyée. Vous serez contacté sur WhatsApp après validation.";
+    resetForm();
   }catch(err){
-    msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
+    // Connexion faible, absente, ou coupée en cours d'envoi : on enregistre
+    // la candidature sur le téléphone, elle partira automatiquement dès le retour du réseau.
+    try{
+      await queueOfflineSubmission('candidats', data, cvFile, docFiles);
+      msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre candidature est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
+      resetForm();
+      updateOfflineBanner();
+    }catch(err2){
+      msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
+    }
   }
   btn.disabled=false; spinner.classList.remove('show'); label.textContent='Envoyer ma candidature';
 });
@@ -1763,16 +2001,28 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
     statut: 'en_attente',
     date: new Date().toISOString()
   };
-  try{
-    await fbPush('offres', data);
-    msg.className='form-msg ok'; msg.textContent="Votre offre a bien été envoyée. Elle sera visible aux candidats après validation par notre équipe.";
+  const resetForm = ()=>{
     e.target.reset();
     populateDialSelects();
     offreGeo = null;
     document.getElementById('o-geo-result').innerHTML='';
     document.getElementById('o-geo-btn').textContent='📍 Activer ma localisation';
+  };
+
+  try{
+    if(!navigator.onLine) throw new Error('offline');
+    await fbPush('offres', data);
+    msg.className='form-msg ok'; msg.textContent="Votre offre a bien été envoyée. Elle sera visible aux candidats après validation par notre équipe.";
+    resetForm();
   }catch(err){
-    msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
+    try{
+      await queueOfflineSubmission('offres', data, null, []);
+      msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre offre est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
+      resetForm();
+      updateOfflineBanner();
+    }catch(err2){
+      msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
+    }
   }
   btn.disabled=false; spinner.classList.remove('show'); label.textContent="Publier l'offre";
 });
@@ -1816,66 +2066,113 @@ function renderCandidateGrid(){
 }
 
 /* ============ ADMIN ============ */
-function checkAdminCode(){
-  const code = document.getElementById('admin-code').value;
+async function checkAdminLogin(){
+  const password = document.getElementById('admin-password').value;
   const msg = document.getElementById('admin-msg');
-  if(code === ADMIN_CODE){
+  const btn = document.getElementById('admin-login-btn');
+  const spinner = document.getElementById('admin-login-spinner');
+  const label = document.getElementById('admin-login-label');
+  msg.className='form-msg'; msg.textContent='';
+  if(!password){
+    msg.className='form-msg err'; msg.textContent='Merci de renseigner votre mot de passe.';
+    return;
+  }
+  btn.disabled=true; spinner.classList.add('show'); label.textContent='Connexion…';
+  try{
+    await adminSignIn(ADMIN_EMAIL, password);
     document.getElementById('admin-gate').style.display='none';
     document.getElementById('admin-dashboard').style.display='block';
     loadAdminData();
-  }else{
-    msg.className='form-msg err'; msg.textContent='Code incorrect.';
+  }catch(err){
+    msg.className='form-msg err'; msg.textContent='Mot de passe incorrect.';
   }
+  btn.disabled=false; spinner.classList.remove('show'); label.textContent='Se connecter';
 }
+// Reprend automatiquement la session admin si elle est encore valide (même onglet).
+(function restoreAdminSession(){
+  loadAdminSession();
+  if(adminIsLoggedIn()){
+    document.addEventListener('DOMContentLoaded', async ()=>{
+      const token = await ensureAdminToken();
+      if(token){
+        document.getElementById('admin-gate').style.display='none';
+        document.getElementById('admin-dashboard').style.display='block';
+        loadAdminData();
+      }
+    });
+  }
+})();
 async function loadAdminData(){
   const all = await fbGet('candidats');
   const offres = await fbGet('offres');
   window._adminCandidats = all || {};
   window._adminOffres = offres || {};
-  renderAdminCandidates(all, 'en_attente', 'list-valider', true);
-  renderAdminCandidates(all, 'valide', 'list-valides', false);
-  renderAdminOffres(offres, 'en_attente', 'list-offres-attente', true);
-  renderAdminOffres(offres, 'active', 'list-offres', false);
+  renderAdminCandidates(all, ['en_attente'], 'list-valider', 'attente');
+  renderAdminCandidates(all, ['valide','bloque'], 'list-valides', 'gestion');
+  renderAdminOffres(offres, ['en_attente'], 'list-offres-attente', 'attente');
+  renderAdminOffres(offres, ['active','bloque'], 'list-offres', 'gestion');
   renderStats(all, offres);
 }
-function renderAdminCandidates(all, statut, elId, showActions){
+function renderAdminCandidates(all, statuts, elId, mode){
   const el = document.getElementById(elId);
-  const entries = Object.entries(all).filter(([id,c])=>c.statut===statut);
+  const entries = Object.entries(all).filter(([id,c])=>statuts.includes(c.statut));
   if(entries.length===0){ el.innerHTML = '<p class="empty-state">Rien à afficher ici.</p>'; return; }
   el.innerHTML = entries.map(([id,c])=>{
     const docs = [c.cv ? {...c.cv, label:'CV'} : null, ...(c.documents||[]).map(d=>({...d, label:'Document'}))].filter(Boolean);
     const docsHtml = docs.length ? `<div class="admin-docs">${docs.map(d=>`<a href="${d.url}" target="_blank" rel="noopener" class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;">📎 ${d.label}</a>`).join(' ')}</div>` : '';
     const geoHtml = c.geo ? ` · <a href="https://www.google.com/maps?q=${c.geo.lat},${c.geo.lng}" target="_blank">📍 Localisation</a>` : '';
+    const blocBadge = c.statut==='bloque' ? '<span class="badge-bloque">Bloqué</span>' : '';
+    let actions;
+    if(mode==='attente'){
+      actions = `<button class="btn-mini btn-approve" onclick="approveCandidate('${id}')">Valider</button>
+        <button class="btn-mini btn-reject" onclick="rejectCandidate('${id}')">Rejeter</button>`;
+    }else{
+      actions = c.statut==='bloque'
+        ? `<button class="btn-mini btn-unblock" onclick="unblockCandidate('${id}')">Débloquer</button>
+           <button class="btn-mini btn-delete" onclick="deleteCandidate('${id}','${(c.nom||'ce candidat').replace(/'/g,"\\'")}')">Supprimer</button>`
+        : `<button class="btn-mini btn-block" onclick="blockCandidate('${id}')">Bloquer</button>
+           <button class="btn-mini btn-delete" onclick="deleteCandidate('${id}','${(c.nom||'ce candidat').replace(/'/g,"\\'")}')">Supprimer</button>`;
+    }
     return `
     <div class="cand-admin-item">
-      <div class="info"><b>${c.nom||''}</b>${c.categorie||''} · ${c.ville||''} · ${c.age||'–'} ans · ${c.whatsapp||''}${geoHtml}${docsHtml}
+      <div class="info"><b>${c.nom||''}${blocBadge}</b>${c.categorie||''} · ${c.ville||''} · ${c.age||'–'} ans · ${c.whatsapp||''}${geoHtml}${docsHtml}
         <div class="admin-note"><input type="text" placeholder="Note interne (visible admin uniquement)" value="${(c.note||'').replace(/"/g,'&quot;')}" onchange="saveNote('candidats','${id}', this.value)"></div>
       </div>
       <div class="mini-actions">
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(c.whatsapp||'').replace(/\D/g,'')}">Contacter</a>
         <button class="btn-mini btn-print" onclick="printCandidateDossier('${id}')">🖨️ Imprimer</button>
-        ${showActions ? `<button class="btn-mini btn-approve" onclick="approveCandidate('${id}')">Valider</button>
-        <button class="btn-mini btn-reject" onclick="rejectCandidate('${id}')">Rejeter</button>` : `<button class="btn-mini btn-reject" onclick="rejectCandidate('${id}')">Retirer</button>`}
+        ${actions}
       </div>
     </div>`;
   }).join('');
 }
-function renderAdminOffres(offres, statut, elId, showActions){
+function renderAdminOffres(offres, statuts, elId, mode){
   const el = document.getElementById(elId);
-  const entries = Object.entries(offres).filter(([id,o])=>o.statut===statut);
-  if(entries.length===0){ el.innerHTML = `<p class="empty-state">${showActions ? 'Aucune offre en attente.' : 'Aucune offre validée pour le moment.'}</p>`; return; }
+  const entries = Object.entries(offres).filter(([id,o])=>statuts.includes(o.statut));
+  if(entries.length===0){ el.innerHTML = `<p class="empty-state">${mode==='attente' ? 'Aucune offre en attente.' : 'Aucune offre validée pour le moment.'}</p>`; return; }
   el.innerHTML = entries.map(([id,o])=>{
     const geoHtml = o.geo ? ` · <a href="https://www.google.com/maps?q=${o.geo.lat},${o.geo.lng}" target="_blank">📍 Localisation</a>` : '';
+    const blocBadge = o.statut==='bloque' ? '<span class="badge-bloque">Bloquée</span>' : '';
+    let actions;
+    if(mode==='attente'){
+      actions = `<button class="btn-mini btn-approve" onclick="approveOffer('${id}')">Valider</button>
+        <button class="btn-mini btn-reject" onclick="rejectOffer('${id}')">Rejeter</button>`;
+    }else{
+      actions = o.statut==='bloque'
+        ? `<button class="btn-mini btn-unblock" onclick="unblockOffer('${id}')">Débloquer</button>
+           <button class="btn-mini btn-delete" onclick="deleteOffer('${id}','${(o.titre||'cette offre').replace(/'/g,"\\'")}')">Supprimer</button>`
+        : `<button class="btn-mini btn-block" onclick="blockOffer('${id}')">Bloquer</button>
+           <button class="btn-mini btn-delete" onclick="deleteOffer('${id}','${(o.titre||'cette offre').replace(/'/g,"\\'")}')">Supprimer</button>`;
+    }
     return `
     <div class="offer-item">
-      <div class="info"><b>${o.titre||''}</b>${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· limite '+o.dateLimite : ''}${geoHtml}
+      <div class="info"><b>${o.titre||''}${blocBadge}</b>${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· limite '+o.dateLimite : ''}${geoHtml}
         <div class="admin-note"><input type="text" placeholder="Note interne (visible admin uniquement)" value="${(o.note||'').replace(/"/g,'&quot;')}" onchange="saveNote('offres','${id}', this.value)"></div>
       </div>
       <div class="mini-actions">
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(o.contact||'').replace(/\D/g,'')}">Contacter</a>
         <button class="btn-mini btn-print" onclick="printOfferDossier('${id}')">🖨️ Imprimer</button>
-        ${showActions ? `<button class="btn-mini btn-approve" onclick="approveOffer('${id}')">Valider</button>
-        <button class="btn-mini btn-reject" onclick="rejectOffer('${id}')">Rejeter</button>` : `<button class="btn-mini btn-reject" onclick="deleteOffer('${id}')">Supprimer</button>`}
+        ${actions}
       </div>
     </div>`;
   }).join('');
@@ -1891,9 +2188,20 @@ function renderStats(all, offres){
 }
 async function approveCandidate(id){ await fbPatch('candidats/'+id, {statut:'valide'}); loadAdminData(); }
 async function rejectCandidate(id){ await fbPatch('candidats/'+id, {statut:'rejete'}); loadAdminData(); }
+async function blockCandidate(id){ await fbPatch('candidats/'+id, {statut:'bloque'}); loadAdminData(); }
+async function unblockCandidate(id){ await fbPatch('candidats/'+id, {statut:'valide'}); loadAdminData(); }
+async function deleteCandidate(id, nom){
+  if(!confirm(`Supprimer définitivement la candidature de ${nom} ? Cette action est irréversible.`)) return;
+  await fbDelete('candidats/'+id); loadAdminData();
+}
 async function approveOffer(id){ await fbPatch('offres/'+id, {statut:'active'}); loadAdminData(); }
 async function rejectOffer(id){ await fbPatch('offres/'+id, {statut:'rejete'}); loadAdminData(); }
-async function deleteOffer(id){ await fbDelete('offres/'+id); loadAdminData(); }
+async function blockOffer(id){ await fbPatch('offres/'+id, {statut:'bloque'}); loadAdminData(); }
+async function unblockOffer(id){ await fbPatch('offres/'+id, {statut:'active'}); loadAdminData(); }
+async function deleteOffer(id, titre){
+  if(titre!==undefined && !confirm(`Supprimer définitivement l'offre "${titre}" ? Cette action est irréversible.`)) return;
+  await fbDelete('offres/'+id); loadAdminData();
+}
 
 /* ============ OUTIL 1 : NOTES INTERNES ============ */
 async function saveNote(path, id, value){

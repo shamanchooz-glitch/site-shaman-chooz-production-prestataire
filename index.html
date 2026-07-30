@@ -87,6 +87,19 @@ header{
   box-shadow:var(--shadow);cursor:pointer;z-index:250;border:none;
 }
 .chat-bubble:hover{background:var(--wine-light);}
+.chat-hint{
+  position:fixed;bottom:34px;right:90px;max-width:210px;
+  background:#fff;border:1.5px solid var(--gold);color:var(--ink);
+  padding:12px 30px 12px 14px;border-radius:16px;font-size:0.8rem;font-weight:600;line-height:1.35;
+  box-shadow:var(--shadow);z-index:249;cursor:pointer;
+}
+.chat-hint-close{
+  position:absolute;top:6px;right:8px;background:none;border:none;
+  color:var(--ink-soft);font-size:0.8rem;cursor:pointer;padding:2px;
+}
+@media(max-width:520px){
+  .chat-hint{right:82px;bottom:24px;max-width:160px;font-size:0.74rem;padding:10px 26px 10px 12px;}
+}
 .chat-panel{
   position:fixed;bottom:92px;right:22px;width:min(340px,88vw);max-height:min(480px,70vh);
   background:#fff;border-radius:18px;box-shadow:var(--shadow);display:none;flex-direction:column;
@@ -310,6 +323,11 @@ nav{display:flex;gap:4px;align-items:center;}
 .empty-state{color:var(--ink-soft);font-size:0.92rem;padding:30px 0;text-align:center;}
 
 .admin-gate{max-width:380px;}
+.admin-tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.admin-tools input{flex:1;min-width:200px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);font-size:0.88rem;}
+.admin-note{margin-top:8px;}
+.admin-note input{width:100%;padding:7px 10px;border-radius:8px;border:1.3px solid var(--line);font-size:0.8rem;background:var(--paper-soft);}
+.admin-note input:focus{outline:2px solid var(--gold);border-color:var(--gold);}
 .password-row{display:flex;gap:8px;align-items:stretch;}
 .password-row input{flex:1;}
 .btn-eye{background:var(--paper-soft);border:1.5px solid var(--line);border-radius:10px;padding:0 16px;font-size:1.1rem;flex-shrink:0;}
@@ -323,7 +341,7 @@ nav{display:flex;gap:4px;align-items:center;}
 .btn-mini{border:none;padding:8px 14px;border-radius:8px;font-size:0.8rem;font-weight:700;white-space:nowrap;}
 .btn-approve{background:#E8F3E6;color:#2C6B2F;}
 .btn-reject{background:#FBE7E7;color:var(--wine);}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .stat-card{background:var(--paper-soft);border-radius:var(--radius);padding:22px;text-align:center;}
 .stat-card .n{font-family:var(--font-display);font-size:2.1rem;font-weight:700;color:var(--wine);}
 .stat-card .l{font-size:0.8rem;color:var(--ink-soft);font-weight:600;margin-top:4px;}
@@ -377,7 +395,11 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
   <img id="lightbox-img" src="" alt="Photo en plein écran">
 </div>
 
-<button class="chat-bubble" id="chat-bubble-btn" onclick="toggleChat()" aria-label="Discuter avec SHAMAN CHOOZ">
+<div class="chat-hint" id="chat-hint" onclick="toggleChat();document.getElementById('chat-hint').style.display='none';">
+  Je suis ici, tu peux me parler et je vais te répondre pour tes questions fréquentes concernant les catégories de métiers 💬
+  <button type="button" class="chat-hint-close" onclick="event.stopPropagation();document.getElementById('chat-hint').style.display='none';" aria-label="Fermer">✕</button>
+</div>
+<button class="chat-bubble" id="chat-bubble-btn" onclick="toggleChat();document.getElementById('chat-hint').style.display='none';" aria-label="Discuter avec SHAMAN CHOOZ">
   <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-4-1L3 20l1.2-4.9A8.4 8.4 0 1121 11.5z"/></svg>
 </button>
 <div class="chat-panel" id="chat-panel">
@@ -627,15 +649,27 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
       </div>
 
       <div id="sub-offres-dispo" class="sub-panel">
-        <div class="filter-bar">
-          <select id="filter-categorie-offres" onchange="renderPublicOffersList()">
-            <option value="">Toutes les catégories</option>
-          </select>
-          <select id="filter-ville-offres" onchange="renderPublicOffersList()">
-            <option value="">Toutes les villes</option>
-          </select>
+        <div id="offres-gate" class="card admin-gate">
+          <h3>Vérification requise</h3>
+          <p class="hint">Seuls les candidats dont le profil est validé peuvent parcourir les offres. Entrez le numéro WhatsApp utilisé lors de votre inscription.</p>
+          <div class="field"><label>Numéro WhatsApp</label><input type="tel" id="offres-gate-whatsapp" placeholder="+225 07 00 00 00 00"></div>
+          <button class="btn-submit" onclick="checkCandidateAccess()">Vérifier</button>
+          <div class="form-msg" id="offres-gate-msg"></div>
         </div>
-        <div id="offres-public-list"><p class="empty-state">Chargement des offres…</p></div>
+        <div id="offres-content" style="display:none;">
+          <div class="filter-bar">
+            <select id="filter-categorie-offres" onchange="renderPublicOffersList()">
+              <option value="">Toutes les catégories</option>
+            </select>
+            <select id="filter-ville-offres" onchange="renderPublicOffersList()">
+              <option value="">Toutes les villes</option>
+            </select>
+            <select id="filter-pays-offres" onchange="renderPublicOffersList()">
+              <option value="">Tous les pays</option>
+            </select>
+          </div>
+          <div id="offres-public-list"><p class="empty-state">Chargement des offres…</p></div>
+        </div>
       </div>
     </div>
 
@@ -697,16 +731,28 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
       </div>
 
       <div id="sub-parcourir" class="sub-panel">
-        <div class="filter-bar">
-          <select id="filter-categorie" onchange="renderCandidateGrid()">
-            <option value="">Toutes les catégories</option>
-          </select>
-          <select id="filter-ville" onchange="renderCandidateGrid()">
-            <option value="">Toutes les villes</option>
-          </select>
+        <div id="parcourir-gate" class="card admin-gate">
+          <h3>Vérification requise</h3>
+          <p class="hint">Seuls les recruteurs ayant au moins une offre validée peuvent parcourir les profils candidats. Entrez le numéro WhatsApp utilisé lors de la publication de votre offre.</p>
+          <div class="field"><label>Numéro WhatsApp</label><input type="tel" id="parcourir-gate-whatsapp" placeholder="+225 07 00 00 00 00"></div>
+          <button class="btn-submit" onclick="checkRecruteurAccess()">Vérifier</button>
+          <div class="form-msg" id="parcourir-gate-msg"></div>
         </div>
-        <div class="cand-grid" id="cand-grid">
-          <p class="empty-state">Chargement des profils…</p>
+        <div id="parcourir-content" style="display:none;">
+          <div class="filter-bar">
+            <select id="filter-categorie" onchange="renderCandidateGrid()">
+              <option value="">Toutes les catégories</option>
+            </select>
+            <select id="filter-ville" onchange="renderCandidateGrid()">
+              <option value="">Toutes les villes</option>
+            </select>
+            <select id="filter-pays" onchange="renderCandidateGrid()">
+              <option value="">Tous les pays</option>
+            </select>
+          </div>
+          <div class="cand-grid" id="cand-grid">
+            <p class="empty-state">Chargement des profils…</p>
+          </div>
         </div>
       </div>
     </div>
@@ -728,11 +774,17 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
       </div>
 
       <div id="admin-dashboard" style="display:none;">
+        <div class="admin-tools">
+          <input type="text" id="admin-search" placeholder="🔍 Rechercher un nom, un numéro, une ville…" oninput="filterAdminSearch()">
+          <button class="sub-tab-btn" onclick="exportCandidatsCSV()" title="Télécharger la liste des candidats">📥 Export candidats</button>
+          <button class="sub-tab-btn" onclick="exportOffresCSV()" title="Télécharger la liste des offres">📥 Export offres</button>
+        </div>
         <div class="sub-tabs" style="justify-content:space-between;">
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="sub-tab-btn active" data-sub="valider" onclick="openAdminSub('valider')">À valider</button>
+            <button class="sub-tab-btn active" data-sub="valider" onclick="openAdminSub('valider')">Candidats à valider</button>
             <button class="sub-tab-btn" data-sub="valides" onclick="openAdminSub('valides')">Candidats validés</button>
-            <button class="sub-tab-btn" data-sub="offres" onclick="openAdminSub('offres')">Offres publiées</button>
+            <button class="sub-tab-btn" data-sub="offres-attente" onclick="openAdminSub('offres-attente')">Offres à valider</button>
+            <button class="sub-tab-btn" data-sub="offres" onclick="openAdminSub('offres')">Offres validées</button>
             <button class="sub-tab-btn" data-sub="stats" onclick="openAdminSub('stats')">Statistiques</button>
           </div>
           <button class="sub-tab-btn" onclick="loadAdminData()" title="Recharger les dernières données">🔄 Actualiser</button>
@@ -746,8 +798,12 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <h3>Candidats validés</h3>
           <div id="list-valides"><p class="empty-state">Chargement…</p></div>
         </div>
+        <div id="adm-offres-attente" class="sub-panel card">
+          <h3>Offres en attente de validation</h3>
+          <div id="list-offres-attente"><p class="empty-state">Chargement…</p></div>
+        </div>
         <div id="adm-offres" class="sub-panel card">
-          <h3>Offres publiées</h3>
+          <h3>Offres validées</h3>
           <div id="list-offres"><p class="empty-state">Chargement…</p></div>
         </div>
         <div id="adm-stats" class="sub-panel card">
@@ -757,6 +813,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <div class="stat-card"><div class="n" id="stat-valides">–</div><div class="l">Candidats validés</div></div>
             <div class="stat-card"><div class="n" id="stat-attente">–</div><div class="l">En attente</div></div>
             <div class="stat-card"><div class="n" id="stat-offres">–</div><div class="l">Offres actives</div></div>
+            <div class="stat-card"><div class="n" id="stat-offres-attente">–</div><div class="l">Offres en attente</div></div>
           </div>
         </div>
       </div>
@@ -1228,6 +1285,66 @@ function buildReply(rawText){
     return "Vous pouvez aussi nous joindre directement sur WhatsApp via les numéros affichés tout en bas du site — un conseiller vous répondra personnellement.";
   }
 
+  // Urgence / besoin immédiat
+  if(/urgen|immediat|au plus vite|des aujourd'?hui|des demain|rapidement/.test(t)){
+    if(chatContext.role === 'recruteur' || /je (cherche|veux|recrute)/.test(t)){
+      return "Pour un besoin urgent, publiez votre offre en précisant bien la date, et contactez-nous directement sur WhatsApp en parallèle — le prestataire priorise les demandes urgentes dès son retour.";
+    }
+    return "Je comprends l'urgence. Créez votre profil dès maintenant dans l'onglet Candidat, et écrivez-nous directement sur WhatsApp pour signaler votre disponibilité immédiate.";
+  }
+
+  // Garantie / remplacement en cas de souci
+  if(/garantie|remplacement|si (ca|ça) ne (marche|convient) pas|pas satisfait|renvoyer/.test(t)){
+    return "Si un placement ne convient pas, contactez l'équipe directement sur WhatsApp pour en discuter — chaque situation est étudiée au cas par cas afin de trouver la meilleure solution, candidat comme recruteur.";
+  }
+
+  // Vérification / sécurité des candidats
+  if(/verifi|antecedent|casier|securite du personnel|personne de confiance|references/.test(t)){
+    return "Chaque profil candidat passe par une validation avant sa mise en ligne. Pour des postes sensibles (garde d'enfants, sécurité, etc.), n'hésitez pas à demander des références directement au candidat ou à l'équipe lors de l'échange WhatsApp.";
+  }
+
+  // Zone géographique couverte
+  if(/quelle(s)? ville(s)?|zone couverte|vous couvrez|dans toute la cote d'ivoire|a l'etranger aussi/.test(t)){
+    return "La plateforme couvre toutes les villes, et même l'international puisque candidats et recruteurs peuvent s'inscrire depuis n'importe quel pays. Utilisez les filtres par ville et par pays pour affiner votre recherche.";
+  }
+
+  // Horaires / disponibilité de l'agence
+  if(/horaire|vous etes ouvert|joignable a quelle heure|disponible a quelle heure/.test(t)){
+    return "Je réponds ici à toute heure pour les questions fréquentes. Pour un échange personnalisé avec le prestataire, un message WhatsApp reçoit une réponse dès que possible, généralement rapidement.";
+  }
+
+  // Pas d'expérience (candidat)
+  if(/pas d'experience|debutant|sans experience|jamais travaille/.test(t)){
+    chatContext.role = chatContext.role || 'candidat';
+    return "Ce n'est pas un problème pour beaucoup de nos métiers, notamment dans les travaux domestiques et certains postes d'entrée. Mentionnez-le simplement dans votre présentation lors de l'inscription, en valorisant votre motivation et vos qualités.";
+  }
+
+  // Pas de photo / pas de smartphone récent
+  if(/pas de photo|je n'ai pas de smartphone|vieux telephone|ca marche sur (un )?telephone simple/.test(t)){
+    return "Les photos sont optionnelles, votre candidature peut être envoyée sans. Le site fonctionne sur la plupart des téléphones avec navigateur internet et connexion — pas besoin d'un modèle récent.";
+  }
+
+  // Modifier sa candidature après envoi
+  if(/modifier ma candidature|corriger|changer (mes|mon) (informations|infos|numero)|erreur dans (ma|mon)/.test(t)){
+    return "Pour toute correction après l'envoi (numéro, ville, catégorie…), contactez directement l'équipe sur WhatsApp en précisant votre nom — la modification sera faite manuellement.";
+  }
+
+  // Plusieurs profils recherchés à la fois (recruteur)
+  if(/plusieurs (personnes|profils|candidats)|besoin de (\d+|plusieurs)/.test(t)){
+    chatContext.role = 'recruteur';
+    return "Aucun souci, vous pouvez publier une offre par profil recherché, ou nous préciser directement sur WhatsApp l'ensemble de vos besoins pour qu'on vous accompagne plus efficacement.";
+  }
+
+  // Négociation de prix / salaire
+  if(/salaire|remuneration|negocier le prix|combien (je vais|on va) (payer|gagner)/.test(t)){
+    return "Les salaires et conditions se discutent directement entre le candidat et le recruteur, selon le poste et la mission. L'équipe peut vous conseiller si besoin lors de l'échange WhatsApp.";
+  }
+
+  // Langue / clarté
+  if(/vous parlez (anglais|d'autres langues)|in english|do you speak english/.test(t)){
+    return "Notre équipe échange principalement en français, mais n'hésitez pas à écrire dans votre langue sur WhatsApp — nous ferons de notre mieux pour vous répondre clairement.";
+  }
+
   // Repli par défaut, contextualisé selon ce qu'on sait déjà de la personne
   if(chatContext.role === 'candidat'){
     return "Je note bien votre message. Dites-moi le métier qui vous intéresse, ou rendez-vous dans l'onglet Candidat pour créer votre profil — le prestataire reprendra la conversation avec vous dès que possible.";
@@ -1307,15 +1424,62 @@ function openSub(name){
   document.querySelectorAll('#recruteur .sub-tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('sub-'+name).classList.add('active');
   document.querySelector(`#recruteur .sub-tab-btn[data-sub="${name}"]`).classList.add('active');
-  if(name==='parcourir') loadCandidatesForBrowse();
 }
 function openCandidatSub(name){
   document.querySelectorAll('#candidat .sub-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('#candidat .sub-tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('sub-'+name).classList.add('active');
   document.querySelector(`#candidat .sub-tab-btn[data-sub="${name}"]`).classList.add('active');
-  if(name==='offres-dispo') loadOffersForBrowse();
 }
+
+/* ============ DÉTECTION DU PAYS À PARTIR D'UN NUMÉRO INTERNATIONAL ============ */
+const COUNTRIES_BY_DIAL_LEN = [...COUNTRIES].sort((a,b)=>b[1].length-a[1].length);
+function detectCountry(phoneNumber){
+  if(!phoneNumber) return null;
+  const digits = phoneNumber.replace(/\D/g,'');
+  for(const [name, dial] of COUNTRIES_BY_DIAL_LEN){
+    if(digits.startsWith(dial)) return name;
+  }
+  return null;
+}
+function countryOptionsHtml(){
+  const sorted = [...COUNTRIES].map(c=>c[0]).sort((a,b)=>a.localeCompare(b));
+  return sorted.map(name=>`<option>${name}</option>`).join('');
+}
+
+/* ============ VÉRIFICATION D'ACCÈS CANDIDAT (parcourir les offres) ============ */
+async function checkCandidateAccess(){
+  const num = document.getElementById('offres-gate-whatsapp').value.trim();
+  const msg = document.getElementById('offres-gate-msg');
+  msg.className='form-msg'; msg.textContent='';
+  if(!num){ msg.className='form-msg err'; msg.textContent='Entrez votre numéro WhatsApp.'; return; }
+  msg.className='form-msg'; msg.textContent='Vérification…'; msg.style.display='block';
+  const all = await fbGet('candidats');
+  const digits = num.replace(/\D/g,'');
+  const match = Object.values(all).find(c=>c.whatsapp && c.whatsapp.replace(/\D/g,'')===digits);
+  if(!match){ msg.className='form-msg err'; msg.textContent="Aucun profil trouvé avec ce numéro. Inscrivez-vous d'abord dans l'onglet Postuler."; return; }
+  if(match.statut!=='valide'){ msg.className='form-msg err'; msg.textContent="Votre profil n'est pas encore validé par notre équipe. Revenez une fois votre candidature validée."; return; }
+  document.getElementById('offres-gate').style.display='none';
+  document.getElementById('offres-content').style.display='block';
+  loadOffersForBrowse();
+}
+
+/* ============ VÉRIFICATION D'ACCÈS RECRUTEUR (parcourir les candidats) ============ */
+async function checkRecruteurAccess(){
+  const num = document.getElementById('parcourir-gate-whatsapp').value.trim();
+  const msg = document.getElementById('parcourir-gate-msg');
+  msg.className='form-msg'; msg.textContent='';
+  if(!num){ msg.className='form-msg err'; msg.textContent='Entrez votre numéro WhatsApp.'; return; }
+  msg.className='form-msg'; msg.textContent='Vérification…'; msg.style.display='block';
+  const all = await fbGet('offres');
+  const digits = num.replace(/\D/g,'');
+  const match = Object.values(all).find(o=>o.contact && o.contact.replace(/\D/g,'')===digits && o.statut==='active');
+  if(!match){ msg.className='form-msg err'; msg.textContent="Aucune offre validée trouvée avec ce numéro. Publiez d'abord une offre, ou attendez sa validation par notre équipe."; return; }
+  document.getElementById('parcourir-gate').style.display='none';
+  document.getElementById('parcourir-content').style.display='block';
+  loadCandidatesForBrowse();
+}
+
 let cachedOffresPublic = {};
 async function loadOffersForBrowse(){
   const listEl = document.getElementById('offres-public-list');
@@ -1323,22 +1487,26 @@ async function loadOffersForBrowse(){
   cachedOffresPublic = all;
   const catSelect = document.getElementById('filter-categorie-offres');
   const villeSelect = document.getElementById('filter-ville-offres');
+  const paysSelect = document.getElementById('filter-pays-offres');
   const groupsHtml = Object.entries(CATEGORIES).map(([groupe, items])=>
     `<optgroup label="${groupe}">` + items.map(i=>`<option>${i}</option>`).join('') + '</optgroup>'
   ).join('');
   catSelect.innerHTML = '<option value="">Toutes les catégories</option>' + groupsHtml;
   const villes = [...new Set(Object.values(all).filter(o=>o.statut==='active').map(o=>o.ville).filter(Boolean))];
   villeSelect.innerHTML = '<option value="">Toutes les villes</option>' + villes.map(v=>`<option>${v}</option>`).join('');
+  paysSelect.innerHTML = '<option value="">Tous les pays</option>' + countryOptionsHtml();
   renderPublicOffersList();
 }
 function renderPublicOffersList(){
   const listEl = document.getElementById('offres-public-list');
   const cat = document.getElementById('filter-categorie-offres').value;
   const ville = document.getElementById('filter-ville-offres').value;
+  const pays = document.getElementById('filter-pays-offres').value;
   const list = Object.values(cachedOffresPublic).filter(o=>{
     if(o.statut!=='active') return false;
     if(cat && o.categorie!==cat) return false;
     if(ville && o.ville!==ville) return false;
+    if(pays && detectCountry(o.contact)!==pays) return false;
     return true;
   });
   if(list.length===0){ listEl.innerHTML = '<p class="empty-state">Aucune offre disponible ne correspond à ces critères pour le moment.</p>'; return; }
@@ -1592,12 +1760,12 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
     dateLimite: document.getElementById('o-date').value,
     contact,
     geo: offreGeo,
-    statut: 'active',
+    statut: 'en_attente',
     date: new Date().toISOString()
   };
   try{
     await fbPush('offres', data);
-    msg.className='form-msg ok'; msg.textContent="Votre offre est publiée.";
+    msg.className='form-msg ok'; msg.textContent="Votre offre a bien été envoyée. Elle sera visible aux candidats après validation par notre équipe.";
     e.target.reset();
     populateDialSelects();
     offreGeo = null;
@@ -1616,18 +1784,22 @@ async function loadCandidatesForBrowse(){
   const all = await fbGet('candidats');
   cachedCandidates = all;
   const villeSelect = document.getElementById('filter-ville');
+  const paysSelect = document.getElementById('filter-pays');
   const villes = [...new Set(Object.values(all).filter(c=>c.statut==='valide').map(c=>c.ville).filter(Boolean))];
   villeSelect.innerHTML = '<option value="">Toutes les villes</option>' + villes.map(v=>`<option>${v}</option>`).join('');
+  paysSelect.innerHTML = '<option value="">Tous les pays</option>' + countryOptionsHtml();
   renderCandidateGrid();
 }
 function renderCandidateGrid(){
   const grid = document.getElementById('cand-grid');
   const cat = document.getElementById('filter-categorie').value;
   const ville = document.getElementById('filter-ville').value;
+  const pays = document.getElementById('filter-pays').value;
   const list = Object.values(cachedCandidates).filter(c=>{
     if(c.statut!=='valide') return false;
     if(cat && c.categorie!==cat) return false;
     if(ville && c.ville!==ville) return false;
+    if(pays && detectCountry(c.whatsapp)!==pays) return false;
     return true;
   });
   if(list.length===0){ grid.innerHTML = '<p class="empty-state">Aucun profil validé ne correspond à ces critères pour le moment.</p>'; return; }
@@ -1662,7 +1834,8 @@ async function loadAdminData(){
   window._adminOffres = offres || {};
   renderAdminCandidates(all, 'en_attente', 'list-valider', true);
   renderAdminCandidates(all, 'valide', 'list-valides', false);
-  renderAdminOffres(offres);
+  renderAdminOffres(offres, 'en_attente', 'list-offres-attente', true);
+  renderAdminOffres(offres, 'active', 'list-offres', false);
   renderStats(all, offres);
 }
 function renderAdminCandidates(all, statut, elId, showActions){
@@ -1675,7 +1848,9 @@ function renderAdminCandidates(all, statut, elId, showActions){
     const geoHtml = c.geo ? ` · <a href="https://www.google.com/maps?q=${c.geo.lat},${c.geo.lng}" target="_blank">📍 Localisation</a>` : '';
     return `
     <div class="cand-admin-item">
-      <div class="info"><b>${c.nom||''}</b>${c.categorie||''} · ${c.ville||''} · ${c.age||'–'} ans · ${c.whatsapp||''}${geoHtml}${docsHtml}</div>
+      <div class="info"><b>${c.nom||''}</b>${c.categorie||''} · ${c.ville||''} · ${c.age||'–'} ans · ${c.whatsapp||''}${geoHtml}${docsHtml}
+        <div class="admin-note"><input type="text" placeholder="Note interne (visible admin uniquement)" value="${(c.note||'').replace(/"/g,'&quot;')}" onchange="saveNote('candidats','${id}', this.value)"></div>
+      </div>
       <div class="mini-actions">
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(c.whatsapp||'').replace(/\D/g,'')}">Contacter</a>
         <button class="btn-mini btn-print" onclick="printCandidateDossier('${id}')">🖨️ Imprimer</button>
@@ -1685,33 +1860,81 @@ function renderAdminCandidates(all, statut, elId, showActions){
     </div>`;
   }).join('');
 }
-function renderAdminOffres(offres){
-  const el = document.getElementById('list-offres');
-  const entries = Object.entries(offres);
-  if(entries.length===0){ el.innerHTML = '<p class="empty-state">Aucune offre publiée.</p>'; return; }
+function renderAdminOffres(offres, statut, elId, showActions){
+  const el = document.getElementById(elId);
+  const entries = Object.entries(offres).filter(([id,o])=>o.statut===statut);
+  if(entries.length===0){ el.innerHTML = `<p class="empty-state">${showActions ? 'Aucune offre en attente.' : 'Aucune offre validée pour le moment.'}</p>`; return; }
   el.innerHTML = entries.map(([id,o])=>{
     const geoHtml = o.geo ? ` · <a href="https://www.google.com/maps?q=${o.geo.lat},${o.geo.lng}" target="_blank">📍 Localisation</a>` : '';
     return `
     <div class="offer-item">
-      <div class="info"><b>${o.titre||''}</b>${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· limite '+o.dateLimite : ''}${geoHtml}</div>
+      <div class="info"><b>${o.titre||''}</b>${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· limite '+o.dateLimite : ''}${geoHtml}
+        <div class="admin-note"><input type="text" placeholder="Note interne (visible admin uniquement)" value="${(o.note||'').replace(/"/g,'&quot;')}" onchange="saveNote('offres','${id}', this.value)"></div>
+      </div>
       <div class="mini-actions">
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(o.contact||'').replace(/\D/g,'')}">Contacter</a>
         <button class="btn-mini btn-print" onclick="printOfferDossier('${id}')">🖨️ Imprimer</button>
-        <button class="btn-mini btn-reject" onclick="deleteOffer('${id}')">Supprimer</button>
+        ${showActions ? `<button class="btn-mini btn-approve" onclick="approveOffer('${id}')">Valider</button>
+        <button class="btn-mini btn-reject" onclick="rejectOffer('${id}')">Rejeter</button>` : `<button class="btn-mini btn-reject" onclick="deleteOffer('${id}')">Supprimer</button>`}
       </div>
     </div>`;
   }).join('');
 }
 function renderStats(all, offres){
   const vals = Object.values(all);
+  const offVals = Object.values(offres);
   document.getElementById('stat-total').textContent = vals.length;
   document.getElementById('stat-valides').textContent = vals.filter(c=>c.statut==='valide').length;
   document.getElementById('stat-attente').textContent = vals.filter(c=>c.statut==='en_attente').length;
-  document.getElementById('stat-offres').textContent = Object.values(offres).filter(o=>o.statut==='active').length;
+  document.getElementById('stat-offres').textContent = offVals.filter(o=>o.statut==='active').length;
+  document.getElementById('stat-offres-attente').textContent = offVals.filter(o=>o.statut==='en_attente').length;
 }
 async function approveCandidate(id){ await fbPatch('candidats/'+id, {statut:'valide'}); loadAdminData(); }
 async function rejectCandidate(id){ await fbPatch('candidats/'+id, {statut:'rejete'}); loadAdminData(); }
+async function approveOffer(id){ await fbPatch('offres/'+id, {statut:'active'}); loadAdminData(); }
+async function rejectOffer(id){ await fbPatch('offres/'+id, {statut:'rejete'}); loadAdminData(); }
 async function deleteOffer(id){ await fbDelete('offres/'+id); loadAdminData(); }
+
+/* ============ OUTIL 1 : NOTES INTERNES ============ */
+async function saveNote(path, id, value){
+  await fbPatch(path+'/'+id, {note: value});
+}
+
+/* ============ OUTIL 2 : EXPORT CSV ============ */
+function downloadCSV(rows, filename){
+  const csv = rows.map(r=>r.map(v=>`"${String(v==null?'':v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function exportCandidatsCSV(){
+  const all = window._adminCandidats || {};
+  const rows = [["Nom","Âge","Ville","WhatsApp","Catégorie","Statut","Note","Date"]];
+  Object.values(all).forEach(c=>{
+    rows.push([c.nom, c.age, c.ville, c.whatsapp, c.categorie, c.statut, c.note, c.date]);
+  });
+  downloadCSV(rows, 'candidats_shaman_chooz.csv');
+}
+function exportOffresCSV(){
+  const all = window._adminOffres || {};
+  const rows = [["Titre","Catégorie","Ville","Contact","Statut","Date limite","Note","Date"]];
+  Object.values(all).forEach(o=>{
+    rows.push([o.titre, o.categorie, o.ville, o.contact, o.statut, o.dateLimite, o.note, o.date]);
+  });
+  downloadCSV(rows, 'offres_shaman_chooz.csv');
+}
+
+/* ============ OUTIL 3 : RECHERCHE GLOBALE ADMIN ============ */
+function filterAdminSearch(){
+  const q = document.getElementById('admin-search').value.trim().toLowerCase();
+  document.querySelectorAll('#admin-dashboard .cand-admin-item, #admin-dashboard .offer-item').forEach(item=>{
+    const match = !q || item.textContent.toLowerCase().includes(q);
+    item.style.display = match ? '' : 'none';
+  });
+}
 
 /* ============ IMPRESSION DES DOSSIERS (physique, pour l'agence) ============ */
 function printCandidateDossier(id){

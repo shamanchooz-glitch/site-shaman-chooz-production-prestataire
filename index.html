@@ -87,6 +87,47 @@ header{
 }
 @keyframes lbFade{from{opacity:0;}to{opacity:1;}}
 
+/* ---------- MODALE PROFIL COMPLET (admin & parcourir) ---------- */
+.profile-modal-overlay{
+  position:fixed;inset:0;z-index:280;display:none;
+  align-items:flex-start;justify-content:center;padding:24px 16px;
+  background:rgba(10,7,4,0.72);overflow-y:auto;
+}
+.profile-modal-overlay.active{display:flex;animation:lbFade .18s ease;}
+.profile-modal{
+  background:#fff;border-radius:var(--radius);max-width:640px;width:100%;
+  margin-top:24px;box-shadow:var(--shadow);position:relative;
+}
+.profile-modal-head{
+  position:sticky;top:0;background:var(--ink);color:var(--paper);
+  padding:16px 20px;border-radius:var(--radius) var(--radius) 0 0;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.profile-modal-head h3{font-size:1.1rem;color:var(--paper);}
+.profile-modal-close{background:none;border:none;color:var(--paper);font-size:1.3rem;cursor:pointer;padding:2px 6px;}
+.profile-modal-body{padding:20px;}
+.profile-modal-body .pm-row{padding:8px 0;border-bottom:1px solid var(--line);font-size:0.92rem;}
+.profile-modal-body .pm-row b{color:var(--wine);display:inline-block;min-width:150px;}
+.pm-photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+.pm-photo-grid img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;cursor:zoom-in;}
+.pm-id-photos{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;}
+.pm-id-photos div{text-align:center;font-size:0.78rem;color:var(--ink-soft);}
+.pm-id-photos img{width:130px;height:160px;object-fit:cover;border-radius:10px;cursor:zoom-in;border:1px solid var(--line);}
+
+/* ---------- GALERIE (parcourir photos / parcourir vidéos) ---------- */
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;}
+.media-item{position:relative;border-radius:14px;overflow:hidden;cursor:pointer;background:var(--paper-soft);aspect-ratio:1/1;}
+.media-item img, .media-item video{width:100%;height:100%;object-fit:cover;}
+.media-item .play-badge{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;background:rgba(10,7,4,0.28);pointer-events:none;}
+.media-item .del-media{position:absolute;top:6px;right:6px;background:rgba(10,7,4,0.65);color:#fff;border:none;border-radius:50%;width:26px;height:26px;font-size:0.9rem;cursor:pointer;}
+.video-modal-overlay{
+  position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
+  padding:24px;background:rgba(10,7,4,0.94);
+}
+.video-modal-overlay.active{display:flex;animation:lbFade .18s ease;}
+.video-modal-overlay video{max-width:92vw;max-height:88vh;border-radius:14px;box-shadow:0 30px 70px rgba(0,0,0,0.55);}
+.video-modal-close{position:absolute;top:18px;right:24px;background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;}
+
 /* ---------- MODE HORS-LIGNE (bannière + badge) ---------- */
 .offline-banner{
   display:none;position:sticky;top:0;z-index:60;
@@ -450,6 +491,21 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
   <img id="lightbox-img" src="" alt="Photo en plein écran">
 </div>
 
+<div class="profile-modal-overlay" id="profile-modal-overlay" onclick="if(event.target===this)closeProfileModal()">
+  <div class="profile-modal">
+    <div class="profile-modal-head">
+      <h3 id="profile-modal-title">Profil</h3>
+      <button type="button" class="profile-modal-close" onclick="closeProfileModal()" aria-label="Fermer">✕</button>
+    </div>
+    <div class="profile-modal-body" id="profile-modal-body"></div>
+  </div>
+</div>
+
+<div class="video-modal-overlay" id="video-modal-overlay" onclick="if(event.target===this)closeVideoModal()">
+  <button type="button" class="video-modal-close" onclick="closeVideoModal()" aria-label="Fermer">✕</button>
+  <video id="video-modal-player" controls playsinline></video>
+</div>
+
 <div class="chat-hint" id="chat-hint" onclick="toggleChat();document.getElementById('chat-hint').style.display='none';">
   Je suis ici, tu peux me parler et je vais te répondre pour tes questions fréquentes concernant les catégories de métiers 💬
   <button type="button" class="chat-hint-close" onclick="event.stopPropagation();document.getElementById('chat-hint').style.display='none';" aria-label="Fermer">✕</button>
@@ -485,6 +541,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
     <nav>
       <a href="#candidat" class="nav-link" onclick="openSpace('candidat')">Candidats</a>
       <a href="#recruteur" class="nav-link" onclick="openSpace('recruteur')">Recruteurs</a>
+      <a href="#galerie" class="nav-link" onclick="openSpace('galerie')">Galerie</a>
       <a href="#admin" class="nav-link" onclick="openSpace('admin')">Admin</a>
     </nav>
     <button class="btn-share-header" onclick="document.getElementById('footer-share').scrollIntoView({behavior:'smooth'})">
@@ -604,6 +661,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
     <div class="tab-bar">
       <button class="tab-btn active" data-space="candidat" onclick="openSpace('candidat')">Candidat</button>
       <button class="tab-btn" data-space="recruteur" onclick="openSpace('recruteur')">Client / Recruteur</button>
+      <button class="tab-btn" data-space="galerie" onclick="openSpace('galerie')">Galerie</button>
       <button class="tab-btn" data-space="admin" onclick="openSpace('admin')">Admin</button>
     </div>
 
@@ -657,7 +715,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               <div class="field-hint">Photo de vous en pied — utile pour votre dossier physique.</div>
             </div>
             <div class="field">
-              <label>Photos (jusqu'à 10, optionnel)</label>
+              <label>Photos (jusqu'à 10, optionnel — vous pouvez en sélectionner plusieurs à la fois depuis la galerie)</label>
               <div class="photo-slots" id="photo-slots"></div>
             </div>
             <div class="field">
@@ -700,7 +758,8 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <ul>
             <li>Votre profil est visible par les recruteurs et productions inscrits sur la plateforme.</li>
             <li>Une équipe valide chaque profil avant sa mise en ligne publique.</li>
-            <li>Vous êtes contacté directement sur WhatsApp en cas de sélection.</li>
+            <li>Une fois validé, réglez les frais de prestation pour la durée de votre choix afin de mettre votre profil en ligne.</li>
+            <li>Si un recruteur est intéressé par votre profil, il nous contacte et nous vous mettons directement en relation sur WhatsApp.</li>
             <li>Le suivi de votre dossier est disponible à tout moment.</li>
           </ul>
         </div>
@@ -710,13 +769,14 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
       <div id="sub-offres-dispo" class="sub-panel">
         <div id="offres-gate" class="card admin-gate">
           <h3>Vérification requise</h3>
-          <p class="hint">Seuls les candidats dont le profil est validé peuvent parcourir les offres. Entrez le numéro WhatsApp utilisé lors de votre inscription.</p>
+          <p class="hint">Seuls les candidats dont le profil est validé et en ligne (frais de prestation réglés) peuvent parcourir les offres. Entrez le numéro WhatsApp utilisé lors de votre inscription.</p>
           <div class="field"><label>Numéro WhatsApp</label><input type="tel" id="offres-gate-whatsapp" placeholder="+225 07 00 00 00 00"></div>
           <button class="btn-submit" onclick="checkCandidateAccess()">Vérifier</button>
           <div class="form-msg" id="offres-gate-msg"></div>
         </div>
         <div id="offres-content" style="display:none;">
           <div class="filter-bar">
+            <input type="text" id="search-offres" placeholder="🔍 Rechercher un titre, une catégorie, une ville…" oninput="renderPublicOffersList()" style="flex:1 1 220px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);font-family:var(--font-body);font-size:0.88rem;">
             <select id="filter-categorie-offres" onchange="renderPublicOffersList()">
               <option value="">Toutes les catégories</option>
             </select>
@@ -743,7 +803,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <div class="panel-grid">
           <div class="card">
             <h3>Publier une offre de casting</h3>
-            <p class="hint">Décrivez votre besoin, les candidats correspondants pourront vous contacter.</p>
+            <p class="hint">Décrivez votre besoin. Après validation par notre équipe et règlement des frais de prestation, votre offre sera visible par tous les candidats validés. Si un candidat est intéressé, il nous contacte et nous vous mettons directement en relation.</p>
             <form id="form-offre">
               <div class="field"><label>Titre de l'offre</label><input type="text" id="o-titre" required></div>
               <div class="field"><label>Description</label><textarea id="o-description" required></textarea></div>
@@ -777,13 +837,22 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               </button>
               <div class="form-msg" id="o-msg"></div>
             </form>
+
+            <div class="track-box">
+              <h4>Déjà publié une offre ? Suivre mon offre</h4>
+              <div class="track-row">
+                <input type="tel" id="track-offre-contact" placeholder="Votre numéro de contact WhatsApp">
+                <button class="btn-track" onclick="trackOffer()">Vérifier</button>
+              </div>
+              <div class="track-result" id="track-offre-result"></div>
+            </div>
           </div>
           <div class="side-info">
             <h3>Une offre bien remplie va plus vite</h3>
             <ul>
               <li>Précisez la catégorie recherchée pour toucher les bons profils.</li>
               <li>Une date limite claire aide les candidats à se positionner.</li>
-              <li>Votre offre reste visible jusqu'à sa clôture.</li>
+              <li>Une fois votre offre validée par notre équipe, réglez les frais de prestation pour la mettre en ligne pendant la durée de votre choix.</li>
             </ul>
           </div>
         </div>
@@ -792,13 +861,14 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
       <div id="sub-parcourir" class="sub-panel">
         <div id="parcourir-gate" class="card admin-gate">
           <h3>Vérification requise</h3>
-          <p class="hint">Seuls les recruteurs ayant au moins une offre validée peuvent parcourir les profils candidats. Entrez le numéro WhatsApp utilisé lors de la publication de votre offre.</p>
+          <p class="hint">Seuls les recruteurs ayant au moins une offre validée et en ligne (frais de prestation réglés) peuvent parcourir les profils candidats. Entrez le numéro WhatsApp utilisé lors de la publication de votre offre.</p>
           <div class="field"><label>Numéro WhatsApp</label><input type="tel" id="parcourir-gate-whatsapp" placeholder="+225 07 00 00 00 00"></div>
           <button class="btn-submit" onclick="checkRecruteurAccess()">Vérifier</button>
           <div class="form-msg" id="parcourir-gate-msg"></div>
         </div>
         <div id="parcourir-content" style="display:none;">
           <div class="filter-bar">
+            <input type="text" id="search-candidats" placeholder="🔍 Rechercher un nom, une catégorie, une ville…" oninput="renderCandidateGrid()" style="flex:1 1 220px;padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);font-family:var(--font-body);font-size:0.88rem;">
             <select id="filter-categorie" onchange="renderCandidateGrid()">
               <option value="">Toutes les catégories</option>
             </select>
@@ -813,6 +883,22 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <p class="empty-state">Chargement des profils…</p>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- GALERIE -->
+    <div id="galerie" class="tab-panel">
+      <div class="sub-tabs">
+        <button class="sub-tab-btn active" data-sub="galerie-photos" onclick="openGalerieSub('galerie-photos')">Parcourir photos</button>
+        <button class="sub-tab-btn" data-sub="galerie-videos" onclick="openGalerieSub('galerie-videos')">Parcourir vidéos</button>
+      </div>
+      <div id="sub-galerie-photos" class="sub-panel active">
+        <p class="hint" style="margin-bottom:14px;">Un moment de détente : découvrez les photos partagées par SHAMAN CHOOZ PRODUCTION.</p>
+        <div class="media-grid" id="galerie-photos-grid"><p class="empty-state">Chargement…</p></div>
+      </div>
+      <div id="sub-galerie-videos" class="sub-panel">
+        <p class="hint" style="margin-bottom:14px;">Un moment de détente : découvrez les vidéos partagées par SHAMAN CHOOZ PRODUCTION.</p>
+        <div class="media-grid" id="galerie-videos-grid"><p class="empty-state">Chargement…</p></div>
       </div>
     </div>
 
@@ -848,6 +934,8 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <button class="sub-tab-btn" data-sub="valides" onclick="openAdminSub('valides')">Candidats validés</button>
             <button class="sub-tab-btn" data-sub="offres-attente" onclick="openAdminSub('offres-attente')">Offres à valider</button>
             <button class="sub-tab-btn" data-sub="offres" onclick="openAdminSub('offres')">Offres validées</button>
+            <button class="sub-tab-btn" data-sub="paiements" onclick="openAdminSub('paiements')">Paiements à vérifier</button>
+            <button class="sub-tab-btn" data-sub="galerie" onclick="openAdminSub('galerie')">Galerie (photos &amp; vidéos)</button>
             <button class="sub-tab-btn" data-sub="stats" onclick="openAdminSub('stats')">Statistiques</button>
           </div>
           <button class="sub-tab-btn" onclick="loadAdminData()" title="Recharger les dernières données">🔄 Actualiser</button>
@@ -871,6 +959,34 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <p class="hint">Les offres bloquées n'apparaissent plus publiquement, mais restent conservées ici.</p>
           <div id="list-offres"><p class="empty-state">Chargement…</p></div>
         </div>
+        <div id="adm-paiements" class="sub-panel card">
+          <h3>Paiements à vérifier</h3>
+          <p class="hint">Vérifiez la référence de paiement (ID de transaction) auprès de votre relevé mobile money correspondant, puis activez la mise en ligne pour la durée réglée.</p>
+          <div id="list-paiements"><p class="empty-state">Chargement…</p></div>
+        </div>
+        <div id="adm-galerie" class="sub-panel card">
+          <h3>Galerie du site (photos &amp; vidéos)</h3>
+          <p class="hint">Ajoutez ou retirez les photos et vidéos visibles par tous dans « Parcourir photos » et « Parcourir vidéos », depuis la galerie ou l'appareil photo de votre téléphone/ordinateur.</p>
+          <div class="field">
+            <label>Ajouter des photos</label>
+            <div class="dual-upload">
+              <label class="slot-btn">📷 Prendre en photo<input type="file" id="admin-media-photo-camera" accept="image/*" capture="environment"></label>
+              <label class="slot-btn">🖼️ Choisir dans la galerie (choix multiple)<input type="file" id="admin-media-photo-file" accept="image/*" multiple></label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Ajouter des vidéos</label>
+            <div class="dual-upload">
+              <label class="slot-btn">🎥 Filmer<input type="file" id="admin-media-video-camera" accept="video/*" capture="environment"></label>
+              <label class="slot-btn">📁 Choisir dans la galerie (choix multiple)<input type="file" id="admin-media-video-file" accept="video/*" multiple></label>
+            </div>
+          </div>
+          <div class="form-msg" id="admin-media-msg"></div>
+          <h4 style="margin:22px 0 10px;">Photos publiées</h4>
+          <div class="media-grid" id="admin-media-photos-grid"><p class="empty-state">Chargement…</p></div>
+          <h4 style="margin:22px 0 10px;">Vidéos publiées</h4>
+          <div class="media-grid" id="admin-media-videos-grid"><p class="empty-state">Chargement…</p></div>
+        </div>
         <div id="adm-stats" class="sub-panel card">
           <h3>Statistiques</h3>
           <div class="stats-grid" id="stats-grid">
@@ -879,6 +995,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <div class="stat-card"><div class="n" id="stat-attente">–</div><div class="l">En attente</div></div>
             <div class="stat-card"><div class="n" id="stat-offres">–</div><div class="l">Offres actives</div></div>
             <div class="stat-card"><div class="n" id="stat-offres-attente">–</div><div class="l">Offres en attente</div></div>
+            <div class="stat-card"><div class="n" id="stat-paiements-attente">–</div><div class="l">Paiements à vérifier</div></div>
           </div>
         </div>
       </div>
@@ -941,6 +1058,28 @@ const FIREBASE_API_KEY = "AIzaSyAFab3CU1j4b3cFWaZDn-hxq9BkKezHQ9I";
 // Firebase Console → Authentication → Users. Vous pouvez le changer si vous voulez,
 // tant qu'il correspond au compte créé côté Firebase.
 const ADMIN_EMAIL = "admin@shaman-chooz-production.local";
+
+/* ============ MOYENS DE PAIEMENT (frais de prestation) ============
+   Numéros mobiles nationaux (Côte d'Ivoire) sur lesquels l'agence reçoit les
+   paiements des candidats/recruteurs pour activer la mise en ligne de leur
+   candidature ou de leur offre. Un moyen "international" générique est prévu
+   pour les personnes situées hors de Côte d'Ivoire.
+   ⚠️ Les paiements sont soumis par le candidat/recruteur lui-même (référence
+   de transaction) puis vérifiés manuellement par l'équipe admin avant
+   activation — aucune passerelle de paiement automatique n'est branchée ici. */
+const PAYMENT_OPERATORS = {
+  wave:   { label: "Wave",              numero: "07 48 93 56 86", wa: "2250748935686" },
+  mtn:    { label: "MTN Money",         numero: "05 74 53 36 36", wa: "2250574533636" },
+  moov:   { label: "Moov Money",        numero: "01 73 77 39 39", wa: "2250173773939" },
+  orange: { label: "Orange Money",      numero: "07 49 97 09 18", wa: "2250749970918" },
+  intl:   { label: "Autre / international (Mobile Money, Western Union, transfert…)", numero: "Contactez-nous sur WhatsApp pour connaître le moyen adapté à votre pays", wa: "2250748935686" }
+};
+// Numéro WhatsApp principal de l'agence pour la mise en relation (candidat ↔ recruteur).
+const AGENCE_WHATSAPP = "2250748935686";
+const DUREES_OFFRE = [
+  {v:7, l:"7 jours"}, {v:15, l:"15 jours"}, {v:30, l:"30 jours"},
+  {v:60, l:"60 jours"}, {v:90, l:"90 jours"}
+];
 
 /* ============ AUTHENTIFICATION ADMIN (Firebase Auth par mot de passe) ============
    Remplace l'ancien "code d'accès" écrit en clair dans le fichier. Le compte admin se
@@ -1038,6 +1177,116 @@ async function fbDelete(path){
   const token = await ensureAdminToken();
   const url = `${FIREBASE_URL}/${path}.json` + (token ? `?auth=${token}` : '');
   await fetch(url,{method:'DELETE'});
+}
+
+/* ============ MISE EN RELATION VIA L'AGENCE (pas de contact direct) ============
+   Ni les candidats ni les recruteurs ne peuvent se contacter directement : celui
+   qui est intéressé contacte l'agence sur WhatsApp, qui assure ensuite la mise
+   en relation avec l'autre partie. */
+function contactAgencePourInteret(type, nomOuTitre, id){
+  const objet = type==='candidat' ? `le profil candidat de ${nomOuTitre||'ce candidat'}` : `l'offre « ${nomOuTitre||'cette offre'} »`;
+  const texte = `Bonjour, je suis intéressé(e) par ${objet} (réf. ${(id||'').slice(-6)}). Merci de me mettre en relation.`;
+  window.open(`https://wa.me/${AGENCE_WHATSAPP}?text=${encodeURIComponent(texte)}`, '_blank');
+}
+
+/* ============ PAIEMENT DES FRAIS DE PRESTATION (mise en ligne) ============
+   Le candidat/recruteur choisit une durée et un montant, sélectionne un
+   opérateur mobile money, effectue le paiement vers le numéro de l'agence,
+   puis renseigne sa référence de paiement (ID de transaction). La demande est
+   enregistrée dans le nœud "paiements" ; l'équipe admin vérifie manuellement
+   la référence puis active la mise en ligne pour la durée réglée. */
+function paymentOperatorOptionsHtml(){
+  return Object.entries(PAYMENT_OPERATORS).map(([key,o])=>`<option value="${key}">${o.label}</option>`).join('');
+}
+function paymentFormHtml(type, id, relance){
+  const uid = `pay-${type}-${id}`;
+  return `
+  <div class="payment-box" id="${uid}" style="margin-top:14px;padding:16px;border:1.5px solid var(--gold);border-radius:14px;background:var(--paper-soft);">
+    <h4 style="margin-bottom:8px;">${relance ? 'Relancer la mise en ligne' : 'Régler les frais de prestation'}</h4>
+    <p class="hint">Choisissez la durée de mise en ligne souhaitée et le montant que vous souhaitez régler (selon les frais de prestation en vigueur dans votre pays), puis payez via l'opérateur de votre choix et renseignez votre référence de paiement.</p>
+    <div class="field-row">
+      <div class="field">
+        <label>Durée de mise en ligne</label>
+        <select id="${uid}-duree">
+          ${DUREES_OFFRE.map(d=>`<option value="${d.v}">${d.l}</option>`).join('')}
+          <option value="custom">Autre (jours personnalisés)</option>
+        </select>
+      </div>
+      <div class="field" id="${uid}-duree-custom-wrap" style="display:none;">
+        <label>Nombre de jours</label>
+        <input type="number" min="1" id="${uid}-duree-custom" placeholder="ex : 45">
+      </div>
+    </div>
+    <div class="field">
+      <label>Montant que vous payez (FCFA ou devise locale)</label>
+      <input type="text" id="${uid}-montant" placeholder="ex : 5000 FCFA">
+    </div>
+    <div class="field">
+      <label>Opérateur de paiement</label>
+      <select id="${uid}-operateur" onchange="updatePaymentInstructions('${uid}')">
+        ${paymentOperatorOptionsHtml()}
+      </select>
+    </div>
+    <div class="form-msg" id="${uid}-instructions" style="display:block;background:#fff;"></div>
+    <div class="field">
+      <label>Votre numéro Mobile Money (celui utilisé pour payer)</label>
+      <input type="tel" id="${uid}-numero-payeur" placeholder="07 00 00 00 00">
+    </div>
+    <div class="field">
+      <label>Référence de paiement / ID de transaction</label>
+      <input type="text" id="${uid}-reference" placeholder="Référence reçue après paiement">
+    </div>
+    <button type="button" class="btn-submit" onclick="submitPayment('${type}','${id}')">Envoyer ma preuve de paiement</button>
+    <div class="form-msg" id="${uid}-msg"></div>
+  </div>`;
+}
+function updatePaymentInstructions(uid){
+  const op = document.getElementById(`${uid}-operateur`).value;
+  const info = PAYMENT_OPERATORS[op];
+  const box = document.getElementById(`${uid}-instructions`);
+  box.innerHTML = `Envoyez le montant choisi via <b>${info.label}</b> au numéro <b>${info.numero}</b>, puis suivez les instructions affichées par votre opérateur pour finaliser le paiement. Une fois le paiement effectué, renseignez ci-dessous votre numéro et la référence/ID de transaction reçue.`;
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.querySelectorAll('[id$="-duree"]').forEach(sel=>{}); // no-op placeholder, delegation used instead
+});
+document.addEventListener('change', (e)=>{
+  if(e.target && e.target.id && e.target.id.endsWith('-duree') && e.target.tagName==='SELECT'){
+    const uid = e.target.id.replace(/-duree$/,'');
+    const wrap = document.getElementById(`${uid}-duree-custom-wrap`);
+    if(wrap) wrap.style.display = e.target.value==='custom' ? 'block' : 'none';
+  }
+});
+async function submitPayment(type, id){
+  const uid = `pay-${type}-${id}`;
+  const msg = document.getElementById(`${uid}-msg`);
+  msg.className='form-msg'; msg.textContent='';
+  const dureeSel = document.getElementById(`${uid}-duree`).value;
+  const dureeJours = dureeSel==='custom' ? parseInt(document.getElementById(`${uid}-duree-custom`).value,10) : parseInt(dureeSel,10);
+  const montant = document.getElementById(`${uid}-montant`).value.trim();
+  const operateur = document.getElementById(`${uid}-operateur`).value;
+  const numeroPayeur = document.getElementById(`${uid}-numero-payeur`).value.trim();
+  const reference = document.getElementById(`${uid}-reference`).value.trim();
+  if(!dureeJours || dureeJours<1){ msg.className='form-msg err'; msg.textContent='Merci de choisir une durée valide.'; return; }
+  if(!montant){ msg.className='form-msg err'; msg.textContent='Merci de renseigner le montant payé.'; return; }
+  if(!numeroPayeur){ msg.className='form-msg err'; msg.textContent='Merci de renseigner le numéro utilisé pour le paiement.'; return; }
+  if(!reference){ msg.className='form-msg err'; msg.textContent='Merci de renseigner la référence de paiement / ID de transaction.'; return; }
+  try{
+    await fbPush('paiements', {
+      type, refId:id, dureeJours, montant, operateur, numeroPayeur, reference,
+      statut:'a_verifier', date:new Date().toISOString()
+    });
+    msg.className='form-msg ok'; msg.textContent="Merci ! Votre preuve de paiement a été envoyée. Notre équipe va vérifier la référence puis activer la mise en ligne pour la durée réglée.";
+    document.getElementById(uid).querySelectorAll('input,select,button').forEach(el=>el.disabled=true);
+  }catch(err){
+    msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
+  }
+}
+function isListingActive(item){
+  return item && item.paiementStatut==='actif' && item.dateFin && new Date(item.dateFin).getTime() > Date.now();
+}
+function formatDateFr(iso){
+  if(!iso) return '—';
+  try{ return new Date(iso).toLocaleDateString('fr-FR'); }catch(e){ return '—'; }
 }
 
 /* ============ MODE FAIBLE CONNEXION / HORS-LIGNE ============
@@ -1433,6 +1682,94 @@ function closeLightbox(){
   document.getElementById('lightbox').classList.remove('active');
 }
 
+/* ============ MODALE PROFIL COMPLET (candidat / offre) ============ */
+function openProfileModal(title, bodyHtml){
+  document.getElementById('profile-modal-title').textContent = title;
+  document.getElementById('profile-modal-body').innerHTML = bodyHtml;
+  document.getElementById('profile-modal-overlay').classList.add('active');
+}
+function closeProfileModal(){
+  document.getElementById('profile-modal-overlay').classList.remove('active');
+}
+function renderCandidateProfileHtml(c, opts){
+  opts = opts || {};
+  const docs = [c.cv ? {...c.cv, label:'CV'} : null, ...(c.documents||[]).map(d=>({...d, label:'Document'}))].filter(Boolean);
+  const docsHtml = docs.length ? `<div class="pm-row"><b>Documents</b>${docs.map(d=>`<a href="${d.url}" target="_blank" rel="noopener" style="margin-right:10px;">📎 ${d.label}</a>`).join('')}</div>` : '';
+  const idPhotosHtml = (c.photoIdentite || c.photoEntiere) ? `
+    <div class="pm-id-photos">
+      ${c.photoIdentite ? `<div><img src="${c.photoIdentite}" onclick="openLightbox('${c.photoIdentite}')"><br>Photo d'identité</div>` : ''}
+      ${c.photoEntiere ? `<div><img src="${c.photoEntiere}" onclick="openLightbox('${c.photoEntiere}')"><br>Photo entière</div>` : ''}
+    </div>` : '';
+  const galleryHtml = (c.photos && c.photos.length) ? `
+    <div class="pm-row"><b>Photos (${c.photos.length})</b></div>
+    <div class="pm-photo-grid">${c.photos.map(p=>`<img src="${p}" onclick="openLightbox('${p}')">`).join('')}</div>` : '<div class="pm-row">Aucune photo supplémentaire.</div>';
+  const geoHtml = c.geo ? `<div class="pm-row"><b>Localisation</b><a href="https://www.google.com/maps?q=${c.geo.lat},${c.geo.lng}" target="_blank">📍 Voir sur la carte</a></div>` : '';
+  const contactHtml = opts.showContact ? `<div class="pm-row"><b>WhatsApp</b>${c.whatsapp||''}</div>` : '';
+  const statutHtml = opts.showStatut ? `<div class="pm-row"><b>Statut</b>${c.statut||''}${isListingActive(c) ? ' · en ligne jusqu\'au '+formatDateFr(c.dateFin) : ''}</div>` : '';
+  return `
+    ${idPhotosHtml}
+    <div class="pm-row"><b>Nom &amp; prénoms</b>${c.nom||''}</div>
+    <div class="pm-row"><b>Âge</b>${c.age||'–'} ans</div>
+    <div class="pm-row"><b>Ville</b>${c.ville||''}</div>
+    <div class="pm-row"><b>Catégorie</b>${c.categorie||''}</div>
+    ${contactHtml}
+    ${statutHtml}
+    <div class="pm-row"><b>Présentation</b>${c.bio||'—'}</div>
+    ${geoHtml}
+    ${docsHtml}
+    ${galleryHtml}
+  `;
+}
+function renderOfferProfileHtml(o, opts){
+  opts = opts || {};
+  const geoHtml = o.geo ? `<div class="pm-row"><b>Localisation</b><a href="https://www.google.com/maps?q=${o.geo.lat},${o.geo.lng}" target="_blank">📍 Voir sur la carte</a></div>` : '';
+  const contactHtml = opts.showContact ? `<div class="pm-row"><b>Contact WhatsApp</b>${o.contact||''}</div>` : '';
+  const statutHtml = opts.showStatut ? `<div class="pm-row"><b>Statut</b>${o.statut||''}${isListingActive(o) ? ' · en ligne jusqu\'au '+formatDateFr(o.dateFin) : ''}</div>` : '';
+  return `
+    <div class="pm-row"><b>Titre</b>${o.titre||''}</div>
+    <div class="pm-row"><b>Catégorie recherchée</b>${o.categorie||''}</div>
+    <div class="pm-row"><b>Ville</b>${o.ville||''}</div>
+    <div class="pm-row"><b>Date limite</b>${o.dateLimite||'—'}</div>
+    ${contactHtml}
+    ${statutHtml}
+    <div class="pm-row"><b>Description</b>${(o.description||'').replace(/\n/g,'<br>')}</div>
+    ${geoHtml}
+  `;
+}
+function viewCandidateProfileAdmin(id){
+  const c = (window._adminCandidats||{})[id];
+  if(!c) return;
+  openProfileModal(c.nom || 'Profil candidat', renderCandidateProfileHtml(c, {showContact:true, showStatut:true}));
+}
+function viewOfferProfileAdmin(id){
+  const o = (window._adminOffres||{})[id];
+  if(!o) return;
+  openProfileModal(o.titre || 'Profil offre', renderOfferProfileHtml(o, {showContact:true, showStatut:true}));
+}
+function viewCandidateProfilePublic(id){
+  const c = cachedCandidates[id];
+  if(!c) return;
+  openProfileModal(c.nom || 'Profil candidat', renderCandidateProfileHtml(c, {showContact:false, showStatut:false}));
+}
+function viewOfferProfilePublic(id){
+  const o = cachedOffresPublic[id];
+  if(!o) return;
+  openProfileModal(o.titre || 'Profil offre', renderOfferProfileHtml(o, {showContact:false, showStatut:false}));
+}
+
+/* ============ MODALE VIDÉO PLEIN ÉCRAN (galerie) ============ */
+function openVideoModal(src){
+  const player = document.getElementById('video-modal-player');
+  player.src = src;
+  document.getElementById('video-modal-overlay').classList.add('active');
+  player.play().catch(()=>{});
+}
+function closeVideoModal(){
+  const player = document.getElementById('video-modal-player');
+  player.pause(); player.src='';
+  document.getElementById('video-modal-overlay').classList.remove('active');
+}
+
 /* ============ ASSISTANT VIRTUEL (chat) ============ */
 // Liste à plat de tous les métiers + index de recherche par racine de mot (tolère singulier/pluriel/masculin/féminin)
 const ALL_METIERS = Object.values(CATEGORIES).flat();
@@ -1743,6 +2080,7 @@ function openSpace(name){
   document.getElementById(name).classList.add('active');
   document.querySelector(`.tab-btn[data-space="${name}"]`).classList.add('active');
   if(name==='recruteur') loadCandidatesForBrowse();
+  if(name==='galerie') loadGalerie();
   if(name==='admin' && document.getElementById('admin-dashboard').style.display!=='none') loadAdminData();
 }
 function togglePasswordVisibility(){
@@ -1767,6 +2105,12 @@ function openCandidatSub(name){
   document.querySelectorAll('#candidat .sub-tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('sub-'+name).classList.add('active');
   document.querySelector(`#candidat .sub-tab-btn[data-sub="${name}"]`).classList.add('active');
+}
+function openGalerieSub(name){
+  document.querySelectorAll('#galerie .sub-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#galerie .sub-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sub-'+name).classList.add('active');
+  document.querySelector(`#galerie .sub-tab-btn[data-sub="${name}"]`).classList.add('active');
 }
 
 /* ============ DÉTECTION DU PAYS À PARTIR D'UN NUMÉRO INTERNATIONAL ============ */
@@ -1796,6 +2140,7 @@ async function checkCandidateAccess(){
   const match = Object.values(all).find(c=>c.whatsapp && c.whatsapp.replace(/\D/g,'')===digits);
   if(!match){ msg.className='form-msg err'; msg.textContent="Aucun profil trouvé avec ce numéro. Inscrivez-vous d'abord dans l'onglet Postuler."; return; }
   if(match.statut!=='valide'){ msg.className='form-msg err'; msg.textContent="Votre profil n'est pas encore validé par notre équipe. Revenez une fois votre candidature validée."; return; }
+  if(!isListingActive(match)){ msg.className='form-msg err'; msg.textContent="Votre profil est validé mais pas encore en ligne. Réglez les frais de prestation depuis l'onglet « Postuler » → « Suivre ma candidature » pour y accéder."; return; }
   document.getElementById('offres-gate').style.display='none';
   document.getElementById('offres-content').style.display='block';
   loadOffersForBrowse();
@@ -1810,8 +2155,8 @@ async function checkRecruteurAccess(){
   msg.className='form-msg'; msg.textContent='Vérification…'; msg.style.display='block';
   const all = await fbGet('offres');
   const digits = num.replace(/\D/g,'');
-  const match = Object.values(all).find(o=>o.contact && o.contact.replace(/\D/g,'')===digits && o.statut==='active');
-  if(!match){ msg.className='form-msg err'; msg.textContent="Aucune offre validée trouvée avec ce numéro. Publiez d'abord une offre, ou attendez sa validation par notre équipe."; return; }
+  const match = Object.values(all).find(o=>o.contact && o.contact.replace(/\D/g,'')===digits && o.statut==='active' && isListingActive(o));
+  if(!match){ msg.className='form-msg err'; msg.textContent="Aucune offre en ligne trouvée avec ce numéro. Publiez d'abord une offre, attendez sa validation, puis réglez les frais de prestation pour la mettre en ligne (onglet « Publier une offre » → « Suivre mon offre »)."; return; }
   document.getElementById('parcourir-gate').style.display='none';
   document.getElementById('parcourir-content').style.display='block';
   loadCandidatesForBrowse();
@@ -1839,15 +2184,18 @@ function renderPublicOffersList(){
   const cat = document.getElementById('filter-categorie-offres').value;
   const ville = document.getElementById('filter-ville-offres').value;
   const pays = document.getElementById('filter-pays-offres').value;
-  const list = Object.values(cachedOffresPublic).filter(o=>{
+  const q = (document.getElementById('search-offres').value||'').trim().toLowerCase();
+  const list = Object.entries(cachedOffresPublic).filter(([id,o])=>{
     if(o.statut!=='active') return false;
+    if(!isListingActive(o)) return false;
     if(cat && o.categorie!==cat) return false;
     if(ville && o.ville!==ville) return false;
     if(pays && detectCountry(o.contact)!==pays) return false;
+    if(q && !`${o.titre||''} ${o.categorie||''} ${o.ville||''} ${o.description||''}`.toLowerCase().includes(q)) return false;
     return true;
   });
-  if(list.length===0){ listEl.innerHTML = '<p class="empty-state">Aucune offre disponible ne correspond à ces critères pour le moment.</p>'; return; }
-  listEl.innerHTML = list.map(o=>`
+  if(list.length===0){ listEl.innerHTML = '<p class="empty-state">Aucune offre en ligne ne correspond à ces critères pour le moment.</p>'; return; }
+  listEl.innerHTML = list.map(([id,o])=>`
     <div class="offer-item">
       <div class="info">
         <b>${o.titre||''}</b>
@@ -1855,7 +2203,8 @@ function renderPublicOffersList(){
         <div style="margin-top:6px;color:var(--ink-soft);">${o.description||''}</div>
       </div>
       <div class="mini-actions">
-        <a class="btn-whatsapp" style="text-decoration:none;" target="_blank" href="https://wa.me/${(o.contact||'').replace(/\D/g,'')}">WhatsApp</a>
+        <button type="button" class="btn-mini" style="background:var(--paper-soft);color:var(--ink);" onclick="viewOfferProfilePublic('${id}')">👁️ Détails complets</button>
+        <button type="button" class="btn-whatsapp" style="border:none;" onclick="contactAgencePourInteret('offre', '${(o.titre||'').replace(/'/g,"\\'")}', '${id}')">Je suis intéressé(e) — nous contacter</button>
       </div>
     </div>`).join('');
 }
@@ -1883,8 +2232,8 @@ function buildPhotoSlots(){
     addSlot.className='photo-slot';
     addSlot.innerHTML = `
       <div class="slot-actions">
-        <label class="slot-btn">📷 Photo<input type="file" accept="image/*" capture="environment" onchange="addGalleryPhoto(this.files[0])"></label>
-        <label class="slot-btn">🖼️ Galerie<input type="file" accept="image/*" onchange="addGalleryPhoto(this.files[0])"></label>
+        <label class="slot-btn">📷 Photo<input type="file" accept="image/*" capture="environment" onchange="addGalleryPhotos(this.files)"></label>
+        <label class="slot-btn">🖼️ Galerie (choix multiple)<input type="file" accept="image/*" multiple onchange="addGalleryPhotos(this.files)"></label>
       </div>`;
     wrap.appendChild(addSlot);
   }
@@ -1909,10 +2258,13 @@ function compressImage(file, maxWidth=700, quality=0.72){
     reader.readAsDataURL(file);
   });
 }
-async function addGalleryPhoto(file){
-  if(!file || candidatePhotos.length >= MAX_PHOTOS) return;
-  const dataUrl = await compressImage(file);
-  candidatePhotos.push(dataUrl);
+async function addGalleryPhotos(fileList){
+  const files = Array.from(fileList||[]).filter(f=>f && f.type && f.type.startsWith('image/'));
+  for(const file of files){
+    if(candidatePhotos.length >= MAX_PHOTOS) break;
+    const dataUrl = await compressImage(file);
+    candidatePhotos.push(dataUrl);
+  }
   buildPhotoSlots();
 }
 function removeGalleryPhoto(i){
@@ -2073,11 +2425,51 @@ async function trackCandidate(){
   if(!num){ result.textContent='Entrez votre numéro WhatsApp.'; return; }
   result.textContent = 'Recherche…';
   const all = await fbGet('candidats');
-  const match = Object.values(all).find(c=>c.whatsapp && c.whatsapp.replace(/\s/g,'')===num.replace(/\s/g,''));
-  if(!match){ result.innerHTML = 'Aucune candidature trouvée avec ce numéro.'; return; }
-  const map = {en_attente:['En attente','badge-attente'], valide:['Profil validé','badge-valide'], rejete:['Non retenu','badge-rejete']};
-  const [text, cls] = map[match.statut] || map.en_attente;
-  result.innerHTML = `<span class="badge ${cls}">${text}</span>`;
+  const entry = Object.entries(all).find(([id,c])=>c.whatsapp && c.whatsapp.replace(/\s/g,'')===num.replace(/\s/g,''));
+  if(!entry){ result.innerHTML = 'Aucune candidature trouvée avec ce numéro.'; return; }
+  const [id, match] = entry;
+  if(match.statut==='bloque'){ result.innerHTML = '<span class="badge badge-rejete">Profil bloqué</span><p class="hint" style="margin-top:8px;">Contactez-nous directement sur WhatsApp pour plus d\'informations.</p>'; return; }
+  if(match.statut==='rejete'){ result.innerHTML = '<span class="badge badge-rejete">Non retenu</span>'; return; }
+  if(match.statut==='en_attente'){ result.innerHTML = '<span class="badge badge-attente">En attente de validation</span>'; return; }
+  // statut === 'valide'
+  if(isListingActive(match)){
+    result.innerHTML = `<span class="badge badge-valide">Profil validé — en ligne jusqu'au ${formatDateFr(match.dateFin)}</span>
+      <p class="hint" style="margin-top:8px;">Votre profil est actuellement visible par les recruteurs. Vous pouvez prolonger la mise en ligne à tout moment.</p>` + paymentFormHtml('candidats', id, true);
+  }else if(match.paiementStatut==='a_verifier'){
+    result.innerHTML = `<span class="badge badge-attente">Profil validé — paiement en cours de vérification</span>
+      <p class="hint" style="margin-top:8px;">Notre équipe vérifie votre référence de paiement et activera votre mise en ligne très prochainement.</p>`;
+  }else{
+    const expire = match.dateFin && new Date(match.dateFin).getTime() <= Date.now();
+    result.innerHTML = `<span class="badge badge-valide">Candidature acceptée et validée par notre équipe !</span>
+      <p class="hint" style="margin-top:8px;">Merci de la confiance que vous nous accordez. ${expire ? 'Votre période de mise en ligne précédente est terminée.' : ''} Il ne vous reste plus qu'à régler les frais de prestation pour mettre votre candidature en ligne pendant la durée de votre choix.</p>` + paymentFormHtml('candidats', id, !!expire);
+  }
+}
+
+async function trackOffer(){
+  const num = document.getElementById('track-offre-contact').value.trim();
+  const result = document.getElementById('track-offre-result');
+  if(!num){ result.textContent='Entrez votre numéro de contact.'; return; }
+  result.textContent = 'Recherche…';
+  const all = await fbGet('offres');
+  const digits = num.replace(/\D/g,'');
+  const entry = Object.entries(all).find(([id,o])=>o.contact && o.contact.replace(/\D/g,'')===digits);
+  if(!entry){ result.innerHTML = 'Aucune offre trouvée avec ce numéro.'; return; }
+  const [id, match] = entry;
+  if(match.statut==='bloque'){ result.innerHTML = '<span class="badge badge-rejete">Offre bloquée</span><p class="hint" style="margin-top:8px;">Contactez-nous directement sur WhatsApp pour plus d\'informations.</p>'; return; }
+  if(match.statut==='rejete'){ result.innerHTML = '<span class="badge badge-rejete">Offre non retenue</span>'; return; }
+  if(match.statut==='en_attente'){ result.innerHTML = '<span class="badge badge-attente">En attente de validation</span>'; return; }
+  // statut === 'active'
+  if(isListingActive(match)){
+    result.innerHTML = `<span class="badge badge-valide">Offre validée — en ligne jusqu'au ${formatDateFr(match.dateFin)}</span>
+      <p class="hint" style="margin-top:8px;">Votre offre est actuellement visible par les candidats validés. Vous pouvez prolonger la mise en ligne à tout moment.</p>` + paymentFormHtml('offres', id, true);
+  }else if(match.paiementStatut==='a_verifier'){
+    result.innerHTML = `<span class="badge badge-attente">Offre validée — paiement en cours de vérification</span>
+      <p class="hint" style="margin-top:8px;">Notre équipe vérifie votre référence de paiement et activera votre mise en ligne très prochainement.</p>`;
+  }else{
+    const expire = match.dateFin && new Date(match.dateFin).getTime() <= Date.now();
+    result.innerHTML = `<span class="badge badge-valide">Offre acceptée et validée par notre équipe !</span>
+      <p class="hint" style="margin-top:8px;">Merci de la confiance que vous nous accordez. ${expire ? 'Votre période de mise en ligne précédente est terminée.' : ''} Il ne vous reste plus qu'à régler les frais de prestation pour mettre votre offre en ligne pendant la durée de votre choix.</p>` + paymentFormHtml('offres', id, !!expire);
+  }
 }
 
 /* ============ FORM: OFFRE ============ */
@@ -2152,22 +2544,26 @@ function renderCandidateGrid(){
   const cat = document.getElementById('filter-categorie').value;
   const ville = document.getElementById('filter-ville').value;
   const pays = document.getElementById('filter-pays').value;
-  const list = Object.values(cachedCandidates).filter(c=>{
+  const q = (document.getElementById('search-candidats').value||'').trim().toLowerCase();
+  const list = Object.entries(cachedCandidates).filter(([id,c])=>{
     if(c.statut!=='valide') return false;
+    if(!isListingActive(c)) return false;
     if(cat && c.categorie!==cat) return false;
     if(ville && c.ville!==ville) return false;
     if(pays && detectCountry(c.whatsapp)!==pays) return false;
+    if(q && !`${c.nom||''} ${c.categorie||''} ${c.ville||''} ${c.bio||''}`.toLowerCase().includes(q)) return false;
     return true;
   });
-  if(list.length===0){ grid.innerHTML = '<p class="empty-state">Aucun profil validé ne correspond à ces critères pour le moment.</p>'; return; }
-  grid.innerHTML = list.map(c=>`
+  if(list.length===0){ grid.innerHTML = '<p class="empty-state">Aucun profil en ligne ne correspond à ces critères pour le moment.</p>'; return; }
+  grid.innerHTML = list.map(([id,c])=>`
     <div class="cand-card">
       ${c.photos && c.photos[0] ? `<img class="photo" src="${c.photos[0]}" alt="${c.nom}">` : `<div class="photo placeholder">Pas de photo</div>`}
       <div class="body">
         <div class="cat-badge">${c.categorie||''}</div>
         <div class="name">${c.nom||''}</div>
         <div class="meta">${c.age||'–'} ans · ${c.ville||''}</div>
-        <a class="btn-whatsapp" target="_blank" href="https://wa.me/${(c.whatsapp||'').replace(/\D/g,'')}">Contacter sur WhatsApp</a>
+        <button type="button" class="btn-mini" style="background:var(--paper-soft);color:var(--ink);width:100%;margin-bottom:6px;" onclick="viewCandidateProfilePublic('${id}')">👁️ Voir le profil complet</button>
+        <button type="button" class="btn-whatsapp" onclick="contactAgencePourInteret('candidat', '${(c.nom||'').replace(/'/g,"\\'")}', '${id}')">Je suis intéressé(e) — nous contacter</button>
       </div>
     </div>`).join('');
 }
@@ -2212,13 +2608,55 @@ async function checkAdminLogin(){
 async function loadAdminData(){
   const all = await fbGet('candidats');
   const offres = await fbGet('offres');
+  const paiements = await fbGet('paiements');
   window._adminCandidats = all || {};
   window._adminOffres = offres || {};
+  window._adminPaiements = paiements || {};
   renderAdminCandidates(all, ['en_attente'], 'list-valider', 'attente');
   renderAdminCandidates(all, ['valide','bloque'], 'list-valides', 'gestion');
   renderAdminOffres(offres, ['en_attente'], 'list-offres-attente', 'attente');
   renderAdminOffres(offres, ['active','bloque'], 'list-offres', 'gestion');
-  renderStats(all, offres);
+  renderAdminPaiements(paiements, all, offres);
+  loadAdminMediaGrid();
+  renderStats(all, offres, paiements);
+}
+function renderAdminPaiements(paiements, candidats, offres){
+  const el = document.getElementById('list-paiements');
+  const entries = Object.entries(paiements||{}).filter(([id,p])=>p.statut==='a_verifier');
+  if(entries.length===0){ el.innerHTML = '<p class="empty-state">Aucun paiement en attente de vérification.</p>'; return; }
+  el.innerHTML = entries.map(([id,p])=>{
+    const source = p.type==='candidats' ? (candidats[p.refId]||{}) : (offres[p.refId]||{});
+    const nomOuTitre = p.type==='candidats' ? (source.nom||'Candidat inconnu') : (source.titre||'Offre inconnue');
+    const opInfo = PAYMENT_OPERATORS[p.operateur] || {label:p.operateur};
+    return `
+    <div class="cand-admin-item">
+      <div class="info">
+        <b>${nomOuTitre}</b> — ${p.type==='candidats'?'Candidat':'Offre'}
+        <div>Montant : ${p.montant||'—'} · Opérateur : ${opInfo.label} · Numéro payeur : ${p.numeroPayeur||'—'}</div>
+        <div>Référence de paiement : <b>${p.reference||'—'}</b> · Durée demandée : ${p.dureeJours||'—'} jours</div>
+        <div style="color:var(--ink-soft);font-size:0.85rem;">Soumis le ${formatDateFr(p.date)}</div>
+      </div>
+      <div class="mini-actions">
+        <button class="btn-mini btn-approve" onclick="activatePayment('${id}')">Activer la mise en ligne</button>
+        <button class="btn-mini btn-reject" onclick="rejectPayment('${id}')">Rejeter le paiement</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function activatePayment(paiementId){
+  const p = (window._adminPaiements||{})[paiementId];
+  if(!p) return;
+  const dureeJours = parseInt(p.dureeJours,10) || 30;
+  const dateDebut = new Date().toISOString();
+  const dateFin = new Date(Date.now() + dureeJours*24*60*60*1000).toISOString();
+  await fbPatch(p.type+'/'+p.refId, {paiementStatut:'actif', dateDebut, dateFin});
+  await fbPatch('paiements/'+paiementId, {statut:'valide'});
+  loadAdminData();
+}
+async function rejectPayment(paiementId){
+  if(!confirm('Rejeter cette preuve de paiement ? Le candidat/recruteur devra en soumettre une nouvelle.')) return;
+  await fbPatch('paiements/'+paiementId, {statut:'rejete'});
+  loadAdminData();
 }
 function renderAdminCandidates(all, statuts, elId, mode){
   const el = document.getElementById(elId);
@@ -2229,6 +2667,11 @@ function renderAdminCandidates(all, statuts, elId, mode){
     const docsHtml = docs.length ? `<div class="admin-docs">${docs.map(d=>`<a href="${d.url}" target="_blank" rel="noopener" class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;">📎 ${d.label}</a>`).join(' ')}</div>` : '';
     const geoHtml = c.geo ? ` · <a href="https://www.google.com/maps?q=${c.geo.lat},${c.geo.lng}" target="_blank">📍 Localisation</a>` : '';
     const blocBadge = c.statut==='bloque' ? '<span class="badge-bloque">Bloqué</span>' : '';
+    const enLigneInfo = mode==='gestion'
+      ? (isListingActive(c) ? `<div style="color:var(--wine);font-weight:600;">En ligne jusqu'au ${formatDateFr(c.dateFin)}</div>`
+        : c.paiementStatut==='a_verifier' ? `<div style="color:var(--ink-soft);">Paiement en attente de vérification</div>`
+        : `<div style="color:var(--ink-soft);">Non en ligne (en attente de paiement)</div>`)
+      : '';
     let actions;
     if(mode==='attente'){
       actions = `<button class="btn-mini btn-approve" onclick="approveCandidate('${id}')">Valider</button>
@@ -2243,9 +2686,11 @@ function renderAdminCandidates(all, statuts, elId, mode){
     return `
     <div class="cand-admin-item">
       <div class="info"><b>${c.nom||''}${blocBadge}</b>${c.categorie||''} · ${c.ville||''} · ${c.age||'–'} ans · ${c.whatsapp||''}${geoHtml}${docsHtml}
+        ${enLigneInfo}
         <div class="admin-note"><input type="text" placeholder="Note interne (visible admin uniquement)" value="${(c.note||'').replace(/"/g,'&quot;')}" onchange="saveNote('candidats','${id}', this.value)"></div>
       </div>
       <div class="mini-actions">
+        <button class="btn-mini" style="background:var(--paper-soft);color:var(--ink);" onclick="viewCandidateProfileAdmin('${id}')">👁️ Profil complet</button>
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(c.whatsapp||'').replace(/\D/g,'')}">Contacter</a>
         <button class="btn-mini btn-print" onclick="printCandidateDossier('${id}')">🖨️ Imprimer</button>
         ${actions}
@@ -2260,6 +2705,11 @@ function renderAdminOffres(offres, statuts, elId, mode){
   el.innerHTML = entries.map(([id,o])=>{
     const geoHtml = o.geo ? ` · <a href="https://www.google.com/maps?q=${o.geo.lat},${o.geo.lng}" target="_blank">📍 Localisation</a>` : '';
     const blocBadge = o.statut==='bloque' ? '<span class="badge-bloque">Bloquée</span>' : '';
+    const enLigneInfo = mode==='gestion'
+      ? (isListingActive(o) ? `<div style="color:var(--wine);font-weight:600;">En ligne jusqu'au ${formatDateFr(o.dateFin)}</div>`
+        : o.paiementStatut==='a_verifier' ? `<div style="color:var(--ink-soft);">Paiement en attente de vérification</div>`
+        : `<div style="color:var(--ink-soft);">Non en ligne (en attente de paiement)</div>`)
+      : '';
     let actions;
     if(mode==='attente'){
       actions = `<button class="btn-mini btn-approve" onclick="approveOffer('${id}')">Valider</button>
@@ -2274,9 +2724,11 @@ function renderAdminOffres(offres, statuts, elId, mode){
     return `
     <div class="offer-item">
       <div class="info"><b>${o.titre||''}${blocBadge}</b>${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· limite '+o.dateLimite : ''}${geoHtml}
+        ${enLigneInfo}
         <div class="admin-note"><input type="text" placeholder="Note interne (visible admin uniquement)" value="${(o.note||'').replace(/"/g,'&quot;')}" onchange="saveNote('offres','${id}', this.value)"></div>
       </div>
       <div class="mini-actions">
+        <button class="btn-mini" style="background:var(--paper-soft);color:var(--ink);" onclick="viewOfferProfileAdmin('${id}')">👁️ Profil complet</button>
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(o.contact||'').replace(/\D/g,'')}">Contacter</a>
         <button class="btn-mini btn-print" onclick="printOfferDossier('${id}')">🖨️ Imprimer</button>
         ${actions}
@@ -2284,14 +2736,17 @@ function renderAdminOffres(offres, statuts, elId, mode){
     </div>`;
   }).join('');
 }
-function renderStats(all, offres){
+function renderStats(all, offres, paiements){
   const vals = Object.values(all);
   const offVals = Object.values(offres);
+  const payVals = Object.values(paiements||{});
   document.getElementById('stat-total').textContent = vals.length;
   document.getElementById('stat-valides').textContent = vals.filter(c=>c.statut==='valide').length;
   document.getElementById('stat-attente').textContent = vals.filter(c=>c.statut==='en_attente').length;
   document.getElementById('stat-offres').textContent = offVals.filter(o=>o.statut==='active').length;
   document.getElementById('stat-offres-attente').textContent = offVals.filter(o=>o.statut==='en_attente').length;
+  const statPaiements = document.getElementById('stat-paiements-attente');
+  if(statPaiements) statPaiements.textContent = payVals.filter(p=>p.statut==='a_verifier').length;
 }
 async function approveCandidate(id){ await fbPatch('candidats/'+id, {statut:'valide'}); loadAdminData(); }
 async function rejectCandidate(id){ await fbPatch('candidats/'+id, {statut:'rejete'}); loadAdminData(); }
@@ -2425,6 +2880,75 @@ function printOfferDossier(id){
     </body></html>
   `);
   win.document.close();
+}
+
+/* ============ GALERIE DU SITE (parcourir photos / parcourir vidéos) ============
+   Médias uploadés par l'admin depuis son espace, visibles par tous les visiteurs,
+   candidats et recruteurs, pour se détendre en parcourant le site. */
+const MAX_MEDIA_SIZE = 60*1024*1024; // 60 Mo par fichier (photos et vidéos)
+let cachedMedias = {};
+async function loadGalerie(){
+  const all = await fbGet('medias');
+  cachedMedias = all || {};
+  renderPublicMediaGrid('photo', 'galerie-photos-grid');
+  renderPublicMediaGrid('video', 'galerie-videos-grid');
+}
+function renderPublicMediaGrid(type, elId){
+  const el = document.getElementById(elId);
+  const entries = Object.entries(cachedMedias).filter(([id,m])=>m.type===type);
+  if(entries.length===0){ el.innerHTML = `<p class="empty-state">Aucune ${type==='photo'?'photo':'vidéo'} pour le moment.</p>`; return; }
+  entries.sort((a,b)=> new Date(b[1].date||0) - new Date(a[1].date||0));
+  el.innerHTML = entries.map(([id,m])=>
+    type==='photo'
+      ? `<div class="media-item" onclick="openLightbox('${m.url}')"><img src="${m.url}" alt="Photo"></div>`
+      : `<div class="media-item" onclick="openVideoModal('${m.url}')"><video src="${m.url}" muted></video><div class="play-badge">▶</div></div>`
+  ).join('');
+}
+
+/* ---- Gestion admin de la galerie (upload + suppression) ---- */
+async function loadAdminMediaGrid(){
+  const all = await fbGet('medias');
+  window._adminMedias = all || {};
+  renderAdminMediaGrid('photo', 'admin-media-photos-grid');
+  renderAdminMediaGrid('video', 'admin-media-videos-grid');
+}
+function renderAdminMediaGrid(type, elId){
+  const el = document.getElementById(elId);
+  const entries = Object.entries(window._adminMedias||{}).filter(([id,m])=>m.type===type);
+  if(entries.length===0){ el.innerHTML = `<p class="empty-state">Aucune ${type==='photo'?'photo':'vidéo'} publiée.</p>`; return; }
+  entries.sort((a,b)=> new Date(b[1].date||0) - new Date(a[1].date||0));
+  el.innerHTML = entries.map(([id,m])=>
+    type==='photo'
+      ? `<div class="media-item"><img src="${m.url}" alt="Photo" onclick="openLightbox('${m.url}')"><button type="button" class="del-media" onclick="event.stopPropagation();deleteMedia('${id}')">×</button></div>`
+      : `<div class="media-item"><video src="${m.url}" muted onclick="openVideoModal('${m.url}')"></video><div class="play-badge">▶</div><button type="button" class="del-media" onclick="event.stopPropagation();deleteMedia('${id}')">×</button></div>`
+  ).join('');
+}
+async function uploadMediaFiles(fileList, type){
+  const msg = document.getElementById('admin-media-msg');
+  const files = Array.from(fileList||[]);
+  if(files.length===0) return;
+  const tooBig = files.filter(f=>f.size > MAX_MEDIA_SIZE);
+  if(tooBig.length){ msg.className='form-msg err'; msg.textContent = `Fichier(s) trop volumineux (60 Mo maximum) : ${tooBig.map(f=>f.name).join(', ')}`; return; }
+  msg.className='form-msg'; msg.textContent = `Envoi de ${files.length} fichier(s) en cours…`;
+  try{
+    for(const file of files){
+      const url = await uploadToCloudinary(file);
+      await fbPush('medias', {type, url, date:new Date().toISOString()});
+    }
+    msg.className='form-msg ok'; msg.textContent = 'Média(s) ajouté(s) avec succès.';
+    loadAdminMediaGrid();
+  }catch(err){
+    msg.className='form-msg err'; msg.textContent = "Une erreur est survenue pendant l'envoi, réessayez.";
+  }
+}
+document.getElementById('admin-media-photo-camera').addEventListener('change', function(){ uploadMediaFiles(this.files, 'photo'); this.value=''; });
+document.getElementById('admin-media-photo-file').addEventListener('change', function(){ uploadMediaFiles(this.files, 'photo'); this.value=''; });
+document.getElementById('admin-media-video-camera').addEventListener('change', function(){ uploadMediaFiles(this.files, 'video'); this.value=''; });
+document.getElementById('admin-media-video-file').addEventListener('change', function(){ uploadMediaFiles(this.files, 'video'); this.value=''; });
+async function deleteMedia(id){
+  if(!confirm('Retirer ce média du site ?')) return;
+  await fbDelete('medias/'+id);
+  loadAdminMediaGrid();
 }
 
 /* ============ QR CODE + PARTAGE ============ */

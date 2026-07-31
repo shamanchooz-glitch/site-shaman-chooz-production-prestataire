@@ -441,9 +441,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
 <div class="install-modal-overlay" id="install-modal-overlay" onclick="if(event.target===this) this.classList.remove('active')">
   <div class="install-modal">
     <h4>Installer l'application</h4>
-    <p>1. Appuyez sur le bouton <b>Partager</b> <span style="font-size:1.1em;">⬆️</span> en bas de Safari.</p>
-    <p>2. Choisissez <b>« Sur l'écran d'accueil »</b>.</p>
-    <p>3. Confirmez avec <b>Ajouter</b>.</p>
+    <div id="install-modal-body"></div>
     <button type="button" onclick="document.getElementById('install-modal-overlay').classList.remove('active')">Compris</button>
   </div>
 </div>
@@ -1159,7 +1157,13 @@ if('serviceWorker' in navigator){
   });
 }
 
-/* ============ INSTALLATION SUR LE TÉLÉPHONE (PWA) ============ */
+/* ============ INSTALLATION SUR LE TÉLÉPHONE (PWA) ============
+   Le bouton "Installer l'appli" est TOUJOURS visible (tant que l'appli n'est pas déjà
+   installée). Quand le navigateur propose une installation native (Chrome/Edge/Samsung
+   Internet Android), on l'utilise directement. Sinon (iPhone/Safari, Firefox, navigateur
+   intégré à une appli comme Facebook/Instagram, ou Chrome qui n'a pas encore proposé le
+   prompt natif), on affiche des instructions manuelles adaptées à l'appareil détecté :
+   ainsi, tout le monde peut installer, sur n'importe quel téléphone. */
 let _deferredInstallPrompt = null;
 function isAppAlreadyInstalled(){
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -1168,16 +1172,16 @@ function isIOSDevice(){
   return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
+function isAndroidDevice(){ return /android/i.test(navigator.userAgent); }
+function isInAppBrowser(){
+  return /FBAN|FBAV|Instagram|Line\/|MicroMessenger|TikTok/i.test(navigator.userAgent);
+}
 function refreshInstallButton(){
   const btn = document.getElementById('btn-install-app');
   if(!btn) return;
-  if(isAppAlreadyInstalled()){
-    btn.classList.remove('show');
-  } else if(_deferredInstallPrompt || isIOSDevice()){
-    btn.classList.add('show');
-  } else {
-    btn.classList.remove('show');
-  }
+  // Le bouton reste affiché tant que l'appli n'est pas installée : on ne dépend plus
+  // uniquement de l'évènement natif du navigateur, qui ne se déclenche pas toujours.
+  btn.classList.toggle('show', !isAppAlreadyInstalled());
 }
 window.addEventListener('beforeinstallprompt', (event)=>{
   event.preventDefault();
@@ -1189,14 +1193,37 @@ window.addEventListener('appinstalled', ()=>{
   refreshInstallButton();
 });
 async function triggerInstallApp(){
+  if(isAppAlreadyInstalled()) return;
   if(_deferredInstallPrompt){
     _deferredInstallPrompt.prompt();
     await _deferredInstallPrompt.userChoice;
     _deferredInstallPrompt = null;
     refreshInstallButton();
-  } else if(isIOSDevice()){
-    document.getElementById('install-modal-overlay').classList.add('active');
+    return;
   }
+  showInstallInstructions();
+}
+function showInstallInstructions(){
+  const body = document.getElementById('install-modal-body');
+  if(isInAppBrowser()){
+    body.innerHTML = `
+      <p>Ce navigateur intégré (Facebook, Instagram, TikTok…) ne permet pas d'installer l'application.</p>
+      <p>Appuyez sur <b>⋮</b> ou <b>•••</b> en haut de l'écran, puis choisissez <b>« Ouvrir dans le navigateur »</b> (Chrome ou Safari), et recommencez l'installation depuis là.</p>`;
+  } else if(isIOSDevice()){
+    body.innerHTML = `
+      <p>1. Appuyez sur le bouton <b>Partager</b> <span style="font-size:1.1em;">⬆️</span> en bas de l'écran Safari.</p>
+      <p>2. Choisissez <b>« Sur l'écran d'accueil »</b>.</p>
+      <p>3. Confirmez avec <b>Ajouter</b>.</p>
+      <p style="font-size:0.78rem;color:var(--ink-soft);">L'installation ne fonctionne que depuis Safari, pas depuis Chrome sur iPhone.</p>`;
+  } else if(isAndroidDevice()){
+    body.innerHTML = `
+      <p>1. Appuyez sur le menu <b>⋮</b> en haut à droite de votre navigateur.</p>
+      <p>2. Choisissez <b>« Installer l'application »</b> ou <b>« Ajouter à l'écran d'accueil »</b>.</p>
+      <p>3. Confirmez.</p>`;
+  } else {
+    body.innerHTML = `<p>Ouvrez le menu de votre navigateur et choisissez <b>« Installer »</b> ou <b>« Ajouter à l'écran d'accueil »</b>.</p>`;
+  }
+  document.getElementById('install-modal-overlay').classList.add('active');
 }
 window.addEventListener('DOMContentLoaded', refreshInstallButton);
 

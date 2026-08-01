@@ -1069,13 +1069,29 @@ function adminLogout(){
 async function fbGet(path){
   const res = await fetch(`${FIREBASE_URL}/${path}.json`);
   const data = await res.json();
+  if(!res.ok || (data && data.error)){
+    console.error('fbGet refusé sur', path, data);
+    throw new Error('firebase-read-denied: ' + (data && data.error ? data.error : res.status));
+  }
   return data || {};
 }
 async function fbPush(path, data){
   const res = await fetch(`${FIREBASE_URL}/${path}.json`,{
     method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
   });
-  return res.json();
+  const out = await res.json();
+  if(!res.ok || (out && out.error)){
+    throw new Error('firebase-write-denied: ' + (out && out.error ? out.error : res.status));
+  }
+  return out;
+}
+// Une erreur est considérée "vraiment hors-ligne" seulement si le navigateur se
+// signale lui-même hors-ligne, ou si le fetch a échoué au niveau réseau (TypeError
+// "Failed to fetch"). Toute autre erreur (règles Firebase, Cloudinary mal configuré,
+// etc.) est une vraie panne qu'il ne faut jamais déguiser en simple problème de connexion.
+function isGenuinelyOffline(err){
+  if(!navigator.onLine) return true;
+  return !!(err && err.name==='TypeError' && /fetch/i.test(err.message||''));
 }
 // fbPatch et fbDelete servent uniquement aux actions admin (valider, rejeter, bloquer,
 // débloquer, supprimer, notes internes) : elles joignent le jeton Firebase Auth, exigé
@@ -1086,7 +1102,12 @@ async function fbPatch(path, data){
   const res = await fetch(url,{
     method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
   });
-  return res.json();
+  const out = await res.json();
+  if(!res.ok || (out && out.error)){
+    console.error('fbPatch refusé sur', path, out);
+    throw new Error('firebase-patch-denied: ' + (out && out.error ? out.error : res.status));
+  }
+  return out;
 }
 async function fbDelete(path){
   const token = await ensureAdminToken();
@@ -1220,8 +1241,14 @@ async function syncOfflineQueue(){
         await fbPush(item.type, {...item.data, cv, documents});
         await deleteOfflineSubmission(item.localId);
       }catch(err){
-        // Toujours pas de connexion fiable : on garde l'élément, nouvel essai plus tard
-        break;
+        if(isGenuinelyOffline(err)){
+          // Toujours pas de connexion fiable : on garde l'élément, nouvel essai plus tard
+          break;
+        }
+        // Vraie erreur (pas un problème réseau) : on log pour que ce soit visible dans
+        // la console, mais on continue avec les éléments suivants au lieu de bloquer
+        // toute la file d'attente indéfiniment sur un seul élément défectueux.
+        console.error('Échec synchronisation élément en attente :', item.type, err);
       }
     }
   }finally{
@@ -2156,15 +2183,24 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     msg.className='form-msg ok'; msg.textContent="Votre candidature a bien été envoyée. Une fois validée par notre équipe, vous pourrez régler les frais de prestation pour la mettre en ligne — suivez son statut ci-dessous avec votre numéro WhatsApp.";
     resetForm();
   }catch(err){
-    // Connexion faible, absente, ou coupée en cours d'envoi : on enregistre
-    // la candidature sur le téléphone, elle partira automatiquement dès le retour du réseau.
-    try{
-      await queueOfflineSubmission('candidats', data, cvFile, docFiles);
-      msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre candidature est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
-      resetForm();
-      updateOfflineBanner();
-    }catch(err2){
-      msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
+    if(isGenuinelyOffline(err) || err.message==='offline'){
+      // Connexion faible, absente, ou coupée en cours d'envoi : on enregistre
+      // la candidature sur le téléphone, elle partira automatiquement dès le retour du réseau.
+      try{
+        await queueOfflineSubmission('candidats', data, cvFile, docFiles);
+        msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre candidature est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
+        resetForm();
+        updateOfflineBanner();
+      }catch(err2){
+        msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
+      }
+    }else{
+      // Vraie erreur (règles Firebase, Cloudinary mal configuré, fichier refusé…) :
+      // on ne doit surtout pas la déguiser en "hors-ligne", sinon la candidature
+      // reste bloquée indéfiniment sans que personne ne s'en aperçoive.
+      console.error('Échec envoi candidature :', err);
+      msg.className='form-msg err';
+      msg.textContent="Votre candidature n'a pas pu être envoyée (" + err.message + "). Réessayez, et si le problème persiste, contactez-nous.";
     }
   }
   btn.disabled=false; spinner.classList.remove('show'); label.textContent='Envoyer ma candidature';
@@ -2272,7 +2308,9 @@ async function submitPaiement(type, id){
     setTimeout(()=>{ if(type==='offre') trackOffer(); else trackCandidate(); }, 900);
     return;
   }catch(err){
-    msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
+    console.error('Échec envoi paiement :', err);
+    msg.className='form-msg err';
+    msg.textContent="Le paiement n'a pas pu être enregistré (" + err.message + "). Ne refaites pas de paiement : réessayez juste d'envoyer cette référence, ou contactez-nous en gardant votre capture d'écran.";
   }
   btn.disabled=false; spinner.classList.remove('show'); label.textContent='Valider mon paiement';
 }
@@ -2382,13 +2420,19 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
     msg.className='form-msg ok'; msg.textContent="Votre offre a bien été envoyée. Une fois validée par notre équipe, vous pourrez régler les frais de prestation pour la mettre en ligne — suivez son statut ci-dessus avec « Suivre mon offre ».";
     resetForm();
   }catch(err){
-    try{
-      await queueOfflineSubmission('offres', data, null, []);
-      msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre offre est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
-      resetForm();
-      updateOfflineBanner();
-    }catch(err2){
-      msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
+    if(isGenuinelyOffline(err) || err.message==='offline'){
+      try{
+        await queueOfflineSubmission('offres', data, null, []);
+        msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre offre est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
+        resetForm();
+        updateOfflineBanner();
+      }catch(err2){
+        msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
+      }
+    }else{
+      console.error('Échec envoi offre :', err);
+      msg.className='form-msg err';
+      msg.textContent="Votre offre n'a pas pu être envoyée (" + err.message + "). Réessayez, et si le problème persiste, contactez-nous.";
     }
   }
   btn.disabled=false; spinner.classList.remove('show'); label.textContent="Publier l'offre";
@@ -2484,8 +2528,16 @@ async function checkAdminLogin(){
   }
 })();
 async function loadAdminData(){
-  const all = await fbGet('candidats');
-  const offres = await fbGet('offres');
+  let all, offres;
+  try{
+    all = await fbGet('candidats');
+    offres = await fbGet('offres');
+  }catch(err){
+    const el = document.getElementById('list-paiements');
+    if(el) el.innerHTML = '<p class="empty-state" style="color:#7A1F30;font-weight:700;">⚠️ Impossible de lire les données ('+err.message+'). Vérifiez les règles de sécurité de votre base Firebase (Realtime Database → Rules) : la lecture doit être autorisée pour l\'espace admin.</p>';
+    console.error('loadAdminData a échoué :', err);
+    return;
+  }
   window._adminCandidats = all || {};
   window._adminOffres = offres || {};
   renderAdminCandidates(all, ['en_attente'], 'list-valider', 'attente');

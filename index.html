@@ -128,6 +128,14 @@ header{
 .chat-head .t{font-weight:700;font-size:0.9rem;}
 .chat-head .s{font-size:0.7rem;color:rgba(251,244,230,0.65);}
 .chat-close{margin-left:auto;background:none;border:none;color:var(--paper);font-size:1.1rem;cursor:pointer;padding:4px;}
+.chat-voice-toggle{margin-left:auto;background:none;border:none;color:var(--paper);font-size:1rem;cursor:pointer;padding:4px;opacity:0.85;}
+.chat-voice-toggle.active{opacity:1;}
+.chat-mic-btn{background:var(--paper-soft)!important;border:1.5px solid var(--gold)!important;color:var(--ink)!important;font-size:1rem;padding:0 12px!important;}
+.chat-mic-btn.recording{background:var(--wine)!important;border-color:var(--wine)!important;color:#fff!important;animation:micPulse 1.1s infinite;}
+@keyframes micPulse{0%,100%{box-shadow:0 0 0 0 rgba(122,31,48,0.45);}50%{box-shadow:0 0 0 8px rgba(122,31,48,0);}}
+.chat-voice-bar{padding:8px 12px 0;background:#fff;}
+.chat-handsfree-btn{width:100%;background:var(--paper-soft);border:1.5px solid var(--line);border-radius:999px;padding:8px;font-size:0.82rem;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+.chat-handsfree-btn.active{background:var(--wine);border-color:var(--wine);color:#fff;animation:micPulse 1.6s infinite;}
 .chat-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--paper);}
 .chat-msg{max-width:82%;padding:9px 13px;border-radius:14px;font-size:0.87rem;line-height:1.4;white-space:pre-wrap;}
 .chat-msg.bot{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px;}
@@ -280,6 +288,17 @@ nav{display:flex;gap:4px;align-items:center;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 
 .phone-row{display:grid;grid-template-columns:auto 1fr;gap:10px;}
+.mcat-picker{position:relative;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px;background:#fff;}
+.mcat-picker-filter{max-width:260px;}
+.mcat-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;}
+.mcat-tags:empty{margin-bottom:0;}
+.mcat-tag{display:inline-flex;align-items:center;gap:5px;background:var(--paper-soft);border:1px solid var(--gold);color:var(--ink);border-radius:999px;padding:4px 6px 4px 12px;font-size:0.8rem;font-weight:600;}
+.mcat-tag button{background:none;border:none;color:var(--wine);font-size:0.85rem;cursor:pointer;padding:2px 4px;}
+.mcat-picker input{border:none;outline:none;width:100%;font-family:var(--font-body);font-size:0.9rem;padding:4px 2px;}
+.mcat-dropdown{display:none;position:absolute;left:0;right:0;top:100%;margin-top:4px;background:#fff;border:1.5px solid var(--gold);border-radius:12px;max-height:240px;overflow-y:auto;z-index:60;box-shadow:var(--shadow);}
+.mcat-option{padding:9px 14px;font-size:0.87rem;cursor:pointer;}
+.mcat-option:hover{background:var(--paper-soft);}
+.mcat-limit{padding:9px 14px;font-size:0.82rem;color:var(--ink-soft);font-style:italic;}
 .dial-select{width:auto;max-width:150px;}
 .btn-geo{
   background:var(--paper-soft);border:1.5px solid var(--line);color:var(--ink);
@@ -517,11 +536,16 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
       <div class="t">SHAMAN CHOOZ</div>
       <div class="s">En ligne · répond rapidement</div>
     </div>
+    <button class="chat-voice-toggle" id="chat-voice-toggle" onclick="toggleVoiceReplies()" title="Activer/couper la lecture audio des réponses" aria-label="Activer la lecture audio">🔇</button>
     <button class="chat-close" onclick="toggleChat()" aria-label="Fermer">✕</button>
   </div>
   <div class="chat-body" id="chat-body"></div>
+  <div class="chat-voice-bar" id="chat-voice-bar" style="display:none;">
+    <button type="button" id="chat-handsfree-toggle" class="chat-handsfree-btn" onclick="toggleHandsFree()">🎧 Mode mains libres</button>
+  </div>
   <div class="chat-input-row">
-    <input type="text" id="chat-input" placeholder="Écrivez votre message…" onkeydown="if(event.key==='Enter')sendChatMessage()">
+    <input type="text" id="chat-input" placeholder="Écrivez ou dictez votre message…" onkeydown="if(event.key==='Enter')sendChatMessage()">
+    <button type="button" id="chat-mic-btn" class="chat-mic-btn" onclick="toggleVoiceInput()" title="Parler au lieu d'écrire" aria-label="Dicter un message" style="display:none;">🎤</button>
     <button onclick="sendChatMessage()">Envoyer</button>
   </div>
 </div>
@@ -601,7 +625,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
     <div class="section-head">
       <span class="eyebrow">La plateforme</span>
       <h2>Ce que SHAMAN CHOOZ gère pour vous</h2>
-      <p>Huit outils, une seule interface — simple à utiliser côté candidat comme côté recruteur.</p>
+      <p>Onze outils, une seule interface — simple à utiliser côté candidat comme côté recruteur.</p>
     </div>
     <div class="feat-grid">
       <div class="feat-card">
@@ -643,6 +667,21 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
         <h3>Suivi de candidature</h3>
         <p>Le candidat sait toujours où en est son dossier.</p>
+      </div>
+      <div class="feat-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/><path d="M14 7l3 3 3-3"/></svg>
+        <h3>Galerie photos &amp; vidéos</h3>
+        <p>Ambiance de l'agence, castings et coulisses à parcourir en plein écran.</p>
+      </div>
+      <div class="feat-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h6"/><circle cx="19" cy="18" r="2.2"/></svg>
+        <h3>Recherche multi-métiers</h3>
+        <p>Tapez quelques lettres et sélectionnez jusqu'à 10 catégories à la fois, en Côte d'Ivoire comme à l'international.</p>
+      </div>
+      <div class="feat-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z"/><path d="M14 2v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+        <h3>Dossier imprimable</h3>
+        <p>Fiche candidat ou recruteur avec historique des paiements, prête à imprimer et classer.</p>
       </div>
     </div>
   </div>
@@ -694,12 +733,14 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               <div class="geo-result" id="c-geo-result"></div>
             </div>
             <div class="field">
-              <label>Catégorie</label>
-              <input type="text" id="c-categorie-search" placeholder="🔍 Tapez les premières lettres du métier…" oninput="filterCategorySelect('c-categorie', this.value)" style="margin-bottom:8px;">
-              <select id="c-categorie" required>
-                <option value="">Choisir…</option>
-              </select>
+              <label>Catégorie(s) — 10 maximum</label>
+              <div class="mcat-picker" id="c-categorie-picker">
+                <div class="mcat-tags" id="c-categorie-tags"></div>
+                <input type="text" id="c-categorie-input" placeholder="🔍 Tapez les premières lettres du métier…" autocomplete="off">
+                <div class="mcat-dropdown" id="c-categorie-dropdown"></div>
+              </div>
             </div>
+            <div class="field"><label>E-mail (optionnel)</label><input type="email" id="c-email" placeholder="vous@exemple.com"></div>
             <div class="field"><label>Présentation courte</label><textarea id="c-bio" placeholder="Expérience, taille, disponibilités…"></textarea></div>
             <div class="field">
               <label>Photo d'identité (optionnel)</label>
@@ -782,10 +823,11 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <div id="offres-content" style="display:none;">
           <div class="filter-bar">
             <input type="text" id="search-offres" placeholder="🔍 Rechercher un titre, une catégorie, une ville…" oninput="renderPublicOffersList()">
-            <input type="text" id="filter-categorie-offres-search" placeholder="🔍 Filtrer par métier…" oninput="filterCategorySelect('filter-categorie-offres', this.value)" style="max-width:200px;">
-            <select id="filter-categorie-offres" onchange="renderPublicOffersList()">
-              <option value="">Toutes les catégories</option>
-            </select>
+            <div class="mcat-picker mcat-picker-filter" id="filter-categorie-offres-picker">
+              <div class="mcat-tags" id="filter-categorie-offres-tags"></div>
+              <input type="text" id="filter-categorie-offres-input" placeholder="🔍 Filtrer par métier(s)…" autocomplete="off">
+              <div class="mcat-dropdown" id="filter-categorie-offres-dropdown"></div>
+            </div>
             <select id="filter-ville-offres" onchange="renderPublicOffersList()">
               <option value="">Toutes les villes</option>
             </select>
@@ -815,11 +857,12 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               <div class="field"><label>Description</label><textarea id="o-description" required></textarea></div>
               <div class="field-row">
                 <div class="field">
-                  <label>Catégorie recherchée</label>
-                  <input type="text" id="o-categorie-search" placeholder="🔍 Tapez les premières lettres du métier…" oninput="filterCategorySelect('o-categorie', this.value)" style="margin-bottom:8px;">
-                  <select id="o-categorie" required>
-                    <option value="">Choisir…</option>
-                  </select>
+                  <label>Catégorie(s) recherchée(s) — 10 maximum</label>
+                  <div class="mcat-picker" id="o-categorie-picker">
+                    <div class="mcat-tags" id="o-categorie-tags"></div>
+                    <input type="text" id="o-categorie-input" placeholder="🔍 Tapez les premières lettres du métier…" autocomplete="off">
+                    <div class="mcat-dropdown" id="o-categorie-dropdown"></div>
+                  </div>
                 </div>
                 <div class="field"><label>Ville</label><input type="text" id="o-ville" required></div>
               </div>
@@ -833,6 +876,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
                   </div>
                 </div>
               </div>
+              <div class="field"><label>E-mail (optionnel)</label><input type="email" id="o-email" placeholder="vous@exemple.com"></div>
               <div class="field">
                 <label>Localisation (optionnel)</label>
                 <button type="button" class="btn-geo" id="o-geo-btn" onclick="getGeoLocation('o')">📍 Activer ma localisation</button>
@@ -886,10 +930,11 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <div id="parcourir-content" style="display:none;">
           <div class="filter-bar">
             <input type="text" id="search-candidats" placeholder="🔍 Rechercher un nom, une catégorie, une ville…" oninput="renderCandidateGrid()">
-            <input type="text" id="filter-categorie-search" placeholder="🔍 Filtrer par métier…" oninput="filterCategorySelect('filter-categorie', this.value)" style="max-width:200px;">
-            <select id="filter-categorie" onchange="renderCandidateGrid()">
-              <option value="">Toutes les catégories</option>
-            </select>
+            <div class="mcat-picker mcat-picker-filter" id="filter-categorie-picker">
+              <div class="mcat-tags" id="filter-categorie-tags"></div>
+              <input type="text" id="filter-categorie-input" placeholder="🔍 Filtrer par métier(s)…" autocomplete="off">
+              <div class="mcat-dropdown" id="filter-categorie-dropdown"></div>
+            </div>
             <select id="filter-ville" onchange="renderCandidateGrid()">
               <option value="">Toutes les villes</option>
             </select>
@@ -952,6 +997,8 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <button class="sub-tab-btn" data-sub="valides" onclick="openAdminSub('valides')">Candidats validés</button>
             <button class="sub-tab-btn" data-sub="offres-attente" onclick="openAdminSub('offres-attente')">Offres à valider</button>
             <button class="sub-tab-btn" data-sub="offres" onclick="openAdminSub('offres')">Offres validées</button>
+            <button class="sub-tab-btn" data-sub="candidats-live" onclick="openAdminSub('candidats-live')">👀 Parcourir candidats</button>
+            <button class="sub-tab-btn" data-sub="offres-live" onclick="openAdminSub('offres-live')">👀 Parcourir offres</button>
             <button class="sub-tab-btn" data-sub="paiements" onclick="openAdminSub('paiements')">💳 Paiements</button>
             <button class="sub-tab-btn" data-sub="galerie" onclick="openAdminSub('galerie')">📸 Galerie</button>
             <button class="sub-tab-btn" data-sub="stats" onclick="openAdminSub('stats')">Statistiques</button>
@@ -976,6 +1023,18 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <h3>Offres validées</h3>
           <p class="hint">Les offres bloquées n'apparaissent plus publiquement, mais restent conservées ici.</p>
           <div id="list-offres"><p class="empty-state">Chargement…</p></div>
+        </div>
+        <div id="adm-candidats-live" class="sub-panel card">
+          <h3>👀 Parcourir les candidats — vue en temps réel</h3>
+          <p class="hint">Exactement ce que voient les recruteurs en ce moment : seuls les profils validés ET en ligne (paiement vérifié) apparaissent ici.</p>
+          <input type="text" id="adm-search-candidats" placeholder="🔍 Rechercher un nom, une catégorie, une ville…" oninput="renderAdminCandidatsLive()" style="margin-bottom:14px;max-width:340px;">
+          <div class="cand-grid" id="adm-cand-grid"><p class="empty-state">Chargement…</p></div>
+        </div>
+        <div id="adm-offres-live" class="sub-panel card">
+          <h3>👀 Parcourir les offres — vue en temps réel</h3>
+          <p class="hint">Exactement ce que voient les candidats en ce moment : seules les offres validées ET en ligne (paiement vérifié) apparaissent ici.</p>
+          <input type="text" id="adm-search-offres" placeholder="🔍 Rechercher un titre, une catégorie, une ville…" oninput="renderAdminOffresLive()" style="margin-bottom:14px;max-width:340px;">
+          <div id="adm-offres-list"><p class="empty-state">Chargement…</p></div>
         </div>
         <div id="adm-paiements" class="sub-panel card">
           <h3>Paiements à vérifier</h3>
@@ -1053,6 +1112,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <a class="share-btn" target="_blank" href="https://wa.me/2250749970918">+225 07 49 97 09 18</a>
       </div>
       <p style="margin-top:14px;font-size:0.85rem;color:rgba(251,244,230,0.7);">Ligne fixe : +225 27 23 29 25 67</p>
+      <p style="margin-top:4px;font-size:0.85rem;color:rgba(251,244,230,0.7);">E-mail : <a href="mailto:shamanchooz@gmail.com" style="color:var(--gold-light);">shamanchooz@gmail.com</a></p>
     </div>
     <div class="footer-bottom">
       <span>© <span id="year"></span> SHAMAN CHOOZ PRODUCTION — Prestataire de service, casting &amp; recrutement.</span>
@@ -1635,15 +1695,8 @@ const CATEGORIES = {
   ]
 };
 function populateCategorySelects(){
-  const groupsHtml = Object.entries(CATEGORIES).map(([groupe, items])=>
-    `<optgroup label="${groupe}">` + items.map(i=>`<option>${i}</option>`).join('') + '</optgroup>'
-  ).join('');
-  ['c-categorie','o-categorie'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.innerHTML = '<option value="">Choisir…</option>' + groupsHtml;
-  });
-  const filterEl = document.getElementById('filter-categorie');
-  if(filterEl) filterEl.innerHTML = '<option value="">Toutes les catégories</option>' + groupsHtml;
+  // Les 4 champs catégorie utilisent désormais le sélecteur multi-catégories (voir plus bas) :
+  // rien à peupler ici, conservé pour compatibilité avec d'éventuels appels existants.
 }
 populateCategorySelects();
 
@@ -1651,24 +1704,79 @@ populateCategorySelects();
 function normalizeSearchStr(s){
   return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 }
-function filterCategorySelect(selectId, query){
-  const select = document.getElementById(selectId);
-  if(!select) return;
-  const q = normalizeSearchStr(query.trim());
-  select.querySelectorAll('optgroup').forEach(group=>{
-    let anyVisible = false;
-    group.querySelectorAll('option').forEach(opt=>{
-      const match = !q || normalizeSearchStr(opt.textContent).includes(q);
-      opt.hidden = !match;
-      opt.disabled = !match;
-      if(match) anyVisible = true;
-    });
-    group.hidden = !anyVisible;
+
+/* ============ SÉLECTEUR MULTI-CATÉGORIES (jusqu'à 10 métiers, avec suggestions) ============ */
+const MAX_CATEGORIES = 10;
+const categoryPickerState = {};
+function initCategoryPicker(id, onChange){
+  categoryPickerState[id] = [];
+  const box = document.getElementById(id+'-picker');
+  const input = document.getElementById(id+'-input');
+  if(!box || !input) return;
+  box.dataset.onchange = onChange || '';
+  input.addEventListener('input', ()=>renderCategoryDropdown(id));
+  input.addEventListener('focus', ()=>renderCategoryDropdown(id));
+  box.addEventListener('click', ()=>input.focus());
+  document.addEventListener('click', (e)=>{
+    if(!box.contains(e.target)) document.getElementById(id+'-dropdown').style.display='none';
   });
-  // Si l'option actuellement choisie n'est plus visible (masquée par le filtre), on réinitialise le choix.
-  const current = select.querySelector(`option[value="${CSS.escape(select.value)}"]`);
-  if(select.value && current && current.hidden){ select.value=''; select.dispatchEvent(new Event('change')); }
 }
+function renderCategoryDropdown(id){
+  const input = document.getElementById(id+'-input');
+  const dropdown = document.getElementById(id+'-dropdown');
+  const selected = categoryPickerState[id] || [];
+  if(selected.length >= MAX_CATEGORIES){
+    dropdown.innerHTML = '<div class="mcat-limit">Maximum 10 catégories atteint — retirez-en une pour en ajouter une autre.</div>';
+    dropdown.style.display='block';
+    return;
+  }
+  const q = normalizeSearchStr(input.value.trim());
+  let matches = ALL_METIERS.filter(m=>!selected.includes(m) && (!q || normalizeSearchStr(m).includes(q)));
+  matches = matches.slice(0,40);
+  if(matches.length===0){ dropdown.style.display='none'; return; }
+  dropdown.innerHTML = matches.map(m=>`<div class="mcat-option" onclick="addCategoryTag('${id}','${m.replace(/'/g,"\\'")}')">${m}</div>`).join('');
+  dropdown.style.display='block';
+}
+function addCategoryTag(id, metier){
+  const selected = categoryPickerState[id] || (categoryPickerState[id]=[]);
+  if(selected.includes(metier) || selected.length>=MAX_CATEGORIES) return;
+  selected.push(metier);
+  renderCategoryTags(id);
+  const input = document.getElementById(id+'-input');
+  input.value=''; input.focus();
+  renderCategoryDropdown(id);
+  triggerCategoryPickerChange(id);
+}
+function removeCategoryTag(id, metier){
+  categoryPickerState[id] = (categoryPickerState[id]||[]).filter(m=>m!==metier);
+  renderCategoryTags(id);
+  triggerCategoryPickerChange(id);
+}
+function renderCategoryTags(id){
+  const tagsBox = document.getElementById(id+'-tags');
+  if(!tagsBox) return;
+  tagsBox.innerHTML = (categoryPickerState[id]||[]).map(m=>
+    `<span class="mcat-tag">${m}<button type="button" onclick="event.stopPropagation();removeCategoryTag('${id}','${m.replace(/'/g,"\\'")}')" aria-label="Retirer">✕</button></span>`
+  ).join('');
+}
+function triggerCategoryPickerChange(id){
+  if(id==='filter-categorie') renderCandidateGrid();
+  if(id==='filter-categorie-offres') renderPublicOffersList();
+}
+function getCategoryValue(id){
+  return (categoryPickerState[id]||[]).join(', ');
+}
+function getCategoryArray(id){
+  return categoryPickerState[id]||[];
+}
+function resetCategoryPicker(id){
+  categoryPickerState[id] = [];
+  renderCategoryTags(id);
+  const dropdown = document.getElementById(id+'-dropdown');
+  if(dropdown) dropdown.style.display='none';
+}
+['c-categorie','o-categorie','filter-categorie','filter-categorie-offres'].forEach(id=>initCategoryPicker(id));
+
 
 /* ============ LIGHTBOX (zoom photos) ============ */
 function openLightbox(src){
@@ -1738,6 +1846,14 @@ function toggleChat(){
     chatStarted = true;
     addBotMessage("Bonjour, ici SHAMAN CHOOZ PRODUCTION 👋 Je peux déjà vous aider. Cherchez-vous du travail, ou avez-vous besoin de recruter quelqu'un ?");
   }
+  if(!panel.classList.contains('active')){
+    // On coupe le micro et la voix quand on ferme le chat, pour ne rien écouter en arrière-plan.
+    if(typeof stopListening==='function') stopListening();
+    if(handsFreeMode) handsFreeMode = false;
+    const handsFreeBtn = document.getElementById('chat-handsfree-toggle');
+    if(handsFreeBtn){ handsFreeBtn.classList.remove('active'); handsFreeBtn.textContent='🎧 Mode mains libres'; }
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+  }
 }
 function addUserMessage(text){
   const body = document.getElementById('chat-body');
@@ -1754,7 +1870,102 @@ function addBotMessage(text){
   div.textContent = text;
   body.appendChild(div);
   body.scrollTop = body.scrollHeight;
+  if(voiceRepliesEnabled) speakText(text);
 }
+
+/* ============ VOCAL : DICTÉE (micro), LECTURE AUDIO & MODE MAINS LIBRES ============ */
+// Fonctions natives du navigateur, gratuites, sans envoi à un serveur externe.
+// Utile pour les personnes qui préfèrent parler plutôt qu'écrire.
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let voiceRepliesEnabled = false;
+let handsFreeMode = false;
+let recognizer = null;
+let isRecording = false;
+
+function initVoiceFeatures(){
+  const micBtn = document.getElementById('chat-mic-btn');
+  const voiceBar = document.getElementById('chat-voice-bar');
+  if(SpeechRecognitionAPI){
+    if(micBtn) micBtn.style.display = '';
+    if(voiceBar) voiceBar.style.display = '';
+  }
+}
+function startListening(){
+  if(!SpeechRecognitionAPI || isRecording) return;
+  const micBtn = document.getElementById('chat-mic-btn');
+  recognizer = new SpeechRecognitionAPI();
+  recognizer.lang = 'fr-FR';
+  recognizer.interimResults = false;
+  recognizer.maxAlternatives = 1;
+  recognizer.onstart = ()=>{ isRecording = true; micBtn.classList.add('recording'); micBtn.textContent='⏺️'; };
+  recognizer.onerror = (e)=>{
+    isRecording = false; micBtn.classList.remove('recording'); micBtn.textContent='🎤';
+    // En mode mains libres, on retente automatiquement (sauf refus du micro ou arrêt volontaire).
+    if(handsFreeMode && e.error!=='not-allowed' && e.error!=='aborted'){
+      setTimeout(()=>{ if(handsFreeMode) startListening(); }, 900);
+    }
+  };
+  recognizer.onend = ()=>{ isRecording = false; micBtn.classList.remove('recording'); micBtn.textContent='🎤'; };
+  recognizer.onresult = (event)=>{
+    const transcript = event.results[0][0].transcript;
+    document.getElementById('chat-input').value = transcript;
+    sendChatMessage();
+  };
+  recognizer.start();
+}
+function stopListening(){
+  if(recognizer) recognizer.stop();
+}
+function toggleVoiceInput(){
+  if(!SpeechRecognitionAPI) return;
+  if(isRecording) stopListening(); else startListening();
+}
+function toggleHandsFree(){
+  if(!SpeechRecognitionAPI) return;
+  handsFreeMode = !handsFreeMode;
+  const btn = document.getElementById('chat-handsfree-toggle');
+  btn.classList.toggle('active', handsFreeMode);
+  btn.textContent = handsFreeMode ? '🎧 Mains libres activé — toucher pour arrêter' : '🎧 Mode mains libres';
+  if(handsFreeMode){
+    // La conversation vocale continue implique la lecture audio des réponses.
+    voiceRepliesEnabled = true;
+    const voiceBtn = document.getElementById('chat-voice-toggle');
+    voiceBtn.textContent = '🔊'; voiceBtn.classList.add('active');
+    addBotMessage("Mode mains libres activé : parlez, j'écoute puis je vous réponds à voix haute automatiquement — pas besoin de retoucher le micro. Touchez à nouveau ce bouton pour arrêter.");
+  }else{
+    stopListening();
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+}
+function toggleVoiceReplies(){
+  voiceRepliesEnabled = !voiceRepliesEnabled;
+  const btn = document.getElementById('chat-voice-toggle');
+  btn.textContent = voiceRepliesEnabled ? '🔊' : '🔇';
+  btn.classList.toggle('active', voiceRepliesEnabled);
+  btn.title = voiceRepliesEnabled ? 'Couper la lecture audio des réponses' : 'Activer la lecture audio des réponses';
+  if(!voiceRepliesEnabled && handsFreeMode){
+    // Couper l'audio alors que le mode mains libres tourne n'aurait plus de sens : on l'arrête aussi.
+    toggleHandsFree();
+  }
+  if(voiceRepliesEnabled){
+    speakText("Lecture audio activée. Je lirai désormais mes réponses à voix haute.");
+  }else if(window.speechSynthesis){
+    window.speechSynthesis.cancel();
+  }
+}
+function speakText(text){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel(); // évite d'empiler les phrases si plusieurs messages arrivent vite
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'fr-FR';
+  utter.rate = 1.0;
+  if(handsFreeMode){
+    // Une fois la réponse lue à voix haute, on relance l'écoute automatiquement (conversation en continu).
+    utter.onend = ()=>{ setTimeout(()=>{ if(handsFreeMode && !isRecording) startListening(); }, 300); };
+  }
+  window.speechSynthesis.speak(utter);
+}
+initVoiceFeatures();
 function showTyping(){
   const body = document.getElementById('chat-body');
   const div = document.createElement('div');
@@ -1954,7 +2165,50 @@ function buildReply(rawText){
     return "Notre équipe échange principalement en français, mais n'hésitez pas à écrire dans votre langue sur WhatsApp — nous ferons de notre mieux pour vous répondre clairement.";
   }
 
-  // Repli par défaut, contextualisé selon ce qu'on sait déjà de la personne
+  // Frais de mise en ligne / paiement Mobile Money
+  if(/mise en ligne|frais de (prestation|publication|service)|combien pour (etre|publier|mettre)|paiement (wave|orange|mtn|moov)|mobile money/.test(t)){
+    return "Une fois votre profil ou votre offre validé(e) par notre équipe, la mise en ligne nécessite le règlement des frais de prestation via Mobile Money (Wave, Orange Money, MTN ou Moov selon les instructions affichées). Le montant et le numéro à créditer apparaissent directement dans votre espace après validation, avec la référence à renseigner.";
+  }
+
+  // Paiement qui échoue
+  if(/paiement (echoue|refuse|bloque|ne marche pas)|ca ne marche pas.*(paiement|payer)|erreur.*paiement/.test(t)){
+    return "Si votre paiement ne passe pas, vérifiez d'abord la référence de transaction reçue par SMS, puis réessayez avec une bonne connexion. Si le souci persiste, contactez notre équipe directement sur WhatsApp avec une capture d'écran — ce sera réglé rapidement.";
+  }
+
+  // Curiosité sur le volume de profils/offres disponibles
+  if(/combien de candidats|combien de profils|combien d'offres|y a[- ]t[- ]il (des|beaucoup de)/.test(t)){
+    return "Le nombre de profils et d'offres en ligne évolue chaque jour. Utilisez les filtres par métier, ville ou pays dans « Parcourir les candidats » ou « Parcourir les offres » pour voir ce qui est disponible en ce moment.";
+  }
+
+  // Annulation / suppression de profil ou d'offre
+  if(/annuler (ma|mon) (candidature|profil|offre)|supprimer (mon|ma) (profil|candidature|offre)|me desinscrire|retirer mon profil/.test(t)){
+    return "Pour annuler ou supprimer votre profil ou votre offre, contactez notre équipe directement sur WhatsApp en précisant votre nom et votre numéro d'inscription — nous nous en occupons rapidement.";
+  }
+
+  // Avis, témoignages, preuves de résultats
+  if(/avis|temoignage|des exemples|des resultats|ca marche vraiment|des references clients/.test(t)){
+    return "De nombreux candidats et recruteurs utilisent déjà la plateforme avec satisfaction. N'hésitez pas à créer votre profil ou à publier votre offre pour en faire l'expérience vous-même — notre équipe vous accompagne à chaque étape.";
+  }
+
+  // Photos/vidéos de la galerie du site
+  if(/galerie|vos photos|vos videos|voir des (photos|videos)/.test(t)){
+    return "Un onglet « 📸 Galerie » présente nos photos et vidéos (ambiance de l'agence, castings, coulisses), consultable en plein écran directement depuis le site.";
+  }
+
+  // Nombre de catégories couvertes
+  if(/combien de (metiers|categories|secteurs)|toutes les categories|liste des metiers/.test(t)){
+    return "Nous couvrons plus de 300 catégories de métiers : travaux domestiques, bâtiment, événementiel, santé, sécurité, restauration, artisanat, transport, et bien d'autres. Tapez simplement les premières lettres du métier recherché dans le champ catégorie, une liste de suggestions apparaît aussitôt.";
+  }
+
+
+  // Repli hors sujet : si le message est substantiel (3 mots ou plus) et ne correspond à
+  // aucun sujet reconnu ci-dessus, il sort du cadre du placement/recrutement — on oriente
+  // alors simplement vers un conseiller, sans deviner ni inventer de réponse.
+  const wordCount = t.split(/\s+/).filter(Boolean).length;
+  if(wordCount >= 3){
+    return "Un conseil client va vous recontacter sous 72h pour un entretien plus approfondi. Merci pour la confiance que vous nous accordez 🙏";
+  }
+
   if(chatContext.role === 'candidat'){
     return "Je note bien votre message. Dites-moi le métier qui vous intéresse, ou rendez-vous dans l'onglet Candidat pour créer votre profil — le prestataire reprendra la conversation avec vous dès que possible.";
   }
@@ -2055,6 +2309,74 @@ async function uploadGalerieFiles(files, kind, progressElId){
     uploadGalerieFiles(this.files, 'videos', 'gal-video-progress'); this.value='';
   });
 });
+
+/* ============ ADMIN : PARCOURIR CANDIDATS/OFFRES EN TEMPS RÉEL (vue identique au public) ============ */
+let cachedAdminCandidats = {};
+let cachedAdminOffres = {};
+async function loadAdminCandidatsLive(){
+  const grid = document.getElementById('adm-cand-grid');
+  grid.innerHTML = '<p class="empty-state">Chargement…</p>';
+  cachedAdminCandidats = await fbGet('candidats');
+  await fetchPaiements();
+  renderAdminCandidatsLive();
+}
+function renderAdminCandidatsLive(){
+  const grid = document.getElementById('adm-cand-grid');
+  const search = (document.getElementById('adm-search-candidats')?.value || '').trim().toLowerCase();
+  const list = Object.entries(cachedAdminCandidats).filter(([id,c])=>{
+    if(c.statut!=='valide') return false;
+    if(!isEnLigne('candidat', id)) return false;
+    if(search){
+      const hay = `${c.nom||''} ${c.categorie||''} ${c.ville||''} ${c.bio||''}`.toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+  if(list.length===0){ grid.innerHTML = '<p class="empty-state">Aucun profil en ligne pour le moment.</p>'; return; }
+  grid.innerHTML = list.map(([id,c])=>`
+    <div class="cand-card">
+      ${c.photos && c.photos[0] ? `<img class="photo" src="${c.photos[0]}" alt="${c.nom}">` : `<div class="photo placeholder">Pas de photo</div>`}
+      <div class="body">
+        <div class="cat-badge">${c.categorie||''}</div>
+        <div class="name">${c.nom||''}</div>
+        <div class="meta">${c.age||'–'} ans · ${c.ville||''} · ${c.whatsapp||''}</div>
+        ${c.bio ? `<div class="meta" style="margin-top:-6px;margin-bottom:10px;">${c.bio}</div>` : ''}
+        <button class="btn-mini" onclick="printCandidateDossier('${id}')">🖨️ Imprimer le dossier</button>
+      </div>
+    </div>`).join('');
+}
+async function loadAdminOffresLive(){
+  const listEl = document.getElementById('adm-offres-list');
+  listEl.innerHTML = '<p class="empty-state">Chargement…</p>';
+  cachedAdminOffres = await fbGet('offres');
+  await fetchPaiements();
+  renderAdminOffresLive();
+}
+function renderAdminOffresLive(){
+  const listEl = document.getElementById('adm-offres-list');
+  const search = (document.getElementById('adm-search-offres')?.value || '').trim().toLowerCase();
+  const list = Object.entries(cachedAdminOffres).filter(([id,o])=>{
+    if(o.statut!=='active') return false;
+    if(!isEnLigne('offre', id)) return false;
+    if(search){
+      const hay = `${o.titre||''} ${o.categorie||''} ${o.ville||''} ${o.description||''}`.toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+  if(list.length===0){ listEl.innerHTML = '<p class="empty-state">Aucune offre en ligne pour le moment.</p>'; return; }
+  listEl.innerHTML = list.map(([id,o])=>`
+    <div class="offer-item">
+      <div class="info">
+        <b>${o.titre||''}</b>
+        ${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· date limite '+o.dateLimite : ''} · ${o.contact||''}
+        <div style="margin-top:6px;color:var(--ink-soft);">${o.description||''}</div>
+      </div>
+      <div class="mini-actions">
+        <button class="btn-mini" onclick="printOfferDossier('${id}')">🖨️ Imprimer le dossier</button>
+      </div>
+    </div>`).join('');
+}
 
 /* ============ NAVIGATION TABS ============ */
 function openSpace(name){
@@ -2160,13 +2482,8 @@ async function loadOffersForBrowse(){
   const all = await fbGet('offres');
   cachedOffresPublic = all;
   await fetchPaiements();
-  const catSelect = document.getElementById('filter-categorie-offres');
   const villeSelect = document.getElementById('filter-ville-offres');
   const paysSelect = document.getElementById('filter-pays-offres');
-  const groupsHtml = Object.entries(CATEGORIES).map(([groupe, items])=>
-    `<optgroup label="${groupe}">` + items.map(i=>`<option>${i}</option>`).join('') + '</optgroup>'
-  ).join('');
-  catSelect.innerHTML = '<option value="">Toutes les catégories</option>' + groupsHtml;
   const villes = [...new Set(Object.entries(all).filter(([id,o])=>o.statut==='active' && isEnLigne('offre',id)).map(([id,o])=>o.ville).filter(Boolean))];
   villeSelect.innerHTML = '<option value="">Toutes les villes</option>' + villes.map(v=>`<option>${v}</option>`).join('');
   paysSelect.innerHTML = '<option value="">Tous les pays</option>' + countryOptionsHtml();
@@ -2174,14 +2491,17 @@ async function loadOffersForBrowse(){
 }
 function renderPublicOffersList(){
   const listEl = document.getElementById('offres-public-list');
-  const cat = document.getElementById('filter-categorie-offres').value;
+  const cats = getCategoryArray('filter-categorie-offres');
   const ville = document.getElementById('filter-ville-offres').value;
   const pays = document.getElementById('filter-pays-offres').value;
   const search = (document.getElementById('search-offres')?.value || '').trim().toLowerCase();
   const list = Object.entries(cachedOffresPublic).filter(([id,o])=>{
     if(o.statut!=='active') return false;
     if(!isEnLigne('offre', id)) return false;
-    if(cat && o.categorie!==cat) return false;
+    if(cats.length){
+      const offreCats = (o.categorie||'').split(',').map(s=>s.trim());
+      if(!cats.some(c=>offreCats.includes(c))) return false;
+    }
     if(ville && o.ville!==ville) return false;
     if(pays && detectCountry(o.contact)!==pays) return false;
     if(search){
@@ -2216,6 +2536,8 @@ function openAdminSub(name){
   document.getElementById('adm-'+name).classList.add('active');
   document.querySelector(`#admin-dashboard .sub-tab-btn[data-sub="${name}"]`).classList.add('active');
   if(name==='galerie') loadAdminGalerie();
+  if(name==='candidats-live') loadAdminCandidatsLive();
+  if(name==='offres-live') loadAdminOffresLive();
 }
 
 /* ============ PHOTO SLOTS (candidat) ============ */
@@ -2236,7 +2558,7 @@ function buildPhotoSlots(){
     addSlot.innerHTML = `
       <div class="slot-actions">
         <label class="slot-btn">📷 Photo<input type="file" accept="image/*" capture="environment" onchange="addGalleryPhoto(this.files[0])"></label>
-        <label class="slot-btn">🖼️ Galerie<input type="file" accept="image/*" onchange="addGalleryPhoto(this.files[0])"></label>
+        <label class="slot-btn">🖼️ Galerie (plusieurs photos)<input type="file" accept="image/*" multiple onchange="addGalleryPhotos(Array.from(this.files));this.value=''"></label>
       </div>`;
     wrap.appendChild(addSlot);
   }
@@ -2265,6 +2587,16 @@ async function addGalleryPhoto(file){
   if(!file || candidatePhotos.length >= MAX_PHOTOS) return;
   const dataUrl = await compressImage(file);
   candidatePhotos.push(dataUrl);
+  buildPhotoSlots();
+}
+async function addGalleryPhotos(files){
+  if(!files || files.length===0) return;
+  const remaining = MAX_PHOTOS - candidatePhotos.length;
+  const toAdd = files.slice(0, remaining);
+  for(const f of toAdd){
+    const dataUrl = await compressImage(f);
+    candidatePhotos.push(dataUrl);
+  }
   buildPhotoSlots();
 }
 function removeGalleryPhoto(i){
@@ -2348,6 +2680,11 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
   }
   const whatsapp = buildInternationalNumber(dial, localNum);
 
+  if(getCategoryArray('c-categorie').length===0){
+    msg.className='form-msg err'; msg.textContent="Choisissez au moins une catégorie de métier.";
+    return;
+  }
+
   const cvFile = cvSelectedFile;
   if(cvFile && cvFile.size > MAX_FILE_SIZE){
     msg.className='form-msg err'; msg.textContent="Le CV est trop volumineux (8 Mo maximum).";
@@ -2366,7 +2703,8 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     age: document.getElementById('c-age').value,
     ville: document.getElementById('c-ville').value.trim(),
     whatsapp,
-    categorie: document.getElementById('c-categorie').value,
+    email: document.getElementById('c-email').value.trim(),
+    categorie: getCategoryValue('c-categorie'),
     bio: document.getElementById('c-bio').value.trim(),
     photos: candidatePhotos,
     photoIdentite: singlePhotos.id,
@@ -2390,6 +2728,7 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     docsSelectedFiles = [];
     renderDocsChips();
     populateDialSelects();
+    resetCategoryPicker('c-categorie');
     candidateGeo = null;
     document.getElementById('c-geo-result').innerHTML='';
     document.getElementById('c-geo-btn').textContent='📍 Activer ma localisation';
@@ -2624,11 +2963,17 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
   }
   const contact = buildInternationalNumber(dial, localNum);
 
+  if(getCategoryArray('o-categorie').length===0){
+    msg.className='form-msg err'; msg.textContent="Choisissez au moins une catégorie de métier recherchée.";
+    return;
+  }
+
   btn.disabled=true; spinner.classList.add('show'); label.textContent='Publication…';
   const data = {
     titre: document.getElementById('o-titre').value.trim(),
     description: document.getElementById('o-description').value.trim(),
-    categorie: document.getElementById('o-categorie').value,
+    categorie: getCategoryValue('o-categorie'),
+    email: document.getElementById('o-email').value.trim(),
     ville: document.getElementById('o-ville').value.trim(),
     dateLimite: document.getElementById('o-date').value,
     contact,
@@ -2639,6 +2984,7 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
   const resetForm = ()=>{
     e.target.reset();
     populateDialSelects();
+    resetCategoryPicker('o-categorie');
     offreGeo = null;
     document.getElementById('o-geo-result').innerHTML='';
     document.getElementById('o-geo-btn').textContent='📍 Activer ma localisation';
@@ -2678,14 +3024,17 @@ async function loadCandidatesForBrowse(){
 }
 function renderCandidateGrid(){
   const grid = document.getElementById('cand-grid');
-  const cat = document.getElementById('filter-categorie').value;
+  const cats = getCategoryArray('filter-categorie');
   const ville = document.getElementById('filter-ville').value;
   const pays = document.getElementById('filter-pays').value;
   const search = (document.getElementById('search-candidats')?.value || '').trim().toLowerCase();
   const list = Object.entries(cachedCandidates).filter(([id,c])=>{
     if(c.statut!=='valide') return false;
     if(!isEnLigne('candidat', id)) return false;
-    if(cat && c.categorie!==cat) return false;
+    if(cats.length){
+      const candCats = (c.categorie||'').split(',').map(s=>s.trim());
+      if(!cats.some(x=>candCats.includes(x))) return false;
+    }
     if(ville && c.ville!==ville) return false;
     if(pays && detectCountry(c.whatsapp)!==pays) return false;
     if(search){

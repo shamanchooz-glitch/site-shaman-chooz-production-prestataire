@@ -1008,6 +1008,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <button class="sub-tab-btn" data-sub="offres" onclick="openAdminSub('offres')">Offres validées</button>
             <button class="sub-tab-btn" data-sub="candidats-live" onclick="openAdminSub('candidats-live')">👀 Parcourir candidats</button>
             <button class="sub-tab-btn" data-sub="offres-live" onclick="openAdminSub('offres-live')">👀 Parcourir offres</button>
+            <button class="sub-tab-btn" data-sub="chats" onclick="openAdminSub('chats')">💬 Visiteurs &amp; conversations</button>
             <button class="sub-tab-btn" data-sub="paiements" onclick="openAdminSub('paiements')">💳 Paiements</button>
             <button class="sub-tab-btn" data-sub="galerie" onclick="openAdminSub('galerie')">📸 Galerie</button>
             <button class="sub-tab-btn" data-sub="stats" onclick="openAdminSub('stats')">Statistiques</button>
@@ -1044,6 +1045,15 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <p class="hint">Exactement ce que voient les candidats en ce moment : seules les offres validées ET en ligne (paiement vérifié) apparaissent ici.</p>
           <input type="text" id="adm-search-offres" placeholder="🔍 Rechercher un titre, une catégorie, une ville…" oninput="renderAdminOffresLive()" style="margin-bottom:14px;max-width:340px;">
           <div id="adm-offres-list"><p class="empty-state">Chargement…</p></div>
+        </div>
+        <div id="adm-chats" class="sub-panel card">
+          <h3>💬 Visiteurs &amp; conversations du chatbot</h3>
+          <p class="hint">Toutes les conversations tenues avec le chatbot, y compris celles des visiteurs qui n'ont soumis ni candidature ni offre. Le prénom et le numéro WhatsApp affichés sont ceux mentionnés spontanément dans la discussion.</p>
+          <input type="text" id="adm-search-chats" placeholder="🔍 Rechercher un prénom, un numéro, un mot…" oninput="renderAdminChatSessions()" style="margin-bottom:14px;max-width:340px;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;margin-bottom:14px;">
+            <input type="checkbox" id="adm-chats-only-unconverted" onchange="renderAdminChatSessions()"> N'afficher que les visiteurs qui n'ont pas encore soumis de candidature/offre
+          </label>
+          <div id="adm-chats-list"><p class="empty-state">Chargement…</p></div>
         </div>
         <div id="adm-paiements" class="sub-panel card">
           <h3>Paiements à vérifier</h3>
@@ -1238,6 +1248,15 @@ function adminLogout(){
 /* ============ FIREBASE HELPERS (REST via fetch) ============ */
 async function fbGet(path){
   const res = await fetch(`${FIREBASE_URL}/${path}.json`);
+  const data = await res.json();
+  return data || {};
+}
+// fbGetAdmin sert aux lectures réservées à l'équipe (ex. conversations du chatbot) :
+// elle joint le jeton Firebase Auth, requis par les règles de sécurité pour ces données.
+async function fbGetAdmin(path){
+  const token = await ensureAdminToken();
+  const url = `${FIREBASE_URL}/${path}.json` + (token ? `?auth=${token}` : '');
+  const res = await fetch(url);
   const data = await res.json();
   return data || {};
 }
@@ -1847,7 +1866,42 @@ function findMetierMatch(text){
 }
 
 let chatStarted = false;
-const chatContext = { role:null, metier:null, nom:null };
+const chatContext = { role:null, metier:null, nom:null, contact:null };
+const chatSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2,9);
+let chatLogSeq = 0;
+
+// Reconnaît un numéro de téléphone (8 à 15 chiffres, espaces/+/- tolérés) dans un message.
+function extractPhoneFromText(text){
+  const m = text.match(/(\+?\d[\d \-.]{7,16}\d)/);
+  if(!m) return null;
+  const digits = m[1].replace(/\D/g,'');
+  return digits.length>=8 ? digits : null;
+}
+// Reconnaît un prénom/nom annoncé ("je m'appelle X", "je suis X", "mon nom est X").
+function extractNameFromText(text){
+  const m = text.match(/(?:je m'appelle|je m appelle|moi c'est|moi c est|mon nom est|je suis)\s+([a-zA-ZÀ-ÿ' -]{2,30})/i);
+  if(!m) return null;
+  return m[1].trim().replace(/\s+(et|je|,).*$/i,'');
+}
+// Envoie chaque message (visiteur et bot) vers Firebase pour que l'admin puisse relire
+// les conversations plus tard, même si la personne n'a rien soumis. Échec silencieux si hors ligne.
+function logChatMessage(role, text){
+  chatLogSeq++;
+  const phone = role==='user' ? extractPhoneFromText(text) : null;
+  const name = role==='user' ? extractNameFromText(text) : null;
+  if(phone) chatContext.contact = phone;
+  if(name) chatContext.nom = name;
+  fbPush('chat_logs', {
+    sessionId: chatSessionId,
+    seq: chatLogSeq,
+    role,
+    text,
+    at: new Date().toISOString(),
+    nom: chatContext.nom || '',
+    contact: chatContext.contact || '',
+    role_visiteur: chatContext.role || ''
+  }).catch(()=>{ /* pas grave si hors ligne, on n'interrompt pas la conversation */ });
+}
 function toggleChat(){
   const panel = document.getElementById('chat-panel');
   panel.classList.toggle('active');
@@ -1871,6 +1925,7 @@ function addUserMessage(text){
   div.textContent = text;
   body.appendChild(div);
   body.scrollTop = body.scrollHeight;
+  logChatMessage('user', text);
 }
 function addBotMessage(text){
   const body = document.getElementById('chat-body');
@@ -1880,6 +1935,7 @@ function addBotMessage(text){
   body.appendChild(div);
   body.scrollTop = body.scrollHeight;
   if(voiceRepliesEnabled) speakText(text);
+  logChatMessage('bot', text);
 }
 
 /* ============ VOCAL : DICTÉE (micro), LECTURE AUDIO, LANGUES, VOIX & MODE MAINS LIBRES ============ */
@@ -2045,11 +2101,13 @@ function hideTyping(){
   const el = document.getElementById('chat-typing-indicator');
   if(el) el.remove();
 }
+let chatUserMsgCount = 0;
 function sendChatMessage(){
   const input = document.getElementById('chat-input');
   const text = input.value.trim();
   if(!text) return;
   addUserMessage(text);
+  chatUserMsgCount++;
   input.value = '';
   respondToMessage(text);
 }
@@ -2059,6 +2117,13 @@ function respondToMessage(rawText){
   setTimeout(()=>{
     hideTyping();
     addBotMessage(buildReply(rawText));
+    // Après quelques échanges, si on n'a pas encore de contact, on le demande gentiment une seule fois.
+    if(chatUserMsgCount===3 && !chatContext.contact && !chatContext.askedContact){
+      chatContext.askedContact = true;
+      setTimeout(()=>{
+        addBotMessage("Au fait, pour qu'on puisse vous recontacter si notre échange s'arrête ici, quel est votre prénom et votre numéro WhatsApp ?");
+      }, 900);
+    }
   }, delay);
 }
 function pick(options){ return options[Math.floor(Math.random()*options.length)]; }
@@ -2444,6 +2509,88 @@ function renderAdminOffresLive(){
     </div>`).join('');
 }
 
+/* ============ ADMIN : VISITEURS & CONVERSATIONS DU CHATBOT ============ */
+let cachedChatSessions = []; // tableau de {sessionId, nom, contact, messages:[...], lastAt, converti}
+async function loadAdminChatSessions(){
+  const listEl = document.getElementById('adm-chats-list');
+  listEl.innerHTML = '<p class="empty-state">Chargement…</p>';
+  const [logs, candidats, offres] = await Promise.all([
+    fbGetAdmin('chat_logs'),
+    fbGet('candidats'),
+    fbGet('offres')
+  ]);
+  // Numéros déjà convertis en candidature/offre, pour repérer qui n'a "rien soumis".
+  const convertedNumbers = new Set();
+  Object.values(candidats||{}).forEach(c=>{ if(c.whatsapp) convertedNumbers.add(c.whatsapp.replace(/\D/g,'')); });
+  Object.values(offres||{}).forEach(o=>{ if(o.contact) convertedNumbers.add(o.contact.replace(/\D/g,'')); });
+
+  const bySession = {};
+  Object.values(logs||{}).forEach(entry=>{
+    if(!entry || !entry.sessionId) return;
+    if(!bySession[entry.sessionId]) bySession[entry.sessionId] = [];
+    bySession[entry.sessionId].push(entry);
+  });
+  cachedChatSessions = Object.entries(bySession).map(([sessionId, messages])=>{
+    messages.sort((a,b)=>(a.seq||0)-(b.seq||0));
+    const last = messages[messages.length-1];
+    const withNom = [...messages].reverse().find(m=>m.nom);
+    const withContact = [...messages].reverse().find(m=>m.contact);
+    const contact = withContact ? withContact.contact : '';
+    return {
+      sessionId,
+      nom: withNom ? withNom.nom : '',
+      contact,
+      messages,
+      lastAt: last ? last.at : '',
+      converti: contact ? convertedNumbers.has(contact) : false
+    };
+  }).sort((a,b)=>(b.lastAt||'').localeCompare(a.lastAt||''));
+  renderAdminChatSessions();
+}
+function renderAdminChatSessions(){
+  const listEl = document.getElementById('adm-chats-list');
+  const search = (document.getElementById('adm-search-chats')?.value || '').trim().toLowerCase();
+  const onlyUnconverted = document.getElementById('adm-chats-only-unconverted')?.checked;
+  const list = cachedChatSessions.filter(s=>{
+    if(onlyUnconverted && s.converti) return false;
+    if(search){
+      const hay = `${s.nom} ${s.contact} ${s.messages.map(m=>m.text).join(' ')}`.toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+  if(list.length===0){ listEl.innerHTML = '<p class="empty-state">Aucune conversation trouvée.</p>'; return; }
+  listEl.innerHTML = list.map(s=>{
+    const dateAff = s.lastAt ? new Date(s.lastAt).toLocaleString('fr-FR') : '';
+    const aperçu = (s.messages.find(m=>m.role==='user')||{}).text || '';
+    return `
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center;">
+        <div>
+          <b>${s.nom || 'Visiteur anonyme'}</b>
+          ${s.contact ? ` · ${s.contact}` : ' · pas de contact laissé'}
+          <div style="font-size:0.78rem;color:var(--ink-soft);">${dateAff}</div>
+        </div>
+        <div>
+          ${s.converti ? '<span class="cat-badge" style="background:#2e6b3e;color:#fff;">✅ A soumis un dossier</span>' : '<span class="cat-badge" style="background:var(--wine);color:#fff;">📞 À relancer</span>'}
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:0.85rem;color:var(--ink-soft);">${aperçu.slice(0,120)}${aperçu.length>120?'…':''}</div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-mini" onclick="toggleChatTranscript('${s.sessionId}')">💬 Voir la conversation (${s.messages.length})</button>
+        ${s.contact ? `<a class="btn-mini" href="https://wa.me/${s.contact}" target="_blank" rel="noopener">📱 Contacter sur WhatsApp</a>` : ''}
+      </div>
+      <div id="transcript-${s.sessionId}" style="display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:10px;">
+        ${s.messages.map(m=>`<div style="margin-bottom:6px;"><b>${m.role==='user'?'Visiteur':'Chatbot'} :</b> ${m.text}</div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleChatTranscript(sessionId){
+  const el = document.getElementById('transcript-'+sessionId);
+  if(el) el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+
 /* ============ NAVIGATION TABS ============ */
 function openSpace(name){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
@@ -2604,6 +2751,7 @@ function openAdminSub(name){
   if(name==='galerie') loadAdminGalerie();
   if(name==='candidats-live') loadAdminCandidatsLive();
   if(name==='offres-live') loadAdminOffresLive();
+  if(name==='chats') loadAdminChatSessions();
 }
 
 /* ============ PHOTO SLOTS (candidat) ============ */

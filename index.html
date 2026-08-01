@@ -385,6 +385,17 @@ nav{display:flex;gap:4px;align-items:center;}
 .dossier-paiement-row .statut-verifie{color:#2C6B2F;font-weight:700;}
 .dossier-paiement-row .statut-soumis{color:#8A6415;font-weight:700;}
 .dossier-paiement-row .statut-rejete{color:var(--wine);font-weight:700;}
+.galerie-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px;}
+.galerie-item{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:1/1;cursor:pointer;box-shadow:var(--shadow);}
+.galerie-item img, .galerie-item video{width:100%;height:100%;object-fit:cover;display:block;}
+.galerie-item .play-badge{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;background:rgba(0,0,0,0.15);pointer-events:none;}
+.galerie-item .del-badge{position:absolute;top:6px;right:6px;background:rgba(122,31,48,0.9);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:0.85rem;z-index:2;}
+@media(max-width:760px){.galerie-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:520px){.galerie-grid{grid-template-columns:repeat(2,1fr);gap:10px;}}
+#video-modal-player{max-width:92vw;max-height:88vh;border-radius:14px;background:#000;}
+.admin-upload-box{border:1.5px dashed var(--gold);border-radius:14px;padding:16px;margin-bottom:18px;background:var(--paper-soft);}
+.admin-upload-box h4{margin-bottom:10px;}
+.upload-progress{font-size:0.82rem;color:var(--ink-soft);margin-top:8px;}
 .cand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
 .cand-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
 .cand-card .photo{width:100%;aspect-ratio:4/5;object-fit:cover;background:var(--paper-soft);}
@@ -486,6 +497,10 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
 
 <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
   <img id="lightbox-img" src="" alt="Photo en plein écran">
+</div>
+
+<div class="lightbox-overlay" id="video-modal" onclick="if(event.target===this)closeVideoModal()">
+  <video id="video-modal-player" controls playsinline></video>
 </div>
 
 <div class="chat-hint" id="chat-hint" onclick="toggleChat();document.getElementById('chat-hint').style.display='none';">
@@ -642,6 +657,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
     <div class="tab-bar">
       <button class="tab-btn active" data-space="candidat" onclick="openSpace('candidat')">Candidat</button>
       <button class="tab-btn" data-space="recruteur" onclick="openSpace('recruteur')">Client / Recruteur</button>
+      <button class="tab-btn" data-space="galerie" onclick="openSpace('galerie')">📸 Galerie</button>
       <button class="tab-btn" data-space="admin" onclick="openSpace('admin')">Admin</button>
     </div>
 
@@ -679,6 +695,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             </div>
             <div class="field">
               <label>Catégorie</label>
+              <input type="text" id="c-categorie-search" placeholder="🔍 Tapez les premières lettres du métier…" oninput="filterCategorySelect('c-categorie', this.value)" style="margin-bottom:8px;">
               <select id="c-categorie" required>
                 <option value="">Choisir…</option>
               </select>
@@ -725,8 +742,11 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
 
           <div class="track-box">
             <h4>Déjà inscrit ? Suivre ma candidature</h4>
-            <div class="track-row">
-              <input type="tel" id="track-whatsapp" placeholder="Votre numéro WhatsApp">
+            <div class="track-row" style="flex-wrap:wrap;">
+              <div class="phone-row" style="flex:1;min-width:220px;">
+                <select id="track-dial" class="dial-select"></select>
+                <input type="tel" id="track-whatsapp" placeholder="07 00 00 00 00">
+              </div>
               <button class="btn-track" onclick="trackCandidate()">Vérifier</button>
             </div>
             <div class="track-result" id="track-result"></div>
@@ -749,13 +769,20 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <div id="offres-gate" class="card admin-gate">
           <h3>Vérification requise</h3>
           <p class="hint">Seuls les candidats dont le profil est validé peuvent parcourir les offres. Entrez le numéro WhatsApp utilisé lors de votre inscription.</p>
-          <div class="field"><label>Numéro WhatsApp</label><input type="tel" id="offres-gate-whatsapp" placeholder="+225 07 00 00 00 00"></div>
+          <div class="field">
+            <label>Numéro WhatsApp</label>
+            <div class="phone-row">
+              <select id="offres-gate-dial" class="dial-select"></select>
+              <input type="tel" id="offres-gate-whatsapp" placeholder="07 00 00 00 00">
+            </div>
+          </div>
           <button class="btn-submit" onclick="checkCandidateAccess()">Vérifier</button>
           <div class="form-msg" id="offres-gate-msg"></div>
         </div>
         <div id="offres-content" style="display:none;">
           <div class="filter-bar">
             <input type="text" id="search-offres" placeholder="🔍 Rechercher un titre, une catégorie, une ville…" oninput="renderPublicOffersList()">
+            <input type="text" id="filter-categorie-offres-search" placeholder="🔍 Filtrer par métier…" oninput="filterCategorySelect('filter-categorie-offres', this.value)" style="max-width:200px;">
             <select id="filter-categorie-offres" onchange="renderPublicOffersList()">
               <option value="">Toutes les catégories</option>
             </select>
@@ -789,6 +816,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               <div class="field-row">
                 <div class="field">
                   <label>Catégorie recherchée</label>
+                  <input type="text" id="o-categorie-search" placeholder="🔍 Tapez les premières lettres du métier…" oninput="filterCategorySelect('o-categorie', this.value)" style="margin-bottom:8px;">
                   <select id="o-categorie" required>
                     <option value="">Choisir…</option>
                   </select>
@@ -819,8 +847,11 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
 
             <div class="track-box">
               <h4>Déjà publié ? Suivre mon offre / activer sa mise en ligne</h4>
-              <div class="track-row">
-                <input type="tel" id="track-offre-whatsapp" placeholder="Votre numéro WhatsApp de contact">
+              <div class="track-row" style="flex-wrap:wrap;">
+                <div class="phone-row" style="flex:1;min-width:220px;">
+                  <select id="track-offre-dial" class="dial-select"></select>
+                  <input type="tel" id="track-offre-whatsapp" placeholder="07 00 00 00 00">
+                </div>
                 <button class="btn-track" onclick="trackOffer()">Vérifier</button>
               </div>
               <div class="track-result" id="track-offre-result"></div>
@@ -842,13 +873,20 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <div id="parcourir-gate" class="card admin-gate">
           <h3>Vérification requise</h3>
           <p class="hint">Seuls les recruteurs ayant au moins une offre validée peuvent parcourir les profils candidats. Entrez le numéro WhatsApp utilisé lors de la publication de votre offre.</p>
-          <div class="field"><label>Numéro WhatsApp</label><input type="tel" id="parcourir-gate-whatsapp" placeholder="+225 07 00 00 00 00"></div>
+          <div class="field">
+            <label>Numéro WhatsApp</label>
+            <div class="phone-row">
+              <select id="parcourir-gate-dial" class="dial-select"></select>
+              <input type="tel" id="parcourir-gate-whatsapp" placeholder="07 00 00 00 00">
+            </div>
+          </div>
           <button class="btn-submit" onclick="checkRecruteurAccess()">Vérifier</button>
           <div class="form-msg" id="parcourir-gate-msg"></div>
         </div>
         <div id="parcourir-content" style="display:none;">
           <div class="filter-bar">
             <input type="text" id="search-candidats" placeholder="🔍 Rechercher un nom, une catégorie, une ville…" oninput="renderCandidateGrid()">
+            <input type="text" id="filter-categorie-search" placeholder="🔍 Filtrer par métier…" oninput="filterCategorySelect('filter-categorie', this.value)" style="max-width:200px;">
             <select id="filter-categorie" onchange="renderCandidateGrid()">
               <option value="">Toutes les catégories</option>
             </select>
@@ -863,6 +901,22 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <p class="empty-state">Chargement des profils…</p>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- GALERIE -->
+    <div id="galerie" class="tab-panel">
+      <div class="sub-tabs">
+        <button class="sub-tab-btn active" data-sub="galerie-photos" onclick="openGalerieSub('galerie-photos')">📷 Parcourir les photos</button>
+        <button class="sub-tab-btn" data-sub="galerie-videos" onclick="openGalerieSub('galerie-videos')">🎬 Parcourir les vidéos</button>
+      </div>
+      <div id="sub-galerie-photos" class="sub-panel active">
+        <p class="hint">Un aperçu en images de la vie de l'agence, de ses candidats et de ses recrutements. Touchez une photo pour l'afficher en plein écran.</p>
+        <div class="galerie-grid" id="galerie-photos-grid"><p class="empty-state">Chargement des photos…</p></div>
+      </div>
+      <div id="sub-galerie-videos" class="sub-panel">
+        <p class="hint">Nos vidéos — castings, présentations, ambiances de l'agence. Touchez une vidéo pour la lire en plein écran.</p>
+        <div class="galerie-grid" id="galerie-videos-grid"><p class="empty-state">Chargement des vidéos…</p></div>
       </div>
     </div>
 
@@ -899,6 +953,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <button class="sub-tab-btn" data-sub="offres-attente" onclick="openAdminSub('offres-attente')">Offres à valider</button>
             <button class="sub-tab-btn" data-sub="offres" onclick="openAdminSub('offres')">Offres validées</button>
             <button class="sub-tab-btn" data-sub="paiements" onclick="openAdminSub('paiements')">💳 Paiements</button>
+            <button class="sub-tab-btn" data-sub="galerie" onclick="openAdminSub('galerie')">📸 Galerie</button>
             <button class="sub-tab-btn" data-sub="stats" onclick="openAdminSub('stats')">Statistiques</button>
           </div>
           <button class="sub-tab-btn" onclick="loadAdminData()" title="Recharger les dernières données">🔄 Actualiser</button>
@@ -926,6 +981,31 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <h3>Paiements à vérifier</h3>
           <p class="hint">Vérifiez la référence de paiement (ID de transaction) auprès de votre opérateur mobile money avant d'activer la mise en ligne. Une fois activé, le profil ou l'offre reste visible jusqu'à la date d'expiration calculée.</p>
           <div id="list-paiements"><p class="empty-state">Chargement…</p></div>
+        </div>
+        <div id="adm-galerie" class="sub-panel card">
+          <h3>Galerie du site (photos &amp; vidéos)</h3>
+          <p class="hint">Ajoutez ici les photos et vidéos qui apparaîtront dans l'onglet public « Galerie », visible par les visiteurs, candidats et recruteurs.</p>
+          <div class="admin-upload-box">
+            <h4>📷 Ajouter des photos</h4>
+            <div class="dual-upload">
+              <label class="slot-btn">📷 Prendre une photo<input type="file" id="gal-photo-camera" accept="image/*" capture="environment"></label>
+              <label class="slot-btn">📁 Choisir des photos<input type="file" id="gal-photo-file" accept="image/*" multiple></label>
+            </div>
+            <div class="upload-progress" id="gal-photo-progress"></div>
+          </div>
+          <div class="admin-upload-box">
+            <h4>🎬 Ajouter des vidéos</h4>
+            <div class="dual-upload">
+              <label class="slot-btn">🎥 Filmer une vidéo<input type="file" id="gal-video-camera" accept="video/*" capture="environment"></label>
+              <label class="slot-btn">📁 Choisir des vidéos<input type="file" id="gal-video-file" accept="video/*" multiple></label>
+            </div>
+            <div class="field-hint">Vidéos jusqu'à 100 Mo par fichier. L'envoi peut prendre quelques instants selon votre connexion.</div>
+            <div class="upload-progress" id="gal-video-progress"></div>
+          </div>
+          <h4 style="margin-top:22px;">Photos publiées</h4>
+          <div class="galerie-grid" id="adm-galerie-photos-grid"><p class="empty-state">Chargement…</p></div>
+          <h4 style="margin-top:22px;">Vidéos publiées</h4>
+          <div class="galerie-grid" id="adm-galerie-videos-grid"><p class="empty-state">Chargement…</p></div>
         </div>
         <div id="adm-stats" class="sub-panel card">
           <h3>Statistiques</h3>
@@ -1094,6 +1174,21 @@ async function fbGet(path){
 }
 async function fbPush(path, data){
   const res = await fetch(`${FIREBASE_URL}/${path}.json`,{
+    method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
+  });
+  const json = await res.json();
+  if(!res.ok || (json && json.error)){
+    throw new Error((json && json.error) || `Erreur Firebase (${res.status})`);
+  }
+  return json;
+}
+// fbPushAdmin sert aux ajouts réservés à l'équipe (ex. galerie photos/vidéos) : elle joint
+// le jeton Firebase Auth, comme fbPatch/fbDelete, car ces écritures ne doivent être
+// possibles que depuis l'espace administrateur connecté.
+async function fbPushAdmin(path, data){
+  const token = await ensureAdminToken();
+  const url = `${FIREBASE_URL}/${path}.json` + (token ? `?auth=${token}` : '');
+  const res = await fetch(url,{
     method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
   });
   const json = await res.json();
@@ -1403,7 +1498,7 @@ const COUNTRIES = [
 ];
 function populateDialSelects(){
   const opts = COUNTRIES.map(c=>`<option value="${c[1]}">${c[0]} (+${c[1]})</option>`).join('');
-  ['c-dial','o-dial'].forEach(id=>{
+  ['c-dial','o-dial','track-dial','offres-gate-dial','track-offre-dial','parcourir-gate-dial'].forEach(id=>{
     const el = document.getElementById(id);
     if(el){ el.innerHTML = opts; el.value = '225'; }
   });
@@ -1552,6 +1647,29 @@ function populateCategorySelects(){
 }
 populateCategorySelects();
 
+/* ============ RECHERCHE EN DIRECT DANS LES CATÉGORIES DE MÉTIERS ============ */
+function normalizeSearchStr(s){
+  return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+}
+function filterCategorySelect(selectId, query){
+  const select = document.getElementById(selectId);
+  if(!select) return;
+  const q = normalizeSearchStr(query.trim());
+  select.querySelectorAll('optgroup').forEach(group=>{
+    let anyVisible = false;
+    group.querySelectorAll('option').forEach(opt=>{
+      const match = !q || normalizeSearchStr(opt.textContent).includes(q);
+      opt.hidden = !match;
+      opt.disabled = !match;
+      if(match) anyVisible = true;
+    });
+    group.hidden = !anyVisible;
+  });
+  // Si l'option actuellement choisie n'est plus visible (masquée par le filtre), on réinitialise le choix.
+  const current = select.querySelector(`option[value="${CSS.escape(select.value)}"]`);
+  if(select.value && current && current.hidden){ select.value=''; select.dispatchEvent(new Event('change')); }
+}
+
 /* ============ LIGHTBOX (zoom photos) ============ */
 function openLightbox(src){
   document.getElementById('lightbox-img').src = src;
@@ -1559,6 +1677,32 @@ function openLightbox(src){
 }
 function closeLightbox(){
   document.getElementById('lightbox').classList.remove('active');
+}
+
+/* ============ GALERIE PUBLIQUE (photos & vidéos) ============ */
+function openVideoModal(src){
+  const player = document.getElementById('video-modal-player');
+  player.src = src;
+  document.getElementById('video-modal').classList.add('active');
+  player.play().catch(()=>{});
+}
+function closeVideoModal(){
+  const player = document.getElementById('video-modal-player');
+  player.pause(); player.src='';
+  document.getElementById('video-modal').classList.remove('active');
+}
+async function loadGaleriePublic(){
+  const photosGrid = document.getElementById('galerie-photos-grid');
+  const videosGrid = document.getElementById('galerie-videos-grid');
+  const [photos, videos] = await Promise.all([fbGet('galerie/photos'), fbGet('galerie/videos')]);
+  const photoEntries = Object.entries(photos||{}).sort((a,b)=>(b[1].date||'').localeCompare(a[1].date||''));
+  const videoEntries = Object.entries(videos||{}).sort((a,b)=>(b[1].date||'').localeCompare(a[1].date||''));
+  photosGrid.innerHTML = photoEntries.length
+    ? photoEntries.map(([id,p])=>`<div class="galerie-item" onclick="openLightbox('${p.url}')"><img src="${p.url}" loading="lazy"></div>`).join('')
+    : '<p class="empty-state">Aucune photo pour le moment.</p>';
+  videosGrid.innerHTML = videoEntries.length
+    ? videoEntries.map(([id,v])=>`<div class="galerie-item" onclick="openVideoModal('${v.url}')"><video src="${v.url}#t=0.5" preload="metadata" muted></video><div class="play-badge">▶️</div></div>`).join('')
+    : '<p class="empty-state">Aucune vidéo pour le moment.</p>';
 }
 
 /* ============ ASSISTANT VIRTUEL (chat) ============ */
@@ -1864,6 +2008,54 @@ async function uploadToCloudinary(file){
   return data.secure_url;
 }
 
+/* ============ GALERIE ADMIN (upload / suppression photos & vidéos) ============ */
+async function loadAdminGalerie(){
+  const photosGrid = document.getElementById('adm-galerie-photos-grid');
+  const videosGrid = document.getElementById('adm-galerie-videos-grid');
+  const [photos, videos] = await Promise.all([fbGet('galerie/photos'), fbGet('galerie/videos')]);
+  const photoEntries = Object.entries(photos||{}).sort((a,b)=>(b[1].date||'').localeCompare(a[1].date||''));
+  const videoEntries = Object.entries(videos||{}).sort((a,b)=>(b[1].date||'').localeCompare(a[1].date||''));
+  photosGrid.innerHTML = photoEntries.length
+    ? photoEntries.map(([id,p])=>`<div class="galerie-item"><img src="${p.url}" loading="lazy" onclick="openLightbox('${p.url}')"><button type="button" class="del-badge" onclick="event.stopPropagation();deleteGalerieItem('photos','${id}')" title="Supprimer">✕</button></div>`).join('')
+    : '<p class="empty-state">Aucune photo publiée pour le moment.</p>';
+  videosGrid.innerHTML = videoEntries.length
+    ? videoEntries.map(([id,v])=>`<div class="galerie-item"><video src="${v.url}#t=0.5" preload="metadata" muted onclick="openVideoModal('${v.url}')"></video><div class="play-badge">▶️</div><button type="button" class="del-badge" onclick="event.stopPropagation();deleteGalerieItem('videos','${id}')" title="Supprimer">✕</button></div>`).join('')
+    : '<p class="empty-state">Aucune vidéo publiée pour le moment.</p>';
+}
+async function deleteGalerieItem(kind, id){
+  if(!confirm('Supprimer cet élément de la galerie ?')) return;
+  await fbDelete(`galerie/${kind}/${id}`);
+  loadAdminGalerie();
+}
+async function uploadGalerieFiles(files, kind, progressElId){
+  const progress = document.getElementById(progressElId);
+  const list = Array.from(files);
+  if(list.length===0) return;
+  for(let i=0;i<list.length;i++){
+    const f = list[i];
+    progress.textContent = `Envoi ${i+1}/${list.length} — ${f.name}…`;
+    try{
+      const url = await uploadToCloudinary(f);
+      await fbPushAdmin(`galerie/${kind}`, {url, date: new Date().toISOString()});
+    }catch(err){
+      progress.textContent = `Échec de l'envoi de « ${f.name} ». Vérifiez votre connexion et réessayez.`;
+      return;
+    }
+  }
+  progress.textContent = `${list.length} fichier(s) ajouté(s) avec succès ✓`;
+  loadAdminGalerie();
+}
+['gal-photo-camera','gal-photo-file'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', function(){
+    uploadGalerieFiles(this.files, 'photos', 'gal-photo-progress'); this.value='';
+  });
+});
+['gal-video-camera','gal-video-file'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', function(){
+    uploadGalerieFiles(this.files, 'videos', 'gal-video-progress'); this.value='';
+  });
+});
+
 /* ============ NAVIGATION TABS ============ */
 function openSpace(name){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
@@ -1871,7 +2063,14 @@ function openSpace(name){
   document.getElementById(name).classList.add('active');
   document.querySelector(`.tab-btn[data-space="${name}"]`).classList.add('active');
   if(name==='recruteur') loadCandidatesForBrowse();
+  if(name==='galerie') loadGaleriePublic();
   if(name==='admin' && document.getElementById('admin-dashboard').style.display!=='none') loadAdminData();
+}
+function openGalerieSub(name){
+  document.querySelectorAll('#galerie .sub-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#galerie .sub-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sub-'+name).classList.add('active');
+  document.querySelector(`#galerie .sub-tab-btn[data-sub="${name}"]`).classList.add('active');
 }
 function togglePasswordVisibility(){
   const input = document.getElementById('admin-password');
@@ -1920,7 +2119,9 @@ async function checkCandidateAccess(){
   if(!num){ msg.className='form-msg err'; msg.textContent='Entrez votre numéro WhatsApp.'; return; }
   msg.className='form-msg'; msg.textContent='Vérification…'; msg.style.display='block';
   const all = await fbGet('candidats');
-  const digits = num.replace(/\D/g,'');
+  const dial = document.getElementById('offres-gate-dial').value;
+  const full = buildInternationalNumber(dial, num.replace(/\D/g,''));
+  const digits = full.replace(/\D/g,'');
   const match = Object.values(all).find(c=>c.whatsapp && c.whatsapp.replace(/\D/g,'')===digits);
   if(!match){ msg.className='form-msg err'; msg.textContent="Aucun profil trouvé avec ce numéro. Inscrivez-vous d'abord dans l'onglet Postuler."; return; }
   if(match.statut!=='valide'){ msg.className='form-msg err'; msg.textContent="Votre profil n'est pas encore validé par notre équipe. Revenez une fois votre candidature validée."; return; }
@@ -1939,7 +2140,9 @@ async function checkRecruteurAccess(){
   if(!num){ msg.className='form-msg err'; msg.textContent='Entrez votre numéro WhatsApp.'; return; }
   msg.className='form-msg'; msg.textContent='Vérification…'; msg.style.display='block';
   const all = await fbGet('offres');
-  const digits = num.replace(/\D/g,'');
+  const dial = document.getElementById('parcourir-gate-dial').value;
+  const full = buildInternationalNumber(dial, num.replace(/\D/g,''));
+  const digits = full.replace(/\D/g,'');
   const match = Object.values(all).find(o=>o.contact && o.contact.replace(/\D/g,'')===digits && o.statut==='active');
   if(!match){ msg.className='form-msg err'; msg.textContent="Aucune offre validée trouvée avec ce numéro. Publiez d'abord une offre, ou attendez sa validation par notre équipe."; return; }
   currentRecruteurWhatsapp = match.contact || num;
@@ -2012,6 +2215,7 @@ function openAdminSub(name){
   document.querySelectorAll('#admin-dashboard .sub-tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('adm-'+name).classList.add('active');
   document.querySelector(`#admin-dashboard .sub-tab-btn[data-sub="${name}"]`).classList.add('active');
+  if(name==='galerie') loadAdminGalerie();
 }
 
 /* ============ PHOTO SLOTS (candidat) ============ */
@@ -2369,7 +2573,9 @@ async function trackCandidate(){
   result.textContent = 'Recherche…';
   const all = await fbGet('candidats');
   await fetchPaiements();
-  const digits = num.replace(/\D/g,'');
+  const dial = document.getElementById('track-dial').value;
+  const full = buildInternationalNumber(dial, num.replace(/\D/g,''));
+  const digits = full.replace(/\D/g,'');
   const entry = Object.entries(all||{}).find(([id,c])=>c.whatsapp && c.whatsapp.replace(/\D/g,'')===digits);
   if(!entry){ result.innerHTML = 'Aucune candidature trouvée avec ce numéro.'; return; }
   const [id, match] = entry;
@@ -2383,7 +2589,9 @@ async function trackOffer(){
   result.textContent = 'Recherche…';
   const all = await fbGet('offres');
   await fetchPaiements();
-  const digits = num.replace(/\D/g,'');
+  const dial = document.getElementById('track-offre-dial').value;
+  const full = buildInternationalNumber(dial, num.replace(/\D/g,''));
+  const digits = full.replace(/\D/g,'');
   const entries = Object.entries(all||{}).filter(([id,o])=>o.contact && o.contact.replace(/\D/g,'')===digits);
   if(entries.length===0){ result.innerHTML = 'Aucune offre trouvée avec ce numéro.'; return; }
   result.innerHTML = entries.map(([id,o])=>`

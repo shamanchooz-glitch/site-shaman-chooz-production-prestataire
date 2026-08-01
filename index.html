@@ -368,6 +368,23 @@ nav{display:flex;gap:4px;align-items:center;}
 .btn-paste{background:var(--paper-soft);border:1.5px solid var(--line);border-radius:8px;padding:0 12px;font-size:0.78rem;font-weight:700;color:var(--ink-soft);flex-shrink:0;}
 .online-status{font-size:0.8rem;color:var(--ink-soft);margin-top:6px;}
 .online-status b{color:inherit;}
+.dossier-overlay{position:fixed;inset:0;background:rgba(28,19,13,0.55);z-index:999;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;}
+.dossier-overlay.hidden{display:none;}
+.dossier-modal{background:#fff;border-radius:16px;max-width:640px;width:100%;padding:28px;position:relative;margin:20px 0;}
+.dossier-modal .close-btn{position:absolute;top:14px;right:14px;background:var(--paper-soft);border:none;width:34px;height:34px;border-radius:50%;font-size:1.1rem;cursor:pointer;}
+.dossier-modal h3{font-size:1.2rem;margin-bottom:4px;}
+.dossier-sub{color:var(--ink-soft);font-size:0.85rem;margin-bottom:18px;}
+.dossier-section{margin-bottom:20px;}
+.dossier-section h4{font-size:0.85rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--wine);margin-bottom:8px;}
+.dossier-table{width:100%;border-collapse:collapse;}
+.dossier-table td{padding:6px 8px;border-bottom:1px solid var(--line);font-size:0.88rem;vertical-align:top;}
+.dossier-table td.label{font-weight:700;width:190px;color:var(--ink-soft);}
+.dossier-photos{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+.dossier-photos img{width:110px;height:110px;object-fit:cover;border-radius:8px;border:1px solid var(--line);}
+.dossier-paiement-row{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:0.85rem;line-height:1.5;}
+.dossier-paiement-row .statut-verifie{color:#2C6B2F;font-weight:700;}
+.dossier-paiement-row .statut-soumis{color:#8A6415;font-weight:700;}
+.dossier-paiement-row .statut-rejete{color:var(--wine);font-weight:700;}
 .cand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
 .cand-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
 .cand-card .photo{width:100%;aspect-ratio:4/5;object-fit:cover;background:var(--paper-soft);}
@@ -964,6 +981,10 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
   </div>
 </footer>
 
+<div class="dossier-overlay hidden" id="dossier-overlay" onclick="if(event.target===this) closeDossierModal()">
+  <div class="dossier-modal" id="dossier-modal-content"></div>
+</div>
+
 <script>
 /* ============ CONFIGURATION ============ */
 // ⚠️ Remplacez cette URL par celle de VOTRE base Firebase Realtime Database
@@ -1069,29 +1090,17 @@ function adminLogout(){
 async function fbGet(path){
   const res = await fetch(`${FIREBASE_URL}/${path}.json`);
   const data = await res.json();
-  if(!res.ok || (data && data.error)){
-    console.error('fbGet refusé sur', path, data);
-    throw new Error('firebase-read-denied: ' + (data && data.error ? data.error : res.status));
-  }
   return data || {};
 }
 async function fbPush(path, data){
   const res = await fetch(`${FIREBASE_URL}/${path}.json`,{
     method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
   });
-  const out = await res.json();
-  if(!res.ok || (out && out.error)){
-    throw new Error('firebase-write-denied: ' + (out && out.error ? out.error : res.status));
+  const json = await res.json();
+  if(!res.ok || (json && json.error)){
+    throw new Error((json && json.error) || `Erreur Firebase (${res.status})`);
   }
-  return out;
-}
-// Une erreur est considérée "vraiment hors-ligne" seulement si le navigateur se
-// signale lui-même hors-ligne, ou si le fetch a échoué au niveau réseau (TypeError
-// "Failed to fetch"). Toute autre erreur (règles Firebase, Cloudinary mal configuré,
-// etc.) est une vraie panne qu'il ne faut jamais déguiser en simple problème de connexion.
-function isGenuinelyOffline(err){
-  if(!navigator.onLine) return true;
-  return !!(err && err.name==='TypeError' && /fetch/i.test(err.message||''));
+  return json;
 }
 // fbPatch et fbDelete servent uniquement aux actions admin (valider, rejeter, bloquer,
 // débloquer, supprimer, notes internes) : elles joignent le jeton Firebase Auth, exigé
@@ -1102,12 +1111,11 @@ async function fbPatch(path, data){
   const res = await fetch(url,{
     method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)
   });
-  const out = await res.json();
-  if(!res.ok || (out && out.error)){
-    console.error('fbPatch refusé sur', path, out);
-    throw new Error('firebase-patch-denied: ' + (out && out.error ? out.error : res.status));
+  const json = await res.json();
+  if(!res.ok || (json && json.error)){
+    throw new Error((json && json.error) || `Erreur Firebase (${res.status})`);
   }
-  return out;
+  return json;
 }
 async function fbDelete(path){
   const token = await ensureAdminToken();
@@ -1118,26 +1126,41 @@ async function fbDelete(path){
 /* ============ PAIEMENTS : FRAIS DE PRESTATION POUR LA MISE EN LIGNE ============
    Un candidat validé ou une offre validée n'apparaît PAS automatiquement dans
    "Parcourir" côté public : il faut en plus un paiement vérifié et non expiré.
-   Chaque paiement est stocké dans candidats/{id}/paiements/{autoId} ou
-   offres/{id}/paiements/{autoId} avec statutPaiement: 'soumis' | 'verifie' | 'rejete'. */
-function getPaiementsList(record){
-  if(!record || !record.paiements) return [];
-  return Object.entries(record.paiements).sort((a,b)=> new Date(b[1].dateSoumission||0) - new Date(a[1].dateSoumission||0));
+   IMPORTANT : les paiements sont stockés dans une collection RACINE paiements/{autoId}
+   (et non imbriqués sous candidats/{id} ou offres/{id}). Un candidat/recruteur n'est pas
+   authentifié Firebase : les règles de sécurité n'autorisent la création publique que de
+   NOUVEAUX enregistrements à la racine d'une collection (exactement comme pour la
+   création d'un candidat ou d'une offre), pas l'ajout d'un enfant sous un enregistrement
+   déjà existant, qui compte comme une modification et exige l'authentification admin. */
+let cachedPaiements = {};
+async function fetchPaiements(){
+  cachedPaiements = await fbGet('paiements') || {};
+  return cachedPaiements;
 }
-function getActivePaiement(record){
+function paiementsFor(type, id){
+  return Object.entries(cachedPaiements)
+    .filter(([k,p])=> p.type===type && p.recordId===id)
+    .sort((a,b)=> new Date(b[1].dateSoumission||0) - new Date(a[1].dateSoumission||0));
+}
+function getActivePaiement(type, id){
   const now = new Date();
-  const actifs = getPaiementsList(record).filter(([k,p])=> p.statutPaiement==='verifie' && p.dateExpiration && new Date(p.dateExpiration) > now);
+  const actifs = paiementsFor(type, id).filter(([k,p])=> p.statutPaiement==='verifie' && p.dateExpiration && new Date(p.dateExpiration) > now);
   actifs.sort((a,b)=> new Date(b[1].dateExpiration) - new Date(a[1].dateExpiration));
   return actifs[0] || null;
 }
-function isEnLigne(record){ return !!getActivePaiement(record); }
-function getPendingPaiement(record){
-  return getPaiementsList(record).find(([k,p])=> p.statutPaiement==='soumis') || null;
+function isEnLigne(type, id){ return !!getActivePaiement(type, id); }
+function getPendingPaiement(type, id){
+  return paiementsFor(type, id).find(([k,p])=> p.statutPaiement==='soumis') || null;
 }
 function formatDateFR(iso){
   if(!iso) return '';
   const d = new Date(iso);
   return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+function formatDateHeureFR(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'numeric'}) + ' à ' + d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
 }
 function joursRestants(iso){
   if(!iso) return 0;
@@ -1241,14 +1264,8 @@ async function syncOfflineQueue(){
         await fbPush(item.type, {...item.data, cv, documents});
         await deleteOfflineSubmission(item.localId);
       }catch(err){
-        if(isGenuinelyOffline(err)){
-          // Toujours pas de connexion fiable : on garde l'élément, nouvel essai plus tard
-          break;
-        }
-        // Vraie erreur (pas un problème réseau) : on log pour que ce soit visible dans
-        // la console, mais on continue avec les éléments suivants au lieu de bloquer
-        // toute la file d'attente indéfiniment sur un seul élément défectueux.
-        console.error('Échec synchronisation élément en attente :', item.type, err);
+        // Toujours pas de connexion fiable : on garde l'élément, nouvel essai plus tard
+        break;
       }
     }
   }finally{
@@ -1939,6 +1956,7 @@ async function loadOffersForBrowse(){
   const listEl = document.getElementById('offres-public-list');
   const all = await fbGet('offres');
   cachedOffresPublic = all;
+  await fetchPaiements();
   const catSelect = document.getElementById('filter-categorie-offres');
   const villeSelect = document.getElementById('filter-ville-offres');
   const paysSelect = document.getElementById('filter-pays-offres');
@@ -1946,7 +1964,7 @@ async function loadOffersForBrowse(){
     `<optgroup label="${groupe}">` + items.map(i=>`<option>${i}</option>`).join('') + '</optgroup>'
   ).join('');
   catSelect.innerHTML = '<option value="">Toutes les catégories</option>' + groupsHtml;
-  const villes = [...new Set(Object.values(all).filter(o=>o.statut==='active' && isEnLigne(o)).map(o=>o.ville).filter(Boolean))];
+  const villes = [...new Set(Object.entries(all).filter(([id,o])=>o.statut==='active' && isEnLigne('offre',id)).map(([id,o])=>o.ville).filter(Boolean))];
   villeSelect.innerHTML = '<option value="">Toutes les villes</option>' + villes.map(v=>`<option>${v}</option>`).join('');
   paysSelect.innerHTML = '<option value="">Tous les pays</option>' + countryOptionsHtml();
   renderPublicOffersList();
@@ -1959,7 +1977,7 @@ function renderPublicOffersList(){
   const search = (document.getElementById('search-offres')?.value || '').trim().toLowerCase();
   const list = Object.entries(cachedOffresPublic).filter(([id,o])=>{
     if(o.statut!=='active') return false;
-    if(!isEnLigne(o)) return false;
+    if(!isEnLigne('offre', id)) return false;
     if(cat && o.categorie!==cat) return false;
     if(ville && o.ville!==ville) return false;
     if(pays && detectCountry(o.contact)!==pays) return false;
@@ -2183,24 +2201,15 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     msg.className='form-msg ok'; msg.textContent="Votre candidature a bien été envoyée. Une fois validée par notre équipe, vous pourrez régler les frais de prestation pour la mettre en ligne — suivez son statut ci-dessous avec votre numéro WhatsApp.";
     resetForm();
   }catch(err){
-    if(isGenuinelyOffline(err) || err.message==='offline'){
-      // Connexion faible, absente, ou coupée en cours d'envoi : on enregistre
-      // la candidature sur le téléphone, elle partira automatiquement dès le retour du réseau.
-      try{
-        await queueOfflineSubmission('candidats', data, cvFile, docFiles);
-        msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre candidature est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
-        resetForm();
-        updateOfflineBanner();
-      }catch(err2){
-        msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
-      }
-    }else{
-      // Vraie erreur (règles Firebase, Cloudinary mal configuré, fichier refusé…) :
-      // on ne doit surtout pas la déguiser en "hors-ligne", sinon la candidature
-      // reste bloquée indéfiniment sans que personne ne s'en aperçoive.
-      console.error('Échec envoi candidature :', err);
-      msg.className='form-msg err';
-      msg.textContent="Votre candidature n'a pas pu être envoyée (" + err.message + "). Réessayez, et si le problème persiste, contactez-nous.";
+    // Connexion faible, absente, ou coupée en cours d'envoi : on enregistre
+    // la candidature sur le téléphone, elle partira automatiquement dès le retour du réseau.
+    try{
+      await queueOfflineSubmission('candidats', data, cvFile, docFiles);
+      msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre candidature est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
+      resetForm();
+      updateOfflineBanner();
+    }catch(err2){
+      msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
     }
   }
   btn.disabled=false; spinner.classList.remove('show'); label.textContent='Envoyer ma candidature';
@@ -2299,18 +2308,23 @@ async function submitPaiement(type, id){
   if(!numero){ msg.className='form-msg err'; msg.textContent='Indiquez votre numéro mobile money utilisé pour payer.'; return; }
   if(!reference){ msg.className='form-msg err'; msg.textContent='Indiquez la référence de paiement reçue après votre paiement.'; return; }
   btn.disabled=true; spinner.classList.add('show'); label.textContent='Envoi…';
-  const data = { periodeJours: periode, montant, devise, operateur, numero, reference,
-    statutPaiement: 'soumis', dateSoumission: new Date().toISOString() };
-  const path = (type==='offre' ? 'offres' : 'candidats') + '/' + id + '/paiements';
   try{
-    await fbPush(path, data);
+    // Nom/contact repris depuis l'enregistrement d'origine, pour l'espace admin et les dossiers imprimés
+    const collection = type==='offre' ? 'offres' : 'candidats';
+    const record = await fbGet(collection + '/' + id) || {};
+    const data = {
+      type, recordId: id,
+      nom: type==='offre' ? (record.titre||'') : (record.nom||''),
+      contact: type==='offre' ? (record.contact||'') : (record.whatsapp||''),
+      periodeJours: periode, montant, devise, operateur, numero, reference,
+      statutPaiement: 'soumis', dateSoumission: new Date().toISOString()
+    };
+    await fbPush('paiements', data);
     msg.className='form-msg ok'; msg.textContent="Paiement soumis. Notre équipe vérifie la référence et active la mise en ligne sous peu.";
     setTimeout(()=>{ if(type==='offre') trackOffer(); else trackCandidate(); }, 900);
     return;
   }catch(err){
-    console.error('Échec envoi paiement :', err);
-    msg.className='form-msg err';
-    msg.textContent="Le paiement n'a pas pu être enregistré (" + err.message + "). Ne refaites pas de paiement : réessayez juste d'envoyer cette référence, ou contactez-nous en gardant votre capture d'écran.";
+    msg.className='form-msg err'; msg.textContent="Échec de l'envoi (connexion ou serveur). Réessayez dans un instant.";
   }
   btn.disabled=false; spinner.classList.remove('show'); label.textContent='Valider mon paiement';
 }
@@ -2328,8 +2342,8 @@ function renderTrackStatus(type, id, record){
     return `<span class="badge badge-expired">${isOffre?'Offre suspendue':'Profil suspendu'}</span><div class="online-status">Contactez notre équipe pour plus d'informations.</div>`;
   }
   if(statut===approvedValue){
-    const active = getActivePaiement(record);
-    const pending = getPendingPaiement(record);
+    const active = getActivePaiement(type, id);
+    const pending = getPendingPaiement(type, id);
     let html = `<span class="badge badge-valide">✅ ${isOffre?'Offre validée':'Profil validé'} par notre équipe</span>`;
     html += `<div class="online-status">Merci de votre candidature et de la confiance que vous nous accordez. `;
     if(active){
@@ -2354,6 +2368,7 @@ async function trackCandidate(){
   if(!num){ result.textContent='Entrez votre numéro WhatsApp.'; return; }
   result.textContent = 'Recherche…';
   const all = await fbGet('candidats');
+  await fetchPaiements();
   const digits = num.replace(/\D/g,'');
   const entry = Object.entries(all||{}).find(([id,c])=>c.whatsapp && c.whatsapp.replace(/\D/g,'')===digits);
   if(!entry){ result.innerHTML = 'Aucune candidature trouvée avec ce numéro.'; return; }
@@ -2367,6 +2382,7 @@ async function trackOffer(){
   if(!num){ result.textContent='Entrez votre numéro WhatsApp.'; return; }
   result.textContent = 'Recherche…';
   const all = await fbGet('offres');
+  await fetchPaiements();
   const digits = num.replace(/\D/g,'');
   const entries = Object.entries(all||{}).filter(([id,o])=>o.contact && o.contact.replace(/\D/g,'')===digits);
   if(entries.length===0){ result.innerHTML = 'Aucune offre trouvée avec ce numéro.'; return; }
@@ -2420,19 +2436,13 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
     msg.className='form-msg ok'; msg.textContent="Votre offre a bien été envoyée. Une fois validée par notre équipe, vous pourrez régler les frais de prestation pour la mettre en ligne — suivez son statut ci-dessus avec « Suivre mon offre ».";
     resetForm();
   }catch(err){
-    if(isGenuinelyOffline(err) || err.message==='offline'){
-      try{
-        await queueOfflineSubmission('offres', data, null, []);
-        msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre offre est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
-        resetForm();
-        updateOfflineBanner();
-      }catch(err2){
-        msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
-      }
-    }else{
-      console.error('Échec envoi offre :', err);
-      msg.className='form-msg err';
-      msg.textContent="Votre offre n'a pas pu être envoyée (" + err.message + "). Réessayez, et si le problème persiste, contactez-nous.";
+    try{
+      await queueOfflineSubmission('offres', data, null, []);
+      msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre offre est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
+      resetForm();
+      updateOfflineBanner();
+    }catch(err2){
+      msg.className='form-msg err'; msg.textContent="Une erreur est survenue, réessayez.";
     }
   }
   btn.disabled=false; spinner.classList.remove('show'); label.textContent="Publier l'offre";
@@ -2444,9 +2454,10 @@ async function loadCandidatesForBrowse(){
   const grid = document.getElementById('cand-grid');
   const all = await fbGet('candidats');
   cachedCandidates = all;
+  await fetchPaiements();
   const villeSelect = document.getElementById('filter-ville');
   const paysSelect = document.getElementById('filter-pays');
-  const villes = [...new Set(Object.values(all).filter(c=>c.statut==='valide' && isEnLigne(c)).map(c=>c.ville).filter(Boolean))];
+  const villes = [...new Set(Object.entries(all).filter(([id,c])=>c.statut==='valide' && isEnLigne('candidat',id)).map(([id,c])=>c.ville).filter(Boolean))];
   villeSelect.innerHTML = '<option value="">Toutes les villes</option>' + villes.map(v=>`<option>${v}</option>`).join('');
   paysSelect.innerHTML = '<option value="">Tous les pays</option>' + countryOptionsHtml();
   renderCandidateGrid();
@@ -2459,7 +2470,7 @@ function renderCandidateGrid(){
   const search = (document.getElementById('search-candidats')?.value || '').trim().toLowerCase();
   const list = Object.entries(cachedCandidates).filter(([id,c])=>{
     if(c.statut!=='valide') return false;
-    if(!isEnLigne(c)) return false;
+    if(!isEnLigne('candidat', id)) return false;
     if(cat && c.categorie!==cat) return false;
     if(ville && c.ville!==ville) return false;
     if(pays && detectCountry(c.whatsapp)!==pays) return false;
@@ -2528,23 +2539,16 @@ async function checkAdminLogin(){
   }
 })();
 async function loadAdminData(){
-  let all, offres;
-  try{
-    all = await fbGet('candidats');
-    offres = await fbGet('offres');
-  }catch(err){
-    const el = document.getElementById('list-paiements');
-    if(el) el.innerHTML = '<p class="empty-state" style="color:#7A1F30;font-weight:700;">⚠️ Impossible de lire les données ('+err.message+'). Vérifiez les règles de sécurité de votre base Firebase (Realtime Database → Rules) : la lecture doit être autorisée pour l\'espace admin.</p>';
-    console.error('loadAdminData a échoué :', err);
-    return;
-  }
+  const all = await fbGet('candidats');
+  const offres = await fbGet('offres');
+  await fetchPaiements();
   window._adminCandidats = all || {};
   window._adminOffres = offres || {};
   renderAdminCandidates(all, ['en_attente'], 'list-valider', 'attente');
   renderAdminCandidates(all, ['valide','bloque'], 'list-valides', 'gestion');
   renderAdminOffres(offres, ['en_attente'], 'list-offres-attente', 'attente');
   renderAdminOffres(offres, ['active','bloque'], 'list-offres', 'gestion');
-  renderAdminPaiements(all, offres);
+  renderAdminPaiements();
   renderStats(all, offres);
 }
 function renderAdminCandidates(all, statuts, elId, mode){
@@ -2556,8 +2560,8 @@ function renderAdminCandidates(all, statuts, elId, mode){
     const docsHtml = docs.length ? `<div class="admin-docs">${docs.map(d=>`<a href="${d.url}" target="_blank" rel="noopener" class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;">📎 ${d.label}</a>`).join(' ')}</div>` : '';
     const geoHtml = c.geo ? ` · <a href="https://www.google.com/maps?q=${c.geo.lat},${c.geo.lng}" target="_blank">📍 Localisation</a>` : '';
     const blocBadge = c.statut==='bloque' ? '<span class="badge-bloque">Bloqué</span>' : '';
-    const enLigneP = getActivePaiement(c);
-    const attentePaiement = getPendingPaiement(c);
+    const enLigneP = getActivePaiement('candidat', id);
+    const attentePaiement = getPendingPaiement('candidat', id);
     const onlineHtml = enLigneP
       ? `<div class="online-status">🟢 En ligne jusqu'au <b>${formatDateFR(enLigneP[1].dateExpiration)}</b> (${joursRestants(enLigneP[1].dateExpiration)} j restant(s))</div>`
       : attentePaiement
@@ -2581,6 +2585,7 @@ function renderAdminCandidates(all, statuts, elId, mode){
       </div>
       <div class="mini-actions">
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(c.whatsapp||'').replace(/\D/g,'')}">Contacter</a>
+        <button class="btn-mini" style="background:var(--paper-soft);color:var(--ink);" onclick="viewCandidateDossier('${id}')">👁️ Voir le profil</button>
         <button class="btn-mini btn-print" onclick="printCandidateDossier('${id}')">🖨️ Imprimer</button>
         ${actions}
       </div>
@@ -2594,8 +2599,8 @@ function renderAdminOffres(offres, statuts, elId, mode){
   el.innerHTML = entries.map(([id,o])=>{
     const geoHtml = o.geo ? ` · <a href="https://www.google.com/maps?q=${o.geo.lat},${o.geo.lng}" target="_blank">📍 Localisation</a>` : '';
     const blocBadge = o.statut==='bloque' ? '<span class="badge-bloque">Bloquée</span>' : '';
-    const enLigneP = getActivePaiement(o);
-    const attentePaiement = getPendingPaiement(o);
+    const enLigneP = getActivePaiement('offre', id);
+    const attentePaiement = getPendingPaiement('offre', id);
     const onlineHtml = enLigneP
       ? `<div class="online-status">🟢 En ligne jusqu'au <b>${formatDateFR(enLigneP[1].dateExpiration)}</b> (${joursRestants(enLigneP[1].dateExpiration)} j restant(s))</div>`
       : attentePaiement
@@ -2619,6 +2624,7 @@ function renderAdminOffres(offres, statuts, elId, mode){
       </div>
       <div class="mini-actions">
         <a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" target="_blank" href="https://wa.me/${(o.contact||'').replace(/\D/g,'')}">Contacter</a>
+        <button class="btn-mini" style="background:var(--paper-soft);color:var(--ink);" onclick="viewOfferDossier('${id}')">👁️ Voir le profil</button>
         <button class="btn-mini btn-print" onclick="printOfferDossier('${id}')">🖨️ Imprimer</button>
         ${actions}
       </div>
@@ -2633,7 +2639,7 @@ function renderStats(all, offres){
   document.getElementById('stat-attente').textContent = vals.filter(c=>c.statut==='en_attente').length;
   document.getElementById('stat-offres').textContent = offVals.filter(o=>o.statut==='active').length;
   document.getElementById('stat-offres-attente').textContent = offVals.filter(o=>o.statut==='en_attente').length;
-  const paiementsAttente = vals.filter(c=>getPendingPaiement(c)).length + offVals.filter(o=>getPendingPaiement(o)).length;
+  const paiementsAttente = Object.values(cachedPaiements).filter(p=>p.statutPaiement==='soumis').length;
   const statPA = document.getElementById('stat-paiements-attente');
   if(statPA) statPA.textContent = paiementsAttente;
 }
@@ -2641,56 +2647,52 @@ function renderStats(all, offres){
 /* ============ ADMIN : VÉRIFICATION DES PAIEMENTS ============
    Liste tous les paiements soumis (candidats + offres) en attente de vérification.
    L'admin vérifie la référence auprès de l'opérateur mobile money avant d'activer. */
-function renderAdminPaiements(all, offres){
+function renderAdminPaiements(){
   const el = document.getElementById('list-paiements');
   if(!el) return;
-  const candItems = Object.entries(all||{}).map(([id,c])=>{
-    const p = getPendingPaiement(c);
-    return p ? {type:'candidat', id, nom:c.nom||'Candidat', sousTitre:`${c.categorie||''} · ${c.ville||''} · ${c.whatsapp||''}`, key:p[0], p:p[1]} : null;
-  }).filter(Boolean);
-  const offItems = Object.entries(offres||{}).map(([id,o])=>{
-    const p = getPendingPaiement(o);
-    return p ? {type:'offre', id, nom:o.titre||'Offre', sousTitre:`${o.categorie||''} · ${o.ville||''} · ${o.contact||''}`, key:p[0], p:p[1]} : null;
-  }).filter(Boolean);
-  const items = [...candItems, ...offItems].sort((a,b)=> new Date(b.p.dateSoumission||0) - new Date(a.p.dateSoumission||0));
+  const items = Object.entries(cachedPaiements)
+    .filter(([key,p])=>p.statutPaiement==='soumis')
+    .sort((a,b)=> new Date(b[1].dateSoumission||0) - new Date(a[1].dateSoumission||0));
   if(items.length===0){ el.innerHTML = '<p class="empty-state">Aucun paiement en attente de vérification.</p>'; return; }
-  el.innerHTML = items.map(it=>{
-    const op = getOperator(it.p.operateur);
+  el.innerHTML = items.map(([key,p])=>{
+    const op = getOperator(p.operateur);
     return `
     <div class="cand-admin-item">
       <div class="info">
-        <b>${it.type==='candidat' ? '👤 ' : '📋 '}${it.nom}</b>${it.sousTitre}
+        <b>${p.type==='candidat' ? '👤 ' : '📋 '}${p.nom||(p.type==='candidat'?'Candidat':'Offre')}</b>${p.contact||''}
         <div class="online-status" style="margin-top:8px;">
-          Durée : <b>${it.p.periodeJours} jour(s)</b> · Montant : <b>${it.p.montant} ${it.p.devise||'FCFA'}</b> · Moyen : <b>${op.label}</b><br>
-          Numéro payeur : <b>${it.p.numero||''}</b><br>
-          Référence : <b>${it.p.reference}</b><br>
-          Soumis le ${formatDateFR(it.p.dateSoumission)}
+          Durée : <b>${p.periodeJours} jour(s)</b> · Montant : <b>${p.montant} ${p.devise||'FCFA'}</b> · Moyen : <b>${op.label}</b><br>
+          Numéro payeur : <b>${p.numero||''}</b><br>
+          Référence : <b>${p.reference}</b><br>
+          Soumis le ${formatDateFR(p.dateSoumission)}
         </div>
       </div>
       <div class="mini-actions">
-        <button class="btn-mini btn-approve" onclick="verifyPaiement('${it.type}','${it.id}','${it.key}')">✅ Vérifier &amp; activer</button>
-        <button class="btn-mini btn-reject" onclick="rejectPaiement('${it.type}','${it.id}','${it.key}')">Rejeter</button>
+        <button class="btn-mini" style="background:var(--paper-soft);color:var(--ink);" onclick="${p.type==='candidat'?'viewCandidateDossier':'viewOfferDossier'}('${p.recordId}')">👁️ Voir le profil</button>
+        <button class="btn-mini btn-approve" onclick="verifyPaiement('${key}')">✅ Vérifier &amp; activer</button>
+        <button class="btn-mini btn-reject" onclick="rejectPaiement('${key}')">Rejeter</button>
       </div>
     </div>`;
   }).join('');
 }
-async function verifyPaiement(type, recordId, paiementKey){
-  const collection = type==='offre' ? 'offres' : 'candidats';
+async function verifyPaiement(paiementKey){
   const now = new Date();
-  const record = (type==='offre' ? window._adminOffres : window._adminCandidats)[recordId];
-  const p = record && record.paiements && record.paiements[paiementKey];
+  const p = cachedPaiements[paiementKey];
   const periode = (p && p.periodeJours) || 30;
   const dateExpiration = new Date(now.getTime() + periode*86400000).toISOString();
-  await fbPatch(`${collection}/${recordId}/paiements/${paiementKey}`, {
-    statutPaiement: 'verifie',
-    dateActivation: now.toISOString(),
-    dateExpiration
-  });
+  try{
+    await fbPatch(`paiements/${paiementKey}`, {
+      statutPaiement: 'verifie',
+      dateActivation: now.toISOString(),
+      dateExpiration
+    });
+  }catch(err){ alert("Échec de la vérification (connexion ou session admin expirée). Réessayez."); }
   loadAdminData();
 }
-async function rejectPaiement(type, recordId, paiementKey){
-  const collection = type==='offre' ? 'offres' : 'candidats';
-  await fbPatch(`${collection}/${recordId}/paiements/${paiementKey}`, {statutPaiement:'rejete'});
+async function rejectPaiement(paiementKey){
+  try{
+    await fbPatch(`paiements/${paiementKey}`, {statutPaiement:'rejete'});
+  }catch(err){ alert("Échec du rejet (connexion ou session admin expirée). Réessayez."); }
   loadAdminData();
 }
 async function approveCandidate(id){ await fbPatch('candidats/'+id, {statut:'valide'}); loadAdminData(); }
@@ -2751,7 +2753,109 @@ function filterAdminSearch(){
   });
 }
 
+/* ============ FICHE COMPLÈTE (vue à l'écran, espace admin) ============ */
+function closeDossierModal(){
+  document.getElementById('dossier-overlay').classList.add('hidden');
+}
+function renderPaiementsHistoryHtml(type, id){
+  const list = paiementsFor(type, id);
+  if(list.length===0) return '<p style="color:var(--ink-soft);font-size:0.85rem;">Aucun paiement enregistré pour le moment.</p>';
+  const statutLabel = {verifie:'✅ Vérifié et activé', soumis:'⏳ Soumis, en attente de vérification', rejete:'❌ Rejeté'};
+  return list.map(([key,p])=>{
+    const op = getOperator(p.operateur);
+    return `<div class="dossier-paiement-row">
+      <span class="statut-${p.statutPaiement}">${statutLabel[p.statutPaiement]||p.statutPaiement}</span> — soumis le ${formatDateHeureFR(p.dateSoumission)}<br>
+      Durée : <b>${p.periodeJours} jour(s)</b> · Montant : <b>${p.montant} ${p.devise||'FCFA'}</b> · Moyen : <b>${op.label}</b><br>
+      Numéro utilisé pour payer : <b>${p.numero||''}</b><br>
+      Référence de paiement (ID de transaction) : <b>${p.reference||''}</b>
+      ${p.dateExpiration ? `<br>Mise en ligne du ${formatDateFR(p.dateActivation)} au <b>${formatDateFR(p.dateExpiration)}</b>` : ''}
+    </div>`;
+  }).join('');
+}
+function viewCandidateDossier(id){
+  const c = (window._adminCandidats||{})[id];
+  if(!c) return;
+  const photosHtml = (c.photos||[]).map(p=>`<img src="${p}">`).join('');
+  const docs = [c.cv ? {...c.cv, label:'CV'} : null, ...(c.documents||[]).map(d=>({...d, label:'Document'}))].filter(Boolean);
+  const docsHtml = docs.length ? docs.map(d=>`<a href="${d.url}" target="_blank" rel="noopener">📎 ${d.label}</a>`).join(' · ') : '—';
+  document.getElementById('dossier-modal-content').innerHTML = `
+    <button class="close-btn" onclick="closeDossierModal()">✕</button>
+    <h3>${c.nom||''}</h3>
+    <div class="dossier-sub">${c.categorie||''} · ${c.ville||''} · Candidature ${c.statut||''}</div>
+    <div class="dossier-section">
+      <h4>Identité</h4>
+      <table class="dossier-table">
+        <tr><td class="label">Âge</td><td>${c.age||'–'}</td></tr>
+        <tr><td class="label">Ville</td><td>${c.ville||''}</td></tr>
+        <tr><td class="label">Catégorie</td><td>${c.categorie||''}</td></tr>
+        <tr><td class="label">Numéro WhatsApp (inscription)</td><td>${c.whatsapp||''}</td></tr>
+        <tr><td class="label">Présentation</td><td>${c.bio||''}</td></tr>
+        <tr><td class="label">Documents</td><td>${docsHtml}</td></tr>
+      </table>
+    </div>
+    ${(c.photoIdentite || c.photoEntiere || photosHtml) ? `<div class="dossier-section"><h4>Photos</h4><div class="dossier-photos">
+      ${c.photoIdentite ? `<img src="${c.photoIdentite}">` : ''}
+      ${c.photoEntiere ? `<img src="${c.photoEntiere}">` : ''}
+      ${photosHtml}
+    </div></div>` : ''}
+    <div class="dossier-section">
+      <h4>Factures &amp; reçus (historique des paiements)</h4>
+      ${renderPaiementsHistoryHtml('candidat', id)}
+    </div>
+    <button class="btn-submit" style="margin-top:6px;" onclick="printCandidateDossier('${id}')">🖨️ Imprimer ce dossier</button>
+  `;
+  document.getElementById('dossier-overlay').classList.remove('hidden');
+}
+function viewOfferDossier(id){
+  const o = (window._adminOffres||{})[id];
+  if(!o) return;
+  document.getElementById('dossier-modal-content').innerHTML = `
+    <button class="close-btn" onclick="closeDossierModal()">✕</button>
+    <h3>${o.titre||''}</h3>
+    <div class="dossier-sub">${o.categorie||''} · ${o.ville||''} · Offre ${o.statut||''}</div>
+    <div class="dossier-section">
+      <h4>Détails de l'offre</h4>
+      <table class="dossier-table">
+        <tr><td class="label">Catégorie recherchée</td><td>${o.categorie||''}</td></tr>
+        <tr><td class="label">Ville</td><td>${o.ville||''}</td></tr>
+        <tr><td class="label">Date limite</td><td>${o.dateLimite||'—'}</td></tr>
+        <tr><td class="label">Numéro WhatsApp (inscription)</td><td>${o.contact||''}</td></tr>
+        <tr><td class="label">Description</td><td>${o.description||''}</td></tr>
+      </table>
+    </div>
+    <div class="dossier-section">
+      <h4>Factures &amp; reçus (historique des paiements)</h4>
+      ${renderPaiementsHistoryHtml('offre', id)}
+    </div>
+    <button class="btn-submit" style="margin-top:6px;" onclick="printOfferDossier('${id}')">🖨️ Imprimer ce dossier</button>
+  `;
+  document.getElementById('dossier-overlay').classList.remove('hidden');
+}
+
 /* ============ IMPRESSION DES DOSSIERS (physique, pour l'agence) ============ */
+function printPaiementsSectionHtml(type, id){
+  const list = paiementsFor(type, id);
+  if(list.length===0) return '<p style="color:#555;">Aucun paiement enregistré.</p>';
+  const statutLabel = {verifie:'Vérifié et activé', soumis:'Soumis, en attente de vérification', rejete:'Rejeté'};
+  const th = 'text-align:left;padding:6px 10px;border-bottom:2px solid #999;';
+  const td = 'padding:6px 10px;border-bottom:1px solid #ddd;';
+  return `<table style="border-collapse:collapse;width:100%;">
+    <tr><th style="${th}">Date</th><th style="${th}">Durée</th><th style="${th}">Montant</th>
+        <th style="${th}">Moyen</th><th style="${th}">Numéro payeur</th><th style="${th}">Référence</th><th style="${th}">Statut</th></tr>
+    ${list.map(([key,p])=>{
+      const op = getOperator(p.operateur);
+      return `<tr>
+        <td style="${td}">${formatDateFR(p.dateSoumission)}</td>
+        <td style="${td}">${p.periodeJours} j</td>
+        <td style="${td}">${p.montant} ${p.devise||'FCFA'}</td>
+        <td style="${td}">${op.label}</td>
+        <td style="${td}">${p.numero||''}</td>
+        <td style="${td}">${p.reference||''}</td>
+        <td style="${td}">${statutLabel[p.statutPaiement]||p.statutPaiement}</td>
+      </tr>`;
+    }).join('')}
+  </table>`;
+}
 function printCandidateDossier(id){
   const c = (window._adminCandidats||{})[id];
   if(!c) return;
@@ -2762,6 +2866,7 @@ function printCandidateDossier(id){
     <style>
       body{font-family:Georgia,serif;padding:30px;color:#1a1a1a;}
       h1{font-size:1.4rem;margin-bottom:2px;}
+      h2{font-size:1.05rem;margin:26px 0 8px;border-top:1px solid #ccc;padding-top:16px;}
       .sub{color:#555;margin-bottom:20px;}
       table{border-collapse:collapse;width:100%;margin-bottom:20px;}
       td{padding:6px 10px;border-bottom:1px solid #ddd;vertical-align:top;}
@@ -2783,13 +2888,15 @@ function printCandidateDossier(id){
         <tr><td class="label">Âge</td><td>${c.age||'–'}</td></tr>
         <tr><td class="label">Ville</td><td>${c.ville||''}</td></tr>
         <tr><td class="label">Catégorie</td><td>${c.categorie||''}</td></tr>
-        <tr><td class="label">WhatsApp</td><td>${c.whatsapp||''}</td></tr>
+        <tr><td class="label">Numéro WhatsApp (inscription)</td><td>${c.whatsapp||''}</td></tr>
         <tr><td class="label">Statut</td><td>${c.statut||''}</td></tr>
         <tr><td class="label">Présentation</td><td>${c.bio||''}</td></tr>
         <tr><td class="label">CV</td><td>${c.cv ? c.cv.name : '—'}</td></tr>
         <tr><td class="label">Documents joints</td><td>${(c.documents||[]).map(d=>d.name).join(', ') || '—'}</td></tr>
       </table>
       <div class="gallery">${photosHtml}</div>
+      <h2>Factures &amp; reçus — historique des paiements de frais de prestation</h2>
+      ${printPaiementsSectionHtml('candidat', id)}
       <script>window.onload = () => window.print();<\/script>
     </body></html>
   `);
@@ -2804,6 +2911,7 @@ function printOfferDossier(id){
     <style>
       body{font-family:Georgia,serif;padding:30px;color:#1a1a1a;}
       h1{font-size:1.4rem;margin-bottom:2px;}
+      h2{font-size:1.05rem;margin:26px 0 8px;border-top:1px solid #ccc;padding-top:16px;}
       .sub{color:#555;margin-bottom:20px;}
       table{border-collapse:collapse;width:100%;}
       td{padding:6px 10px;border-bottom:1px solid #ddd;vertical-align:top;}
@@ -2817,10 +2925,12 @@ function printOfferDossier(id){
         <tr><td class="label">Catégorie recherchée</td><td>${o.categorie||''}</td></tr>
         <tr><td class="label">Ville</td><td>${o.ville||''}</td></tr>
         <tr><td class="label">Date limite</td><td>${o.dateLimite||'—'}</td></tr>
-        <tr><td class="label">Contact WhatsApp</td><td>${o.contact||''}</td></tr>
+        <tr><td class="label">Numéro WhatsApp (inscription)</td><td>${o.contact||''}</td></tr>
         <tr><td class="label">Statut</td><td>${o.statut||''}</td></tr>
         <tr><td class="label">Description</td><td>${o.description||''}</td></tr>
       </table>
+      <h2>Factures &amp; reçus — historique des paiements de frais de prestation</h2>
+      ${printPaiementsSectionHtml('offre', id)}
       <script>window.onload = () => window.print();<\/script>
     </body></html>
   `);

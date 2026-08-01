@@ -2528,7 +2528,13 @@ async function submitPaiement(type, id){
     setTimeout(()=>{ if(type==='offre') trackOffer(); else trackCandidate(); }, 900);
     return;
   }catch(err){
-    msg.className='form-msg err'; msg.textContent="Échec de l'envoi (connexion ou serveur). Réessayez dans un instant.";
+    msg.className='form-msg err';
+    const raw = (err && err.message) || '';
+    if(/permission/i.test(raw)){
+      msg.textContent = "Échec de l'envoi : accès refusé par la base de données (règles de sécurité Firebase). Contactez l'agence pour signaler ce problème technique — référence : PERMISSION_DENIED sur /paiements.";
+    }else{
+      msg.textContent = "Échec de l'envoi (connexion ou serveur)"+(raw?` — ${raw}`:'')+". Réessayez dans un instant.";
+    }
   }
   btn.disabled=false; spinner.classList.remove('show'); label.textContent='Valider mon paiement';
 }

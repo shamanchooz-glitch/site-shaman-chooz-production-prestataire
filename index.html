@@ -1538,6 +1538,16 @@ function buildInternationalNumber(dial, rawDigits){
   if(dial !== '225' && n.startsWith('0')){ n = n.substring(1); }
   return '+'+dial+n;
 }
+// Compare deux numéros quel que soit leur format (espaces, +, indicatif présent ou non,
+// "0" initial présent ou non) : on ne garde que les chiffres et on compare la fin du numéro.
+function numbersMatch(a, b){
+  const da = (a||'').replace(/\D/g,'');
+  const db = (b||'').replace(/\D/g,'');
+  if(da.length < 6 || db.length < 6) return false;
+  const shorter = da.length <= db.length ? da : db;
+  const longer = da.length <= db.length ? db : da;
+  return longer.endsWith(shorter);
+}
 
 /* ============ CATÉGORIES DE MÉTIERS (secteurs d'activité) ============ */
 const CATEGORIES = {
@@ -2137,7 +2147,7 @@ async function checkCandidateAccess(){
   msg.className='form-msg'; msg.textContent='Vérification…'; msg.style.display='block';
   const all = await fbGet('candidats');
   const digits = num.replace(/\D/g,'');
-  const match = Object.values(all).find(c=>c.whatsapp && c.whatsapp.replace(/\D/g,'')===digits);
+  const match = Object.values(all).find(c=>numbersMatch(c.whatsapp, num));
   if(!match){ msg.className='form-msg err'; msg.textContent="Aucun profil trouvé avec ce numéro. Inscrivez-vous d'abord dans l'onglet Postuler."; return; }
   if(match.statut!=='valide'){ msg.className='form-msg err'; msg.textContent="Votre profil n'est pas encore validé par notre équipe. Revenez une fois votre candidature validée."; return; }
   if(!isListingActive(match)){ msg.className='form-msg err'; msg.textContent="Votre profil est validé mais pas encore en ligne. Réglez les frais de prestation depuis l'onglet « Postuler » → « Suivre ma candidature » pour y accéder."; return; }
@@ -2155,7 +2165,7 @@ async function checkRecruteurAccess(){
   msg.className='form-msg'; msg.textContent='Vérification…'; msg.style.display='block';
   const all = await fbGet('offres');
   const digits = num.replace(/\D/g,'');
-  const match = Object.values(all).find(o=>o.contact && o.contact.replace(/\D/g,'')===digits && o.statut==='active' && isListingActive(o));
+  const match = Object.values(all).find(o=>numbersMatch(o.contact, num) && o.statut==='active' && isListingActive(o));
   if(!match){ msg.className='form-msg err'; msg.textContent="Aucune offre en ligne trouvée avec ce numéro. Publiez d'abord une offre, attendez sa validation, puis réglez les frais de prestation pour la mettre en ligne (onglet « Publier une offre » → « Suivre mon offre »)."; return; }
   document.getElementById('parcourir-gate').style.display='none';
   document.getElementById('parcourir-content').style.display='block';
@@ -2425,7 +2435,7 @@ async function trackCandidate(){
   if(!num){ result.textContent='Entrez votre numéro WhatsApp.'; return; }
   result.textContent = 'Recherche…';
   const all = await fbGet('candidats');
-  const entry = Object.entries(all).find(([id,c])=>c.whatsapp && c.whatsapp.replace(/\s/g,'')===num.replace(/\s/g,''));
+  const entry = Object.entries(all).find(([id,c])=>numbersMatch(c.whatsapp, num));
   if(!entry){ result.innerHTML = 'Aucune candidature trouvée avec ce numéro.'; return; }
   const [id, match] = entry;
   if(match.statut==='bloque'){ result.innerHTML = '<span class="badge badge-rejete">Profil bloqué</span><p class="hint" style="margin-top:8px;">Contactez-nous directement sur WhatsApp pour plus d\'informations.</p>'; return; }
@@ -2452,7 +2462,7 @@ async function trackOffer(){
   result.textContent = 'Recherche…';
   const all = await fbGet('offres');
   const digits = num.replace(/\D/g,'');
-  const entry = Object.entries(all).find(([id,o])=>o.contact && o.contact.replace(/\D/g,'')===digits);
+  const entry = Object.entries(all).find(([id,o])=>numbersMatch(o.contact, num));
   if(!entry){ result.innerHTML = 'Aucune offre trouvée avec ce numéro.'; return; }
   const [id, match] = entry;
   if(match.statut==='bloque'){ result.innerHTML = '<span class="badge badge-rejete">Offre bloquée</span><p class="hint" style="margin-top:8px;">Contactez-nous directement sur WhatsApp pour plus d\'informations.</p>'; return; }

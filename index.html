@@ -555,7 +555,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
 </div>
 
 <div class="chat-hint" id="chat-hint" onclick="toggleChat();document.getElementById('chat-hint').style.display='none';">
-  Vous pouvez me parler ici et je vous réponds sur mon site et les catégories de métiers — la conversation peut se poursuivre selon vos préoccupations 💬
+  Vous pouvez me parler ici 💬
   <button type="button" class="chat-hint-close" onclick="event.stopPropagation();document.getElementById('chat-hint').style.display='none';" aria-label="Fermer">✕</button>
 </div>
 <button class="chat-bubble" id="chat-bubble-btn" onclick="toggleChat();document.getElementById('chat-hint').style.display='none';" aria-label="Discuter avec SHAMAN CHOOZ">
@@ -576,6 +576,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
   <div class="chat-voice-bar" id="chat-voice-bar" style="display:none;">
     <select id="chat-lang-select" onchange="setChatLanguage(this.value)" title="Langue de la conversation vocale"></select>
     <select id="chat-voice-select" onchange="setChatVoice(this.value)" title="Voix (homme/femme)" style="display:none;"></select>
+    <div id="chat-voice-hint" style="display:none;font-size:0.72rem;color:var(--ink-soft);margin:-2px 0 6px;">Une seule voix est installée sur cet appareil pour cette langue. Pour avoir le choix homme/femme, installez des voix supplémentaires dans les réglages du téléphone (Réglages → Langues → Synthèse vocale).</div>
     <button type="button" id="chat-handsfree-toggle" class="chat-handsfree-btn" onclick="toggleHandsFree()">🎧 Mode mains libres</button>
   </div>
   <div class="chat-input-row">
@@ -660,7 +661,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
     <div class="section-head">
       <span class="eyebrow">La plateforme</span>
       <h2>Ce que SHAMAN CHOOZ gère pour vous</h2>
-      <p>Onze outils, une seule interface — simple à utiliser côté candidat comme côté recruteur.</p>
+      <p>Douze outils, une seule interface — simple à utiliser côté candidat comme côté recruteur.</p>
     </div>
     <div class="feat-grid">
       <div class="feat-card">
@@ -717,6 +718,11 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z"/><path d="M14 2v5h5"/><path d="M9 13h6M9 17h6"/></svg>
         <h3>Dossier imprimable</h3>
         <p>Fiche candidat ou recruteur avec historique des paiements, prête à imprimer et classer.</p>
+      </div>
+      <div class="feat-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+        <h3>Pilotage en temps réel</h3>
+        <p>Depuis l'espace admin : ce qui est réellement en ligne, les paiements à vérifier, et les visiteurs à relancer — tout au même endroit, à jour à la seconde.</p>
       </div>
     </div>
   </div>
@@ -1165,6 +1171,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <a class="share-btn" target="_blank" href="https://wa.me/2250749970918">+225 07 49 97 09 18</a>
       </div>
       <p style="margin-top:14px;font-size:0.85rem;color:rgba(251,244,230,0.7);">Ligne fixe : +225 27 23 29 25 67</p>
+      <p style="margin-top:4px;font-size:0.85rem;color:rgba(251,244,230,0.7);">01 BP 6610 ABIDJAN 01</p>
       <p style="margin-top:4px;font-size:0.85rem;color:rgba(251,244,230,0.7);">E-mail : <a href="mailto:shamanchooz@gmail.com" style="color:var(--gold-light);">shamanchooz@gmail.com</a></p>
     </div>
     <div class="footer-bottom">
@@ -2054,6 +2061,33 @@ const CHAT_LANGUAGES = [
   { code:'de-DE', label:'Deutsch' },
   { code:'it-IT', label:'Italiano' },
   { code:'zh-CN', label:'中文' },
+  { code:'ja-JP', label:'日本語' },
+  { code:'ko-KR', label:'한국어' },
+  { code:'ru-RU', label:'Русский' },
+  { code:'hi-IN', label:'हिन्दी' },
+  { code:'tr-TR', label:'Türkçe' },
+  { code:'nl-NL', label:'Nederlands' },
+  { code:'pl-PL', label:'Polski' },
+  { code:'sv-SE', label:'Svenska' },
+  { code:'el-GR', label:'Ελληνικά' },
+  { code:'he-IL', label:'עברית' },
+  { code:'th-TH', label:'ไทย' },
+  { code:'vi-VN', label:'Tiếng Việt' },
+  { code:'id-ID', label:'Bahasa Indonesia' },
+  { code:'ms-MY', label:'Bahasa Melayu' },
+  { code:'sw-KE', label:'Kiswahili' },
+  { code:'am-ET', label:'አማርኛ' },
+  { code:'ha-NG', label:'Hausa' },
+  { code:'yo-NG', label:'Yorùbá' },
+  { code:'uk-UA', label:'Українська' },
+  { code:'ro-RO', label:'Română' },
+  { code:'cs-CZ', label:'Čeština' },
+  { code:'fi-FI', label:'Suomi' },
+  { code:'da-DK', label:'Dansk' },
+  { code:'hu-HU', label:'Magyar' },
+  { code:'ur-PK', label:'اردو' },
+  { code:'bn-BD', label:'বাংলা' },
+  { code:'fa-IR', label:'فارسی' },
 ];
 // Langue par défaut : celle du téléphone/navigateur du visiteur si on la reconnaît, sinon français.
 function detectDefaultLang(){
@@ -2087,13 +2121,18 @@ function setChatLanguage(code){
 }
 function populateVoiceSelect(){
   const sel = document.getElementById('chat-voice-select');
+  const hint = document.getElementById('chat-voice-hint');
   if(!sel || !window.speechSynthesis) return;
   const base = currentChatLang.split('-')[0];
   const voices = window.speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase().startsWith(base));
-  if(voices.length===0){ sel.style.display='none'; return; }
+  selectedVoiceURI = '';
+  if(voices.length===0){ sel.style.display='none'; if(hint) hint.style.display='none'; return; }
   sel.style.display='';
   sel.innerHTML = '<option value="">Voix par défaut</option>' + voices.map(v=>`<option value="${v.voiceURI}">${v.name}</option>`).join('');
-  selectedVoiceURI = '';
+  // Si l'appareil du visiteur n'a qu'une seule voix installée pour cette langue, on le
+  // signale : plus de voix (homme/femme) s'ajoutent en installant des voix dans les
+  // réglages du téléphone/ordinateur — ce n'est pas quelque chose que le site contrôle.
+  if(hint) hint.style.display = voices.length<=1 ? '' : 'none';
 }
 function setChatVoice(voiceURI){
   selectedVoiceURI = voiceURI;

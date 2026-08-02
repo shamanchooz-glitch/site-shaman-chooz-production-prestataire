@@ -194,6 +194,18 @@ nav{display:flex;gap:4px;align-items:center;}
 .install-modal h4{font-family:var(--font-display);font-size:1.15rem;margin-bottom:12px;}
 .install-modal p{color:var(--ink-soft);font-size:0.9rem;line-height:1.5;margin-bottom:6px;text-align:left;}
 .install-modal button{margin-top:16px;background:var(--wine);color:#fff;border:none;border-radius:999px;padding:10px 22px;font-weight:700;}
+.cgu-modal{background:#fff;border-radius:var(--radius);padding:0;max-width:640px;width:100%;max-height:86vh;box-shadow:var(--shadow);display:flex;flex-direction:column;}
+.cgu-modal-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+.cgu-modal-head h4{font-family:var(--font-display);font-size:1.15rem;}
+.cgu-modal-body{padding:6px 22px 22px;overflow-y:auto;font-size:0.87rem;line-height:1.6;color:var(--ink);text-align:left;}
+.cgu-modal-body h5{margin:18px 0 6px;font-size:0.95rem;font-family:var(--font-display);}
+.cgu-modal-body p{margin-bottom:8px;color:var(--ink-soft);}
+.cgu-modal-foot{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;}
+.cgu-modal-foot button{background:var(--wine);color:#fff;border:none;border-radius:999px;padding:9px 18px;font-weight:700;font-size:0.85rem;cursor:pointer;}
+.cgu-modal-foot button.secondary{background:var(--paper-soft);color:var(--ink);border:1.5px solid var(--line);}
+.cgu-consent{display:flex;align-items:flex-start;gap:8px;font-size:0.82rem;color:var(--ink-soft);margin:12px 0;line-height:1.4;}
+.cgu-consent input{margin-top:3px;flex-shrink:0;}
+.cgu-consent a{color:var(--wine);font-weight:600;text-decoration:underline;cursor:pointer;}
 .hamburger{display:none;background:none;border:none;padding:8px;}
 .hamburger span{display:block;width:22px;height:2px;background:var(--ink);margin:5px 0;}
 
@@ -520,6 +532,20 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
   </div>
 </div>
 
+<div class="install-modal-overlay" id="cgu-modal-overlay" onclick="if(event.target===this) this.classList.remove('active')">
+  <div class="cgu-modal">
+    <div class="cgu-modal-head">
+      <h4>Conditions Générales d'Utilisation</h4>
+      <button type="button" onclick="document.getElementById('cgu-modal-overlay').classList.remove('active')" aria-label="Fermer" style="background:none;border:none;font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div class="cgu-modal-body" id="cgu-modal-body"></div>
+    <div class="cgu-modal-foot">
+      <button type="button" class="secondary" onclick="printCGU()">🖨️ Imprimer</button>
+      <button type="button" onclick="document.getElementById('cgu-modal-overlay').classList.remove('active')">Fermer</button>
+    </div>
+  </div>
+</div>
+
 <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
   <img id="lightbox-img" src="" alt="Photo en plein écran">
 </div>
@@ -783,6 +809,10 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               <div class="file-chip-list" id="c-docs-chips"></div>
               <div class="field-hint">Portfolio, book, lettre de motivation… 8 Mo maximum par fichier.</div>
             </div>
+            <label class="cgu-consent">
+              <input type="checkbox" id="c-cgu" required>
+              J'ai lu et j'approuve les <a onclick="event.preventDefault();openCGUModal();" href="#">Conditions Générales d'Utilisation</a> de SHAMAN CHOOZ PRODUCTION, notamment le fait que le prestataire agit uniquement comme intermédiaire et décline toute responsabilité quant à la relation entre le candidat et le recruteur.
+            </label>
             <button type="submit" class="btn-submit" id="c-submit-btn">
               <span class="spinner" id="c-spinner"></span>
               <span id="c-submit-label">Envoyer ma candidature</span>
@@ -891,6 +921,10 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
                 <button type="button" class="btn-geo" id="o-geo-btn" onclick="getGeoLocation('o')">📍 Activer ma localisation</button>
                 <div class="geo-result" id="o-geo-result"></div>
               </div>
+              <label class="cgu-consent">
+                <input type="checkbox" id="o-cgu" required>
+                J'ai lu et j'approuve les <a onclick="event.preventDefault();openCGUModal();" href="#">Conditions Générales d'Utilisation</a> de SHAMAN CHOOZ PRODUCTION, notamment le fait que le prestataire agit uniquement comme intermédiaire et décline toute responsabilité quant à la relation entre le recruteur et le candidat.
+              </label>
               <button type="submit" class="btn-submit" id="o-submit-btn">
                 <span class="spinner" id="o-spinner"></span>
                 <span id="o-submit-label">Publier l'offre</span>
@@ -1807,6 +1841,69 @@ function resetCategoryPicker(id){
 
 
 /* ============ LIGHTBOX (zoom photos) ============ */
+/* ============ CONDITIONS GÉNÉRALES D'UTILISATION (CGU) ============ */
+const CGU_HTML = `
+<p><i>Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR')}</i></p>
+
+<h5>Préambule</h5>
+<p>Les présentes Conditions Générales d'Utilisation (« CGU ») régissent l'utilisation de la plateforme SHAMAN CHOOZ PRODUCTION (ci-après « le Prestataire »), service de mise en relation, de placement et de casting entre des personnes à la recherche d'une activité, d'un emploi ou d'une mission (ci-après « le Candidat ») et des personnes ou structures à la recherche de personnel (ci-après « le Recruteur » ou « l'Employeur »). En créant un profil, en publiant une offre, ou en utilisant la plateforme sous quelque forme que ce soit, l'utilisateur reconnaît avoir lu, compris et accepté sans réserve les présentes CGU.</p>
+
+<h5>Article 1 — Objet et nature du service</h5>
+<p>Le Prestataire propose un service d'intermédiation : il met à disposition un espace permettant aux Candidats de présenter leur profil et aux Recruteurs de publier leurs besoins, afin de faciliter la mise en relation entre les deux parties. Le Prestataire n'est ni l'employeur du Candidat, ni le mandataire du Recruteur. Il n'intervient à aucun moment dans le contrat, la relation de travail, la mission, ou l'accord (verbal ou écrit) qui pourrait être conclu entre le Candidat et le Recruteur.</p>
+
+<h5>Article 2 — Inscription, exactitude des informations et validation</h5>
+<p>Chaque utilisateur est seul responsable de l'exactitude, de la sincérité et de la mise à jour des informations qu'il communique (identité, coordonnées, expérience, photos, documents, description du poste, etc.). Le Prestataire effectue une validation de forme des profils et des offres avant leur éventuelle mise en ligne, mais cette validation ne constitue en aucun cas une garantie de compétence, de moralité, de solvabilité ou de bonne foi de l'une ou l'autre partie.</p>
+
+<h5>Article 3 — Frais de mise en ligne</h5>
+<p>L'inscription sur la plateforme est gratuite. La mise en ligne effective d'un profil validé ou d'une offre validée est soumise au règlement de frais de prestation de service, dont le montant et les modalités de paiement (Mobile Money : Wave, Orange Money, MTN, Moov) sont communiqués à l'utilisateur au moment de la validation. Ces frais rémunèrent le service de mise en visibilité rendu par le Prestataire et ne constituent en aucun cas une garantie de résultat (obtention d'un emploi, recrutement effectif, ou autre issue favorable).</p>
+
+<h5>Article 4 — Limitation et exclusion de responsabilité</h5>
+<p>Le Prestataire décline expressément toute responsabilité concernant :</p>
+<p>— le déroulement, l'exécution, la rupture ou les conséquences de toute relation de travail, mission, prestation ou accord conclu entre un Candidat et un Recruteur, avant, pendant ou après leur mise en relation par la plateforme ;</p>
+<p>— tout préjudice matériel, corporel, moral ou financier subi par l'une des parties du fait de l'autre partie, y compris en cas de non-paiement, d'abandon de poste, de comportement abusif, de fraude, de vol, de violence, de harcèlement ou de tout autre manquement ;</p>
+<p>— l'exactitude des informations, documents ou déclarations fournis par les utilisateurs ;</p>
+<p>— l'usage qui serait fait, par un tiers, des informations rendues publiques par un utilisateur sur la plateforme.</p>
+<p>Chaque utilisateur demeure personnellement et pleinement responsable de ses actes, décisions et engagements, conformément aux lois en vigueur dans son pays de résidence et aux réglementations internationales applicables.</p>
+
+<h5>Article 5 — Règlement des différends entre utilisateurs</h5>
+<p>En cas de préjudice, litige ou différend survenant entre un Candidat et un Recruteur à l'occasion de leur mise en relation, les parties s'engagent en priorité à rechercher un règlement à l'amiable. À défaut d'accord amiable, chaque partie conserve la faculté de saisir les autorités compétentes de son pays (juridictions civiles, pénales, du travail, ou administratives), ou, le cas échéant, les organismes internationaux de médiation ou d'arbitrage compétents en la matière. Le Prestataire pourra, à sa discrétion et sans obligation, apporter son concours à la recherche d'une solution amiable, sans que cela ne constitue une reconnaissance de responsabilité de sa part.</p>
+
+<h5>Article 6 — Droit applicable</h5>
+<p>Les présentes CGU sont soumises au droit ivoirien pour ce qui concerne le fonctionnement du Prestataire. Chaque utilisateur reste par ailleurs soumis aux lois d'ordre public de son propre pays de résidence ou d'activité, ainsi qu'aux conventions internationales applicables à sa situation, notamment en matière de droit du travail, de protection des personnes et de lutte contre l'exploitation.</p>
+
+<h5>Article 7 — Données personnelles et contenus</h5>
+<p>Les informations, photos, vidéos et documents transmis par les utilisateurs sont utilisés par le Prestataire dans le cadre strict du service de mise en relation et de la mise en valeur de la plateforme (galerie, fiches profils). Chaque utilisateur peut demander la modification ou la suppression de ses données en contactant directement le Prestataire.</p>
+
+<h5>Article 8 — Modification des CGU</h5>
+<p>Le Prestataire se réserve le droit de modifier les présentes CGU à tout moment, notamment pour les adapter à l'évolution du service ou de la réglementation. La version en vigueur est celle affichée sur la plateforme au moment de l'utilisation.</p>
+
+<h5>Article 9 — Acceptation</h5>
+<p>En cochant la case « Lu et approuvé » lors de la création d'un profil candidat ou de la publication d'une offre, l'utilisateur reconnaît avoir pris connaissance de l'intégralité des présentes CGU, en avoir compris la portée, et les accepter sans réserve.</p>
+`;
+
+function openCGUModal(){
+  document.getElementById('cgu-modal-body').innerHTML = CGU_HTML;
+  document.getElementById('cgu-modal-overlay').classList.add('active');
+}
+function printCGU(){
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html><head><title>Conditions Générales d'Utilisation — SHAMAN CHOOZ PRODUCTION</title>
+    <style>
+      body{font-family:Georgia,serif;padding:34px;color:#1a1a1a;max-width:760px;margin:0 auto;}
+      h1{font-size:1.4rem;margin-bottom:4px;}
+      h5{font-size:1rem;margin:22px 0 6px;}
+      p{margin-bottom:8px;line-height:1.55;color:#333;}
+    </style></head>
+    <body>
+      <h1>SHAMAN CHOOZ PRODUCTION</h1>
+      <div>Conditions Générales d'Utilisation</div>
+      ${CGU_HTML}
+    </body></html>
+  `);
+  win.document.close();
+  setTimeout(()=>win.print(), 300);
+}
 function openLightbox(src){
   document.getElementById('lightbox-img').src = src;
   document.getElementById('lightbox').classList.add('active');

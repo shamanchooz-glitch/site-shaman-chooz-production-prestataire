@@ -554,37 +554,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
   <video id="video-modal-player" controls playsinline></video>
 </div>
 
-<div class="chat-hint" id="chat-hint" onclick="toggleChat();document.getElementById('chat-hint').style.display='none';">
-  Vous pouvez me parler ici 💬
-  <button type="button" class="chat-hint-close" onclick="event.stopPropagation();document.getElementById('chat-hint').style.display='none';" aria-label="Fermer">✕</button>
-</div>
-<button class="chat-bubble" id="chat-bubble-btn" onclick="toggleChat();document.getElementById('chat-hint').style.display='none';" aria-label="Discuter avec SHAMAN CHOOZ">
-  <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-4-1L3 20l1.2-4.9A8.4 8.4 0 1121 11.5z"/></svg>
-</button>
-<div class="chat-panel" id="chat-panel">
-  <div class="chat-head">
-    <div class="chat-head-avatar">SC</div>
-    <div>
-      <div class="t">SHAMAN CHOOZ</div>
-      <div class="s">En ligne · répond rapidement</div>
-    </div>
-    <button class="chat-voice-toggle" id="chat-voice-toggle" onclick="toggleVoiceReplies()" title="Activer/couper la lecture audio des réponses" aria-label="Activer la lecture audio">🔇</button>
-    <button class="chat-fullscreen-toggle" id="chat-fullscreen-toggle" onclick="toggleChatFullscreen()" title="Plein écran" aria-label="Plein écran">⛶</button>
-    <button class="chat-close" onclick="toggleChat()" aria-label="Fermer">✕</button>
-  </div>
-  <div class="chat-body" id="chat-body"></div>
-  <div class="chat-voice-bar" id="chat-voice-bar" style="display:none;">
-    <select id="chat-lang-select" onchange="setChatLanguage(this.value)" title="Langue de la conversation vocale"></select>
-    <select id="chat-voice-select" onchange="setChatVoice(this.value)" title="Voix (homme/femme)" style="display:none;"></select>
-    <div id="chat-voice-hint" style="display:none;font-size:0.72rem;color:var(--ink-soft);margin:-2px 0 6px;">Une seule voix est installée sur cet appareil pour cette langue. Pour avoir le choix homme/femme, installez des voix supplémentaires dans les réglages du téléphone (Réglages → Langues → Synthèse vocale).</div>
-    <button type="button" id="chat-handsfree-toggle" class="chat-handsfree-btn" onclick="toggleHandsFree()">🎧 Mode mains libres</button>
-  </div>
-  <div class="chat-input-row">
-    <input type="text" id="chat-input" placeholder="Écrivez ou dictez votre message…" onkeydown="if(event.key==='Enter')sendChatMessage()">
-    <button type="button" id="chat-mic-btn" class="chat-mic-btn" onclick="toggleVoiceInput()" title="Parler au lieu d'écrire" aria-label="Dicter un message" style="display:none;">🎤</button>
-    <button onclick="sendChatMessage()">Envoyer</button>
-  </div>
-</div>
+<!-- Ancien chatbot maison (réponses codées en dur) retiré : remplacé par le widget Shaman (Botpress, IA réelle) inséré avant </body>. Les fonctions JS toggleChat/sendChatMessage/etc. restent dans le fichier mais ne sont plus appelées ; l'espace Admin peut toujours consulter l'historique des anciennes conversations. -->
 
 <header>
   <div class="header-inner">
@@ -3879,5 +3849,9 @@ function nativeShare(){
   }
 }
 </script>
+
+<!-- Widget Shaman (Botpress) — assistant IA réel, configuré avec les instructions de l'agence -->
+<script src="https://cdn.botpress.cloud/webchat/v5.0/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2026/08/03/08/20260803083655-968F1KI0.js" defer></script>
 </body>
 </html>

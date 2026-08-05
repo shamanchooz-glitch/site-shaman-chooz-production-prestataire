@@ -1474,9 +1474,23 @@ window.addEventListener('DOMContentLoaded', ()=>{ updateOfflineBanner(); syncOff
 setInterval(syncOfflineQueue, 40000);
 
 /* ============ SERVICE WORKER (permet l'ouverture de l'appli hors-ligne) ============ */
+// Piège classique des PWA : le service worker peut continuer à servir une
+// VERSION MISE EN CACHE du site même après republication d'un fichier
+// corrigé — le correctif semble alors "ne pas marcher" alors qu'il est déjà
+// en place. On force la vérification d'une nouvelle version à chaque
+// ouverture, et on recharge une seule fois dès qu'une version plus récente
+// prend le contrôle de la page.
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('sw.js').catch(()=>{ /* pas grave si indisponible */ });
+    navigator.serviceWorker.register('sw.js').then((reg) => {
+      reg.update().catch(() => {});
+    }).catch(()=>{ /* pas grave si indisponible */ });
+  });
+  let alreadyReloadedSW = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (alreadyReloadedSW) return;
+    alreadyReloadedSW = true;
+    window.location.reload();
   });
 }
 
@@ -1978,6 +1992,7 @@ function logChatMessage(role, text){
   }).catch(()=>{ /* pas grave si hors ligne, on n'interrompt pas la conversation */ });
 }
 function toggleChat(){
+  unlockSpeech();
   const panel = document.getElementById('chat-panel');
   panel.classList.toggle('active');
   if(panel.classList.contains('active') && !chatStarted){
@@ -2022,6 +2037,34 @@ let handsFreeMode = false;
 let recognizer = null;
 let isRecording = false;
 let selectedVoiceURI = '';
+
+// --- Déverrouillage de la synthèse vocale (partagé par les deux widgets
+// vocaux de cette page : le chat intégré au site et le widget Shaman) -----
+// Les navigateurs mobiles (Chrome Android, Safari iOS) bloquent tout appel
+// à speechSynthesis.speak() qui ne serait pas déclenché directement par un
+// tap/clic. Comme les réponses du bot arrivent après un délai simulé
+// (setTimeout) ou de façon asynchrone, le tout premier speak() était
+// silencieusement bloqué — c'est ce qui empêchait le haut-parleur de
+// fonctionner. On amorce donc la synthèse vocale dès le tout premier
+// geste sur la page.
+let speechUnlocked = false;
+let unlockAttempts = 0;
+function unlockSpeech() {
+  if (speechUnlocked || !window.speechSynthesis || unlockAttempts >= 5) return;
+  unlockAttempts++;
+  try {
+    window.speechSynthesis.resume();
+    const primer = new SpeechSynthesisUtterance(' ');
+    primer.volume = 0;
+    primer.rate = 10;
+    primer.onstart = () => { speechUnlocked = true; };
+    primer.onend = () => { speechUnlocked = true; };
+    window.speechSynthesis.speak(primer);
+  } catch (e) {}
+}
+['pointerdown', 'touchstart', 'click', 'keydown'].forEach((evt) => {
+  document.addEventListener(evt, unlockSpeech, { passive: true });
+});
 
 const CHAT_LANGUAGES = [
   { code:'fr-FR', label:'Français' },
@@ -2142,10 +2185,12 @@ function stopListening(){
   if(recognizer) recognizer.stop();
 }
 function toggleVoiceInput(){
+  unlockSpeech();
   if(!SpeechRecognitionAPI) return;
   if(isRecording) stopListening(); else startListening();
 }
 function toggleHandsFree(){
+  unlockSpeech();
   if(!SpeechRecognitionAPI) return;
   handsFreeMode = !handsFreeMode;
   const btn = document.getElementById('chat-handsfree-toggle');
@@ -2178,8 +2223,11 @@ function toggleVoiceReplies(){
     window.speechSynthesis.cancel();
   }
 }
-function speakText(text){
-  if(!window.speechSynthesis) return;
+function speakText(text, isRetry){
+  if(!window.speechSynthesis || !text) return;
+  // Bug connu de Chrome : la synthèse vocale peut rester "en pause" interne
+  // après une période d'inactivité ; resume() évite qu'elle reste muette.
+  window.speechSynthesis.resume();
   window.speechSynthesis.cancel(); // évite d'empiler les phrases si plusieurs messages arrivent vite
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = currentChatLang;
@@ -2188,11 +2236,38 @@ function speakText(text){
     const voice = window.speechSynthesis.getVoices().find(v=>v.voiceURI===selectedVoiceURI);
     if(voice) utter.voice = voice;
   }
+  let started = false;
+  let micRelaunched = false;
+  const relaunchMicOnce = () => {
+    if (micRelaunched) return;
+    micRelaunched = true;
+    setTimeout(()=>{ if(handsFreeMode && !isRecording) startListening(); }, 300);
+  };
+  utter.onstart = ()=>{ started = true; };
   if(handsFreeMode){
     // Une fois la réponse lue à voix haute, on relance l'écoute automatiquement (conversation en continu).
-    utter.onend = ()=>{ setTimeout(()=>{ if(handsFreeMode && !isRecording) startListening(); }, 300); };
+    utter.onend = relaunchMicOnce;
+    utter.onerror = relaunchMicOnce;
   }
   window.speechSynthesis.speak(utter);
+  // Filet de sécurité : si rien ne s'est mis à parler après un court délai
+  // (utterance silencieusement abandonné, souvent parce que la liste des
+  // voix n'était pas encore chargée au moment de l'appel), on retente une
+  // seule fois.
+  if(!isRetry){
+    setTimeout(()=>{
+      if(!started && !window.speechSynthesis.speaking) speakText(text, true);
+    }, 600);
+    // Filet de sécurité ULTIME, indépendant de la voix : si rien n'a jamais
+    // démarré malgré la tentative de relecture, on relance quand même le
+    // micro en mode mains libres — sinon un haut-parleur en panne bloquait
+    // toute la conversation vocale après un seul échange.
+    if(handsFreeMode){
+      setTimeout(()=>{
+        if(!window.speechSynthesis.speaking) relaunchMicOnce();
+      }, 2200);
+    }
+  }
 }
 initVoiceFeatures();
 function showTyping(){
@@ -3854,5 +3929,300 @@ function nativeShare(){
 <!-- Widget Shaman (Botpress) — assistant IA réel, configuré avec les instructions de l'agence -->
 <script src="https://cdn.botpress.cloud/webchat/v5.0/inject.js"></script>
 <script src="https://files.bpcontent.cloud/2026/08/03/08/20260803083655-968F1KI0.js" defer></script>
+
+<!-- Barre flottante : langue / voix / mode mains libres pour Shaman -->
+<style>
+  #shaman-voice-bar {
+    position: fixed;
+    left: 14px;
+    bottom: 14px;
+    z-index: 9998;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 260px;
+    font-family: inherit;
+  }
+  #shaman-voice-bar button, #shaman-voice-bar select {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    background: #6B1D1D;
+    color: #FCEFD9;
+  }
+  #shaman-voice-bar select { background: #FCEFD9; color: #3A1414; }
+  #shaman-voice-bar button.off { background: #C9C2B4; color: #6B1D1D; }
+  #shaman-voice-status {
+    display: none;
+    max-width: 260px;
+    margin-top: 4px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: #1C130D;
+    color: #FCEFD9;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  #shaman-voice-status.show { display: block; }
+</style>
+<div id="shaman-voice-bar">
+  <button id="voice-toggle">🔊 Voix</button>
+  <select id="lang-select" title="Langue de la voix"></select>
+  <select id="tts-voice-select" title="Choix de la voix"></select>
+  <button id="handsfree-toggle">🎧 Mains libres</button>
+  <div id="shaman-voice-status"></div>
+</div>
+<script>
+  const WORLD_LANGS = [
+    { code: 'fr-FR', label: 'Français' },
+    { code: 'en-US', label: 'English (US)' },
+    { code: 'en-GB', label: 'English (UK)' },
+    { code: 'es-ES', label: 'Español' },
+    { code: 'pt-PT', label: 'Português' },
+    { code: 'pt-BR', label: 'Português (Brésil)' },
+    { code: 'de-DE', label: 'Deutsch' },
+    { code: 'it-IT', label: 'Italiano' },
+    { code: 'ar-SA', label: 'العربية' },
+    { code: 'zh-CN', label: '中文（简体）' },
+    { code: 'ja-JP', label: '日本語' },
+    { code: 'ru-RU', label: 'Русский' },
+    { code: 'hi-IN', label: 'हिन्दी' },
+    { code: 'tr-TR', label: 'Türkçe' },
+    { code: 'sw-KE', label: 'Kiswahili' },
+    { code: 'nl-NL', label: 'Nederlands' },
+    { code: 'ko-KR', label: '한국어' },
+  ];
+  let currentLang = 'fr-FR';
+  let currentVoice = null;
+
+  function populateLangSelect() {
+    const sel = document.getElementById('lang-select');
+    sel.innerHTML = WORLD_LANGS.map(l => `<option value="${l.code}">${l.label}</option>`).join('');
+    sel.value = currentLang;
+    sel.addEventListener('change', () => { currentLang = sel.value; populateVoiceSelect(); });
+  }
+  function populateVoiceSelect() {
+    const sel = document.getElementById('tts-voice-select');
+    if (!window.speechSynthesis) { sel.innerHTML = '<option>Non supporté</option>'; return; }
+    const all = window.speechSynthesis.getVoices();
+    const base = currentLang.split('-')[0];
+    const matches = all.filter(v => v.lang && v.lang.toLowerCase().startsWith(base));
+    const list = matches.length ? matches : all;
+    sel.innerHTML = list.length ? list.map((v, i) => `<option value="${i}">${v.name}</option>`).join('') : '<option>Aucune voix installée</option>';
+    currentVoice = list[0] || null;
+    sel.onchange = () => { currentVoice = list[sel.value] || null; };
+  }
+  if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = populateVoiceSelect;
+  populateLangSelect();
+  populateVoiceSelect();
+
+  // Indicateur visuel d'état, affiché directement sous les boutons : sans
+  // ça, un échec silencieux (permission micro refusée, aucune voix
+  // installée, widget pas encore prêt...) ne se voit nulle part et donne
+  // juste l'impression que "ça ne marche pas", sans dire pourquoi.
+  const shVoiceStatusEl = document.getElementById('shaman-voice-status');
+  function shSetStatus(text, isError) {
+    if (!shVoiceStatusEl) return;
+    if (!text) { shVoiceStatusEl.classList.remove('show'); return; }
+    shVoiceStatusEl.textContent = text;
+    shVoiceStatusEl.style.background = isError ? '#6B1D1D' : '#1C130D';
+    shVoiceStatusEl.classList.add('show');
+    console.log('[Shaman voix]', text);
+  }
+
+  let voiceOn = true;
+  const shVoiceToggle = document.getElementById('voice-toggle');
+  shVoiceToggle.addEventListener('click', () => {
+    unlockSpeech();
+    voiceOn = !voiceOn;
+    if (!voiceOn && window.speechSynthesis) window.speechSynthesis.cancel();
+    shVoiceToggle.textContent = voiceOn ? '🔊 Voix' : '🔇 Voix coupée';
+    shVoiceToggle.classList.toggle('off', !voiceOn);
+  });
+
+  let handsFreeOn = false;
+  let shRecognition = null;
+  let shBotpressReady = false;
+  const ShSpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const shHandsFreeBtn = document.getElementById('handsfree-toggle');
+
+  function shSpeak(text, isRetry) {
+    if (!window.speechSynthesis) {
+      shSetStatus("❌ Ce navigateur ne sait pas lire de texte à voix haute.", true);
+      if (handsFreeOn) setTimeout(shStartListening, 400);
+      return;
+    }
+    if (!voiceOn || !text) { if (handsFreeOn) setTimeout(shStartListening, 400); return; }
+    window.speechSynthesis.resume();
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = currentLang;
+    if (currentVoice) utter.voice = currentVoice;
+    utter.rate = 1.02;
+    let started = false;
+    utter.onstart = () => { started = true; shSetStatus('🔊 Shaman parle…'); };
+    utter.onend = () => { if (handsFreeOn) shStartListening(); else shSetStatus(''); };
+    utter.onerror = (e) => {
+      shSetStatus('❌ Erreur de lecture audio (' + (e && e.error ? e.error : 'inconnue') + ')', true);
+      if (handsFreeOn) setTimeout(shStartListening, 400);
+    };
+    window.speechSynthesis.speak(utter);
+    if (!isRetry) {
+      setTimeout(() => {
+        if (!started && voiceOn && !window.speechSynthesis.speaking) shSpeak(text, true);
+      }, 600);
+    } else {
+      setTimeout(() => {
+        if (!started && !window.speechSynthesis.speaking) {
+          shSetStatus('❌ Le haut-parleur ne répond pas sur cet appareil. Vérifie qu\'une voix est installée (Réglages > Accessibilité/Synthèse vocale) et que le son n\'est pas coupé.', true);
+          if (handsFreeOn) setTimeout(shStartListening, 800);
+        }
+      }, 900);
+    }
+  }
+  // Envoie le texte reconnu une fois le webchat réellement prêt, plutôt que
+  // juste après open() (asynchrone) — sinon le message se perdait en mode
+  // mains libres.
+  function shSendToBot(transcript, tries) {
+    tries = tries || 0;
+    if (!transcript) return;
+    if (window.botpress && typeof window.botpress.sendMessage === 'function' && (shBotpressReady || tries > 10)) {
+      // sendMessage est une Promise : si l'envoi échoue parce que le widget
+      // n'était en fait pas encore tout à fait prêt, on réessaie au lieu de
+      // perdre silencieusement le message dicté au micro.
+      Promise.resolve(window.botpress.sendMessage(transcript)).catch(() => {
+        if (tries < 25) setTimeout(() => shSendToBot(transcript, tries + 1), 250);
+      });
+    } else if (tries < 25) {
+      setTimeout(() => shSendToBot(transcript, tries + 1), 200);
+    }
+  }
+  function shStartListening() {
+    if (!ShSpeechRec) { shSetStatus("❌ La reconnaissance vocale n'est pas disponible sur ce navigateur.", true); return; }
+    if (!handsFreeOn) return;
+    try { shRecognition && shRecognition.abort(); } catch (e) {}
+    shRecognition = new ShSpeechRec();
+    shRecognition.lang = currentLang;
+    shRecognition.interimResults = false;
+    shRecognition.onstart = () => { shSetStatus('🎤 Je t\'écoute, parle maintenant…'); };
+    shRecognition.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      if (!transcript) return;
+      shSetStatus('📨 "' + transcript + '" — envoi à Shaman…');
+      window.botpress && window.botpress.open && window.botpress.open();
+      shSendToBot(transcript);
+    };
+    shRecognition.onerror = (e) => {
+      const code = e && e.error;
+      if (code && ['not-allowed', 'service-not-allowed'].includes(code)) {
+        shSetStatus("❌ Micro bloqué pour ce site. Sur Chrome : ⋮ ou icône 🔒 dans la barre d'adresse > Infos sur le site > Autorisations > Microphone > Autoriser, puis réessaie.", true);
+        handsFreeOn = false;
+        shHandsFreeBtn.textContent = '🎧 Mains libres';
+        shHandsFreeBtn.classList.add('off');
+        return;
+      }
+      if (handsFreeOn) {
+        if (code === 'no-speech') {
+          shSetStatus('🔇 Rien entendu, nouvelle écoute…');
+          setTimeout(shStartListening, 1000);
+        } else {
+          shSetStatus('❌ Erreur du microphone (' + (code || 'inconnue') + '). Mode mains libres arrêté.', true);
+          handsFreeOn = false;
+          shHandsFreeBtn.textContent = '🎧 Mains libres';
+          shHandsFreeBtn.classList.add('off');
+        }
+      }
+    };
+    try {
+      shRecognition.start();
+    } catch (e) {
+      shSetStatus('❌ Impossible de démarrer le microphone (' + (e && e.message ? e.message : e) + ').', true);
+      handsFreeOn = false;
+      shHandsFreeBtn.textContent = '🎧 Mains libres';
+      shHandsFreeBtn.classList.add('off');
+    }
+  }
+  shHandsFreeBtn.addEventListener('click', () => {
+    unlockSpeech();
+    if (!ShSpeechRec) { shSetStatus("❌ La reconnaissance vocale n'est pas prise en charge par ce navigateur. Utilise Chrome sur Android ou ordinateur.", true); return; }
+    handsFreeOn = !handsFreeOn;
+    shHandsFreeBtn.textContent = handsFreeOn ? '🎧 Parle...' : '🎧 Mains libres';
+    shHandsFreeBtn.classList.toggle('off', !handsFreeOn);
+    if (handsFreeOn) { window.botpress && window.botpress.open && window.botpress.open(); shStartListening(); }
+    else if (shRecognition) { try { shRecognition.abort(); } catch (e) {} shSetStatus(''); }
+  });
+
+  let shSelfUserId = null;
+  let shPending = [];
+  let shGetUserTries = 0;
+
+  function shIsBotMessage(m) {
+    if (!m) return false;
+    if (m.authorId && shSelfUserId) return m.authorId !== shSelfUserId;
+    return m?.direction === 'incoming' || m?.authorRole === 'bot' || m?.from === 'bot';
+  }
+  function shExtractText(m) { return m?.payload?.text || m?.text || (typeof m?.payload === 'string' ? m.payload : '') || ''; }
+
+  function shHandleMessage(message) {
+    const text = shExtractText(message);
+    if (shSelfUserId === null && message?.authorId) {
+      shPending.push(message);
+      if (shPending.length >= 2) shFallback();
+      return;
+    }
+    const bot = shIsBotMessage(message);
+    if (bot && text) shSpeak(text);
+  }
+
+  function shTryGetUser() {
+    shGetUserTries++;
+    if (window.botpress && typeof window.botpress.getUser === 'function') {
+      window.botpress.getUser().then((u) => {
+        const id = u?.user?.id || u?.id || u?.userId || u?.user?.userId || null;
+        if (id) {
+          shSelfUserId = id;
+          shPending.forEach(shHandleMessage);
+          shPending = [];
+        } else if (shGetUserTries < 12) setTimeout(shTryGetUser, 800);
+        else shFallback();
+      }).catch(() => { if (shGetUserTries < 12) setTimeout(shTryGetUser, 800); else shFallback(); });
+    } else if (shGetUserTries < 12) setTimeout(shTryGetUser, 800);
+    else shFallback();
+  }
+
+  function shFallback() {
+    if (shSelfUserId !== null || !shPending.length) return;
+    const first = shPending[0];
+    if (first?.authorId) {
+      shSelfUserId = first.authorId;
+      shPending.forEach(shHandleMessage);
+      shPending = [];
+    }
+  }
+
+  function shAttachListener(attempt) {
+    attempt = attempt || 0;
+    if (window.botpress && typeof window.botpress.on === 'function') {
+      window.botpress.on('message', shHandleMessage);
+      // "initialized" veut seulement dire que le widget a fini de charger —
+      // pas qu'on peut déjà lui envoyer des messages. D'après la doc
+      // officielle Botpress, sendMessage n'est garanti disponible qu'après
+      // "webchat:ready", qui ne se déclenche qu'une fois le chat ouvert pour
+      // la première fois. Avant ce correctif, le mode mains libres pouvait
+      // perdre le tout premier message dicté juste après l'ouverture auto.
+      window.botpress.on('webchat:initialized', () => { shTryGetUser(); });
+      window.botpress.on('webchat:ready', () => { shBotpressReady = true; });
+      shTryGetUser();
+      setTimeout(shFallback, 5000);
+      return;
+    }
+    if (attempt < 20) setTimeout(() => shAttachListener(attempt + 1), 500);
+  }
+  shAttachListener();
+</script>
 </body>
 </html>

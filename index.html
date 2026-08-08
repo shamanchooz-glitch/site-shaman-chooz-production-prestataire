@@ -3931,6 +3931,113 @@ function nativeShare(){
 <script src="https://files.bpcontent.cloud/2026/08/03/08/20260803083655-968F1KI0.js" defer></script>
 
 <script>
+  const WORLD_LANGS = [
+    { code: 'fr-FR', label: 'Français' },
+    { code: 'en-US', label: 'English (US)' },
+    { code: 'en-GB', label: 'English (UK)' },
+    { code: 'es-ES', label: 'Español' },
+    { code: 'pt-PT', label: 'Português' },
+    { code: 'pt-BR', label: 'Português (Brésil)' },
+    { code: 'de-DE', label: 'Deutsch' },
+    { code: 'it-IT', label: 'Italiano' },
+    { code: 'ar-SA', label: 'العربية' },
+    { code: 'zh-CN', label: '中文（简体）' },
+    { code: 'ja-JP', label: '日本語' },
+    { code: 'ru-RU', label: 'Русский' },
+    { code: 'hi-IN', label: 'हिन्दी' },
+    { code: 'tr-TR', label: 'Türkçe' },
+    { code: 'sw-KE', label: 'Kiswahili' },
+    { code: 'nl-NL', label: 'Nederlands' },
+    { code: 'ko-KR', label: '한국어' },
+  ];
+  function shDetectLang() {
+    const nav = (navigator.language || 'fr-FR');
+    const exact = WORLD_LANGS.find(l => l.code.toLowerCase() === nav.toLowerCase());
+    if (exact) return exact.code;
+    const base = nav.split('-')[0];
+    const partial = WORLD_LANGS.find(l => l.code.split('-')[0] === base);
+    return partial ? partial.code : 'fr-FR';
+  }
+  let currentLang = shDetectLang();
+  let currentVoice = null;
+  function shPickVoice() {
+    if (!window.speechSynthesis) return;
+    const all = window.speechSynthesis.getVoices();
+    const base = currentLang.split('-')[0];
+    const matches = all.filter(v => v.lang && v.lang.toLowerCase().startsWith(base));
+    currentVoice = matches[0] || all[0] || null;
+  }
+  if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = shPickVoice;
+  shPickVoice();
+
+  function shSetStatus(text, isError) {
+    if (!text) return;
+    console.log('[Shaman voix]', text);
+  }
+  if (location.protocol === 'file:') {
+    shSetStatus('⚠️ Ce fichier est ouvert en local (file://) : héberge la page (http:// ou https://) pour que tout fonctionne.', true);
+  }
+
+  // Toujours activée, sans bouton ni interrupteur visible : chaque réponse
+  // de Shaman est lue automatiquement à voix haute dès qu'elle arrive.
+  const voiceOn = true;
+
+  function shSpeak(text, isRetry) {
+    if (!window.speechSynthesis) {
+      shSetStatus("❌ Ce navigateur ne sait pas lire de texte à voix haute.", true);
+      return;
+    }
+    if (!voiceOn || !text) return;
+    window.speechSynthesis.resume();
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = currentLang;
+    if (currentVoice) utter.voice = currentVoice;
+    utter.rate = 1.02;
+    let started = false;
+    utter.onstart = () => { started = true; shSetStatus('🔊 Shaman parle…'); };
+    utter.onend = () => { shSetStatus(''); };
+    utter.onerror = (e) => {
+      shSetStatus('❌ Erreur de lecture audio (' + (e && e.error ? e.error : 'inconnue') + ')', true);
+    };
+    window.speechSynthesis.speak(utter);
+    if (!isRetry) {
+      setTimeout(() => {
+        if (!started && voiceOn && !window.speechSynthesis.speaking) shSpeak(text, true);
+      }, 600);
+    } else {
+      setTimeout(() => {
+        if (!started && !window.speechSynthesis.speaking) {
+          shSetStatus('❌ Le haut-parleur ne répond pas sur cet appareil. Vérifie qu\'une voix est installée (Réglages > Accessibilité/Synthèse vocale) et que le son n\'est pas coupé.', true);
+        }
+      }, 900);
+    }
+  }
+
+  // Déverrouillage : les navigateurs mobiles bloquent speechSynthesis.speak()
+  // s'il n'est pas déclenché par un geste utilisateur direct. On amorce donc
+  // au premier geste sur la page.
+  let speechUnlocked = false;
+  let unlockAttempts = 0;
+  function unlockSpeech() {
+    if (speechUnlocked || !window.speechSynthesis || unlockAttempts >= 8) return;
+    unlockAttempts++;
+    try {
+      window.speechSynthesis.resume();
+      const primer = new SpeechSynthesisUtterance('bonjour');
+      primer.volume = 0.01;
+      primer.rate = 10;
+      primer.onstart = () => { speechUnlocked = true; };
+      primer.onend = () => { speechUnlocked = true; };
+      window.speechSynthesis.speak(primer);
+    } catch (e) {}
+  }
+  ['pointerdown', 'touchstart', 'click', 'keydown'].forEach((evt) => {
+    document.addEventListener(evt, unlockSpeech, { capture: true, passive: true });
+  });
+</script>
+
+<script>
   let shSelfUserId = null;
   let shPending = [];
   let shGetUserTries = 0;
@@ -3950,6 +4057,7 @@ function nativeShare(){
       return;
     }
     const bot = shIsBotMessage(message);
+    if (bot && text) shSpeak(text);
   }
 
   function shTryGetUser() {

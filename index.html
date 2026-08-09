@@ -775,13 +775,13 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               <div class="field-hint">PDF, Word ou photo du document, 8 Mo maximum.</div>
             </div>
             <div class="field">
-              <label>Autres documents (optionnel)</label>
+              <label>Autres documents (optionnel) — 10 maximum</label>
               <div class="dual-upload">
-                <label class="slot-btn">📷 Prendre une photo<input type="file" id="c-docs-camera" accept="image/*" capture="environment"></label>
-                <label class="slot-btn">📁 Sélect. fichiers<input type="file" id="c-docs-file" accept=".pdf,.doc,.docx,image/*" multiple></label>
+                <label class="slot-btn" id="c-docs-camera-slot">📷 Prendre une photo<input type="file" id="c-docs-camera" accept="image/*" capture="environment"></label>
+                <label class="slot-btn" id="c-docs-file-slot">📁 Sélect. fichiers<input type="file" id="c-docs-file" accept=".pdf,.doc,.docx,image/*" multiple></label>
               </div>
               <div class="file-chip-list" id="c-docs-chips"></div>
-              <div class="field-hint">Portfolio, book, lettre de motivation… 8 Mo maximum par fichier.</div>
+              <div class="field-hint" id="c-docs-hint">Portfolio, book, lettre de motivation… 8 Mo maximum par fichier, 10 documents maximum.</div>
             </div>
             <label class="cgu-consent">
               <input type="checkbox" id="c-cgu" required>
@@ -3122,9 +3122,13 @@ function clearCvFile(){
 document.getElementById('c-cv-camera').addEventListener('change', function(){ setCvFile(this.files[0]); this.value=''; });
 document.getElementById('c-cv-file').addEventListener('change', function(){ setCvFile(this.files[0]); this.value=''; });
 
+const MAX_DOCS = 10;
 let docsSelectedFiles = [];
 function addDocFiles(files){
-  docsSelectedFiles.push(...files);
+  const remaining = MAX_DOCS - docsSelectedFiles.length;
+  if(remaining <= 0){ renderDocsChips(); return; }
+  const accepted = files.slice(0, remaining);
+  docsSelectedFiles.push(...accepted);
   renderDocsChips();
 }
 function removeDocFile(i){
@@ -3133,6 +3137,12 @@ function removeDocFile(i){
 }
 function renderDocsChips(){
   document.getElementById('c-docs-chips').innerHTML = docsSelectedFiles.map((f,i)=>`<span>📎 ${f.name} <button type="button" onclick="removeDocFile(${i})">×</button></span>`).join('');
+  const atLimit = docsSelectedFiles.length >= MAX_DOCS;
+  document.getElementById('c-docs-camera-slot').style.display = atLimit ? 'none' : '';
+  document.getElementById('c-docs-file-slot').style.display = atLimit ? 'none' : '';
+  document.getElementById('c-docs-hint').textContent = atLimit
+    ? 'Maximum 10 documents atteint — retirez-en un pour en ajouter un autre.'
+    : 'Portfolio, book, lettre de motivation… 8 Mo maximum par fichier, 10 documents maximum.';
 }
 document.getElementById('c-docs-camera').addEventListener('change', function(){ addDocFiles(Array.from(this.files)); this.value=''; });
 document.getElementById('c-docs-file').addEventListener('change', function(){ addDocFiles(Array.from(this.files)); this.value=''; });

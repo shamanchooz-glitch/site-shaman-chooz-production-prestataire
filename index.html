@@ -457,6 +457,11 @@ nav{display:flex;gap:4px;align-items:center;}
 .btn-eye{background:var(--paper-soft);border:1.5px solid var(--line);border-radius:10px;padding:0 16px;font-size:1.1rem;flex-shrink:0;}
 .btn-eye:hover{border-color:var(--gold);}
 .offer-item,.cand-admin-item{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);}
+.match-section-title{font-size:0.95rem;font-weight:700;color:var(--wine);margin:4px 0 6px;display:flex;align-items:center;gap:6px;}
+.other-section-title{font-size:0.85rem;font-weight:700;color:var(--ink-soft);margin:20px 0 6px;padding-top:14px;border-top:1px solid var(--line);}
+.tab-count{display:inline-block;background:var(--wine);color:#fff;font-size:0.7rem;font-weight:700;border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:middle;}
+.interet-item{border-left:3px solid var(--wine);padding-left:12px;}
+.interet-item.traite{border-left-color:var(--line);opacity:0.65;}
 .offer-item .info,.cand-admin-item .info{font-size:0.92rem;}
 .offer-item .info b,.cand-admin-item .info b{display:block;font-size:1rem;margin-bottom:3px;}
 .mini-actions{display:flex;gap:8px;flex-shrink:0;}
@@ -810,7 +815,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <div class="side-info">
           <h3>Pourquoi s'inscrire ?</h3>
           <ul>
-            <li>Votre profil est visible par les recruteurs et productions inscrits sur la plateforme, une fois validé et mis en ligne.</li>
+            <li>Votre profil est visible par les recruteurs, clients et employeurs inscrits sur la plateforme, une fois validé et mis en ligne.</li>
             <li>Une équipe valide chaque profil avant sa mise en ligne publique.</li>
             <li>En cas d'intérêt d'un recruteur, notre équipe vous met directement en relation — aucun contact non filtré.</li>
             <li>Le suivi de votre dossier est disponible à tout moment.</li>
@@ -1008,6 +1013,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         </div>
         <div class="sub-tabs" style="justify-content:space-between;">
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="sub-tab-btn" data-sub="interets" onclick="openAdminSub('interets')">🔔 Intérêts<span class="tab-count" id="adm-interets-badge" style="display:none;"></span></button>
             <button class="sub-tab-btn active" data-sub="valider" onclick="openAdminSub('valider')">Candidats à valider</button>
             <button class="sub-tab-btn" data-sub="valides" onclick="openAdminSub('valides')">Candidats validés</button>
             <button class="sub-tab-btn" data-sub="offres-attente" onclick="openAdminSub('offres-attente')">Offres à valider</button>
@@ -1023,6 +1029,14 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <button class="sub-tab-btn" onclick="loadAdminData()" title="Recharger les dernières données">🔄 Actualiser</button>
         </div>
 
+        <div id="adm-interets" class="sub-panel card">
+          <h3>🔔 Intérêts signalés</h3>
+          <p class="hint">Chaque clic sur « Je suis intéressé(e) » (côté candidat ou côté recruteur) apparaît ici avec le numéro WhatsApp et la localisation de la personne, pour vous permettre de faire la mise en relation. Marquez un intérêt comme traité une fois la mise en relation effectuée.</p>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.85rem;margin-bottom:14px;">
+            <input type="checkbox" id="adm-interets-hide-traites" checked onchange="renderAdminInterets()"> Masquer les intérêts déjà traités
+          </label>
+          <div id="adm-interets-list"><p class="empty-state">Chargement…</p></div>
+        </div>
         <div id="adm-valider" class="sub-panel active card">
           <h3>Candidats en attente de validation</h3>
           <div id="list-valider"><p class="empty-state">Chargement…</p></div>
@@ -2922,6 +2936,9 @@ async function checkCandidateAccess(){
   if(match.statut!=='valide'){ msg.className='form-msg err'; msg.textContent="Votre profil n'est pas encore validé par notre équipe. Revenez une fois votre candidature validée."; return; }
   currentCandidateWhatsapp = match.whatsapp || num;
   currentCandidateNom = match.nom || '';
+  currentCandidateGeo = match.geo || null;
+  currentCandidateCategories = (match.categorie||'').split(',').map(s=>s.trim()).filter(Boolean);
+  currentCandidateVille = match.ville || '';
   document.getElementById('offres-gate').style.display='none';
   document.getElementById('offres-content').style.display='block';
   loadOffersForBrowse();
@@ -2941,6 +2958,9 @@ async function checkRecruteurAccess(){
   const match = Object.values(all).find(o=>o.contact && o.contact.replace(/\D/g,'')===digits && o.statut==='active');
   if(!match){ msg.className='form-msg err'; msg.textContent="Aucune offre validée trouvée avec ce numéro. Publiez d'abord une offre, ou attendez sa validation par notre équipe."; return; }
   currentRecruteurWhatsapp = match.contact || num;
+  currentRecruteurGeo = match.geo || null;
+  currentRecruteurCategories = (match.categorie||'').split(',').map(s=>s.trim()).filter(Boolean);
+  currentRecruteurVille = match.ville || '';
   document.getElementById('parcourir-gate').style.display='none';
   document.getElementById('parcourir-content').style.display='block';
   loadCandidatesForBrowse();
@@ -2948,7 +2968,13 @@ async function checkRecruteurAccess(){
 
 let currentCandidateWhatsapp = null;
 let currentCandidateNom = '';
+let currentCandidateGeo = null;
+let currentCandidateCategories = [];
+let currentCandidateVille = '';
 let currentRecruteurWhatsapp = null;
+let currentRecruteurGeo = null;
+let currentRecruteurCategories = [];
+let currentRecruteurVille = '';
 let cachedOffresPublic = {};
 async function loadOffersForBrowse(){
   const listEl = document.getElementById('offres-public-list');
@@ -2961,6 +2987,19 @@ async function loadOffersForBrowse(){
   villeSelect.innerHTML = '<option value="">Toutes les villes</option>' + villes.map(v=>`<option>${v}</option>`).join('');
   paysSelect.innerHTML = '<option value="">Tous les pays</option>' + countryOptionsHtml();
   renderPublicOffersList();
+}
+function offerCardHtml(id,o){
+  return `
+    <div class="offer-item">
+      <div class="info">
+        <b>${o.titre||''}</b>
+        ${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· date limite '+o.dateLimite : ''}
+        <div style="margin-top:6px;color:var(--ink-soft);">${o.description||''}</div>
+      </div>
+      <div class="mini-actions">
+        <button class="btn-interet" onclick="contacterPrestataireOffre('${id}')">💬 Je suis intéressé(e)</button>
+      </div>
+    </div>`;
 }
 function renderPublicOffersList(){
   const listEl = document.getElementById('offres-public-list');
@@ -2984,17 +3023,27 @@ function renderPublicOffersList(){
     return true;
   });
   if(list.length===0){ listEl.innerHTML = '<p class="empty-state">Aucune offre disponible ne correspond à ces critères pour le moment.</p>'; return; }
-  listEl.innerHTML = list.map(([id,o])=>`
-    <div class="offer-item">
-      <div class="info">
-        <b>${o.titre||''}</b>
-        ${o.categorie||''} · ${o.ville||''} ${o.dateLimite ? '· date limite '+o.dateLimite : ''}
-        <div style="margin-top:6px;color:var(--ink-soft);">${o.description||''}</div>
-      </div>
-      <div class="mini-actions">
-        <button class="btn-interet" onclick="contacterPrestataireOffre('${id}')">💬 Je suis intéressé(e)</button>
-      </div>
-    </div>`).join('');
+  const hasProfile = currentCandidateCategories.length>0 || !!currentCandidateVille;
+  if(!hasProfile){
+    listEl.innerHTML = list.map(([id,o])=>offerCardHtml(id,o)).join('');
+    return;
+  }
+  const matched=[], rest=[];
+  list.forEach(entry=>{
+    const [id,o] = entry;
+    const offreCats = (o.categorie||'').split(',').map(s=>s.trim());
+    const catMatch = currentCandidateCategories.some(c=>offreCats.includes(c));
+    const villeMatch = currentCandidateVille && o.ville===currentCandidateVille;
+    (catMatch || villeMatch ? matched : rest).push(entry);
+  });
+  let html = '';
+  if(matched.length){
+    html += `<div class="match-section-title">🎯 Recommandé pour vous</div>` + matched.map(([id,o])=>offerCardHtml(id,o)).join('');
+  }
+  if(rest.length){
+    html += `<div class="other-section-title">${matched.length ? 'Toutes les autres offres' : 'Toutes les offres disponibles'}</div>` + rest.map(([id,o])=>offerCardHtml(id,o)).join('');
+  }
+  listEl.innerHTML = html;
 }
 function contacterPrestataireOffre(offerId){
   const o = cachedOffresPublic[offerId];
@@ -3002,6 +3051,18 @@ function contacterPrestataireOffre(offerId){
   const monNum = currentCandidateWhatsapp ? ` Mon numéro WhatsApp : ${currentCandidateWhatsapp}${currentCandidateNom ? ' ('+currentCandidateNom+')' : ''}.` : '';
   const texte = `Bonjour, je suis intéressé(e) par l'offre "${o.titre||''}" (${o.categorie||''}, ${o.ville||''}) sur SHAMAN CHOOZ PRODUCTION.${monNum} Merci de me mettre en relation avec le recruteur.`;
   window.open(`https://wa.me/${PRESTATAIRE_WHATSAPP}?text=${encodeURIComponent(texte)}`, '_blank');
+  fbPush('interets', {
+    type: 'candidat_offre',
+    cibleId: offerId,
+    cibleTitre: o.titre || '',
+    cibleCategorie: o.categorie || '',
+    cibleVille: o.ville || '',
+    personneNom: currentCandidateNom || '',
+    personneWhatsapp: currentCandidateWhatsapp || '',
+    personneGeo: currentCandidateGeo || null,
+    date: new Date().toISOString(),
+    traite: false
+  }).catch(()=>{});
 }
 function openAdminSub(name){
   document.querySelectorAll('#admin-dashboard .sub-panel').forEach(p=>p.classList.remove('active'));
@@ -3012,6 +3073,62 @@ function openAdminSub(name){
   if(name==='candidats-live') loadAdminCandidatsLive();
   if(name==='offres-live') loadAdminOffresLive();
   if(name==='chats') loadAdminChatSessions();
+  if(name==='interets') loadAdminInterets();
+}
+
+let cachedInterets = {};
+async function loadAdminInterets(){
+  const listEl = document.getElementById('adm-interets-list');
+  if(listEl) listEl.innerHTML = '<p class="empty-state">Chargement…</p>';
+  cachedInterets = await fbGetAdmin('interets') || {};
+  renderAdminInterets();
+  updateInteretsBadge();
+}
+function updateInteretsBadge(){
+  const badge = document.getElementById('adm-interets-badge');
+  if(!badge) return;
+  const nonTraites = Object.values(cachedInterets).filter(i=>!i.traite).length;
+  if(nonTraites>0){ badge.textContent = nonTraites; badge.style.display='inline-block'; }
+  else { badge.style.display='none'; }
+}
+function renderAdminInterets(){
+  const listEl = document.getElementById('adm-interets-list');
+  if(!listEl) return;
+  const hideTraites = document.getElementById('adm-interets-hide-traites')?.checked;
+  let entries = Object.entries(cachedInterets);
+  if(hideTraites) entries = entries.filter(([id,i])=>!i.traite);
+  entries.sort((a,b)=>(b[1].date||'').localeCompare(a[1].date||''));
+  if(entries.length===0){ listEl.innerHTML = '<p class="empty-state">Aucun intérêt signalé pour le moment.</p>'; return; }
+  listEl.innerHTML = entries.map(([id,i])=>{
+    const label = i.type==='candidat_offre' ? '🙋 Candidat intéressé par une offre' : '🏢 Recruteur intéressé par un profil';
+    const cibleInfo = `${i.cibleTitre||'—'}${i.cibleCategorie ? ' ('+i.cibleCategorie+(i.cibleVille?', '+i.cibleVille:'')+')' : ''}`;
+    const geoHtml = i.personneGeo ? `<br>📍 <a href="https://www.google.com/maps?q=${i.personneGeo.lat},${i.personneGeo.lng}" target="_blank">Voir sa localisation</a>` : '';
+    const waHref = i.personneWhatsapp ? `https://wa.me/${i.personneWhatsapp.replace(/\D/g,'')}` : '';
+    const dateFmt = i.date ? new Date(i.date).toLocaleString('fr-FR') : '';
+    return `
+    <div class="offer-item interet-item ${i.traite?'traite':''}">
+      <div class="info">
+        <b>${label}</b>
+        Intéressé(e) par : ${cibleInfo}
+        <div style="margin-top:4px;">📞 ${i.personneNom?i.personneNom+' — ':''}${i.personneWhatsapp||'numéro non renseigné'}${geoHtml}</div>
+        <div style="margin-top:4px;color:var(--ink-soft);font-size:0.78rem;">${dateFmt}</div>
+      </div>
+      <div class="mini-actions">
+        ${waHref ? `<a class="btn-mini" style="background:var(--paper-soft);color:var(--ink);text-decoration:none;" href="${waHref}" target="_blank" rel="noopener">💬 Contacter</a>` : ''}
+        ${!i.traite ? `<button class="btn-mini" onclick="marquerInteretTraite('${id}')">✅ Traité</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+async function marquerInteretTraite(id){
+  try{
+    await fbPatch('interets/'+id, {traite:true});
+    if(cachedInterets[id]) cachedInterets[id].traite = true;
+    renderAdminInterets();
+    updateInteretsBadge();
+  }catch(e){
+    alert("Échec de la mise à jour : "+e.message);
+  }
 }
 
 /* ============ PHOTO SLOTS (candidat) ============ */
@@ -3506,6 +3623,19 @@ async function loadCandidatesForBrowse(){
   paysSelect.innerHTML = '<option value="">Tous les pays</option>' + countryOptionsHtml();
   renderCandidateGrid();
 }
+function candidateCardHtml(id,c){
+  return `
+    <div class="cand-card">
+      ${c.photos && c.photos[0] ? `<img class="photo" src="${c.photos[0]}" alt="${c.nom}">` : `<div class="photo placeholder">Pas de photo</div>`}
+      <div class="body">
+        <div class="cat-badge">${c.categorie||''}</div>
+        <div class="name">${c.nom||''}</div>
+        <div class="meta">${c.age||'–'} ans · ${c.ville||''}</div>
+        ${c.bio ? `<div class="meta" style="margin-top:-6px;margin-bottom:10px;">${c.bio}</div>` : ''}
+        <button class="btn-interet" onclick="contacterPrestataireCandidat('${id}')">💬 Je suis intéressé(e)</button>
+      </div>
+    </div>`;
+}
 function renderCandidateGrid(){
   const grid = document.getElementById('cand-grid');
   const cats = getCategoryArray('filter-categorie');
@@ -3528,17 +3658,27 @@ function renderCandidateGrid(){
     return true;
   });
   if(list.length===0){ grid.innerHTML = '<p class="empty-state">Aucun profil en ligne ne correspond à ces critères pour le moment.</p>'; return; }
-  grid.innerHTML = list.map(([id,c])=>`
-    <div class="cand-card">
-      ${c.photos && c.photos[0] ? `<img class="photo" src="${c.photos[0]}" alt="${c.nom}">` : `<div class="photo placeholder">Pas de photo</div>`}
-      <div class="body">
-        <div class="cat-badge">${c.categorie||''}</div>
-        <div class="name">${c.nom||''}</div>
-        <div class="meta">${c.age||'–'} ans · ${c.ville||''}</div>
-        ${c.bio ? `<div class="meta" style="margin-top:-6px;margin-bottom:10px;">${c.bio}</div>` : ''}
-        <button class="btn-interet" onclick="contacterPrestataireCandidat('${id}')">💬 Je suis intéressé(e)</button>
-      </div>
-    </div>`).join('');
+  const hasProfile = currentRecruteurCategories.length>0 || !!currentRecruteurVille;
+  if(!hasProfile){
+    grid.innerHTML = list.map(([id,c])=>candidateCardHtml(id,c)).join('');
+    return;
+  }
+  const matched=[], rest=[];
+  list.forEach(entry=>{
+    const [id,c] = entry;
+    const candCats = (c.categorie||'').split(',').map(s=>s.trim());
+    const catMatch = currentRecruteurCategories.some(x=>candCats.includes(x));
+    const villeMatch = currentRecruteurVille && c.ville===currentRecruteurVille;
+    (catMatch || villeMatch ? matched : rest).push(entry);
+  });
+  let html = '';
+  if(matched.length){
+    html += `<div class="match-section-title" style="grid-column:1/-1;">🎯 Recommandé pour vous</div>` + matched.map(([id,c])=>candidateCardHtml(id,c)).join('');
+  }
+  if(rest.length){
+    html += `<div class="other-section-title" style="grid-column:1/-1;">${matched.length ? 'Tous les autres profils' : 'Tous les profils disponibles'}</div>` + rest.map(([id,c])=>candidateCardHtml(id,c)).join('');
+  }
+  grid.innerHTML = html;
 }
 function contacterPrestataireCandidat(candidatId){
   const c = cachedCandidates[candidatId];
@@ -3546,6 +3686,18 @@ function contacterPrestataireCandidat(candidatId){
   const monNum = currentRecruteurWhatsapp ? ` Mon numéro WhatsApp (recruteur) : ${currentRecruteurWhatsapp}.` : '';
   const texte = `Bonjour, je suis un(e) recruteur(se) intéressé(e) par le profil de ${c.nom||'ce candidat'} (${c.categorie||''}, ${c.ville||''}) sur SHAMAN CHOOZ PRODUCTION.${monNum} Merci de me mettre en relation.`;
   window.open(`https://wa.me/${PRESTATAIRE_WHATSAPP}?text=${encodeURIComponent(texte)}`, '_blank');
+  fbPush('interets', {
+    type: 'recruteur_candidat',
+    cibleId: candidatId,
+    cibleTitre: c.nom || '',
+    cibleCategorie: c.categorie || '',
+    cibleVille: c.ville || '',
+    personneNom: '',
+    personneWhatsapp: currentRecruteurWhatsapp || '',
+    personneGeo: currentRecruteurGeo || null,
+    date: new Date().toISOString(),
+    traite: false
+  }).catch(()=>{});
 }
 
 /* ============ ADMIN ============ */
@@ -3597,6 +3749,7 @@ async function loadAdminData(){
   renderAdminOffres(offres, ['active','bloque'], 'list-offres', 'gestion');
   renderAdminPaiements();
   renderStats(all, offres);
+  loadAdminInterets();
 }
 function renderAdminCandidates(all, statuts, elId, mode){
   const el = document.getElementById(elId);
@@ -4102,27 +4255,9 @@ function nativeShare(){
     }
   }
 
-  // Déverrouillage : les navigateurs mobiles bloquent speechSynthesis.speak()
-  // s'il n'est pas déclenché par un geste utilisateur direct. On amorce donc
-  // au premier geste sur la page.
-  let speechUnlocked = false;
-  let unlockAttempts = 0;
-  function unlockSpeech() {
-    if (speechUnlocked || !window.speechSynthesis || unlockAttempts >= 8) return;
-    unlockAttempts++;
-    try {
-      window.speechSynthesis.resume();
-      const primer = new SpeechSynthesisUtterance('bonjour');
-      primer.volume = 0.01;
-      primer.rate = 10;
-      primer.onstart = () => { speechUnlocked = true; };
-      primer.onend = () => { speechUnlocked = true; };
-      window.speechSynthesis.speak(primer);
-    } catch (e) {}
-  }
-  ['pointerdown', 'touchstart', 'click', 'keydown'].forEach((evt) => {
-    document.addEventListener(evt, unlockSpeech, { capture: true, passive: true });
-  });
+  // Le déverrouillage de la synthèse vocale au premier geste utilisateur est déjà
+  // géré une seule fois plus haut dans la page (fonction partagée par le chat
+  // intégré et ce widget Shaman) — pas besoin de le redéclarer ici.
 </script>
 
 <script>

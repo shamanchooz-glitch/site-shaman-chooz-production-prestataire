@@ -992,7 +992,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <div class="field">
           <label>Mot de passe</label>
           <div class="password-row">
-            <input type="password" id="admin-password" placeholder="••••••••" autocomplete="current-password">
+            <input type="password" id="admin-password" placeholder="••••••••" autocomplete="off">
             <button type="button" class="btn-eye" onclick="togglePasswordVisibility()" aria-label="Afficher/masquer le mot de passe" id="admin-eye-btn">🔒</button>
           </div>
         </div>
@@ -1112,9 +1112,9 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <h3>🔑 Changer le mot de passe administrateur</h3>
           <p class="hint">Par sécurité, il faut d'abord confirmer ton mot de passe actuel avant d'en choisir un nouveau. Le nouveau mot de passe doit faire au moins 6 caractères.</p>
           <div class="admin-tools" style="flex-direction:column;align-items:stretch;max-width:380px;">
-            <input type="password" id="pwd-current" placeholder="Mot de passe actuel" autocomplete="current-password">
-            <input type="password" id="pwd-new" placeholder="Nouveau mot de passe" autocomplete="new-password">
-            <input type="password" id="pwd-confirm" placeholder="Confirmer le nouveau mot de passe" autocomplete="new-password">
+            <input type="password" id="pwd-current" placeholder="Mot de passe actuel" autocomplete="off">
+            <input type="password" id="pwd-new" placeholder="Nouveau mot de passe" autocomplete="off">
+            <input type="password" id="pwd-confirm" placeholder="Confirmer le nouveau mot de passe" autocomplete="off">
           </div>
           <button class="btn-submit" id="pwd-change-btn" onclick="changeAdminPassword()" style="margin-top:12px;max-width:380px;">
             <span class="spinner" id="pwd-change-spinner"></span>

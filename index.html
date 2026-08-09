@@ -1023,6 +1023,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <button class="sub-tab-btn" data-sub="paiements" onclick="openAdminSub('paiements')">💳 Paiements</button>
             <button class="sub-tab-btn" data-sub="galerie" onclick="openAdminSub('galerie')">📸 Galerie</button>
             <button class="sub-tab-btn" data-sub="stats" onclick="openAdminSub('stats')">Statistiques</button>
+            <button class="sub-tab-btn" data-sub="securite" onclick="openAdminSub('securite')">🔑 Sécurité</button>
           </div>
           <button class="sub-tab-btn" onclick="loadAdminData()" title="Recharger les dernières données">🔄 Actualiser</button>
         </div>
@@ -1106,6 +1107,20 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <div class="stat-card"><div class="n" id="stat-offres-attente">–</div><div class="l">Offres en attente</div></div>
             <div class="stat-card"><div class="n" id="stat-paiements-attente">–</div><div class="l">Paiements à vérifier</div></div>
           </div>
+        </div>
+        <div id="adm-securite" class="sub-panel card">
+          <h3>🔑 Changer le mot de passe administrateur</h3>
+          <p class="hint">Par sécurité, il faut d'abord confirmer ton mot de passe actuel avant d'en choisir un nouveau. Le nouveau mot de passe doit faire au moins 6 caractères.</p>
+          <div class="admin-tools" style="flex-direction:column;align-items:stretch;max-width:380px;">
+            <input type="password" id="pwd-current" placeholder="Mot de passe actuel" autocomplete="current-password">
+            <input type="password" id="pwd-new" placeholder="Nouveau mot de passe" autocomplete="new-password">
+            <input type="password" id="pwd-confirm" placeholder="Confirmer le nouveau mot de passe" autocomplete="new-password">
+          </div>
+          <button class="btn-submit" id="pwd-change-btn" onclick="changeAdminPassword()" style="margin-top:12px;max-width:380px;">
+            <span class="spinner" id="pwd-change-spinner"></span>
+            <span id="pwd-change-label">Changer le mot de passe</span>
+          </button>
+          <div class="form-msg" id="pwd-change-msg"></div>
         </div>
       </div>
     </div>
@@ -1255,6 +1270,74 @@ function adminLogout(){
   document.getElementById('admin-dashboard').style.display='none';
   document.getElementById('admin-gate').style.display='block';
   document.getElementById('admin-password').value='';
+}
+// Changer le mot de passe admin soi-même, sans repasser par la console
+// Firebase à chaque fois. On reconfirme d'abord le mot de passe ACTUEL (ça
+// sert à la fois de vérification de sécurité et à obtenir un jeton bien
+// frais, que Firebase exige pour accepter un changement de mot de passe).
+async function changeAdminPassword(){
+  const current = document.getElementById('pwd-current').value;
+  const next = document.getElementById('pwd-new').value;
+  const confirm = document.getElementById('pwd-confirm').value;
+  const msg = document.getElementById('pwd-change-msg');
+  const btn = document.getElementById('pwd-change-btn');
+  const spinner = document.getElementById('pwd-change-spinner');
+  const label = document.getElementById('pwd-change-label');
+  msg.className='form-msg'; msg.textContent='';
+
+  if(!current || !next || !confirm){
+    msg.className='form-msg err'; msg.textContent='Merci de remplir les trois champs.';
+    return;
+  }
+  if(next.length < 6){
+    msg.className='form-msg err'; msg.textContent='Le nouveau mot de passe doit faire au moins 6 caractères.';
+    return;
+  }
+  if(next !== confirm){
+    msg.className='form-msg err'; msg.textContent='Les deux nouveaux mots de passe ne correspondent pas.';
+    return;
+  }
+  if(next === current){
+    msg.className='form-msg err'; msg.textContent="Le nouveau mot de passe doit être différent de l'actuel.";
+    return;
+  }
+
+  btn.disabled=true; spinner.classList.add('show'); label.textContent='Changement…';
+  try{
+    // Étape 1 : reconfirme le mot de passe actuel (obtient un jeton frais).
+    const signInRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email: ADMIN_EMAIL, password: current, returnSecureToken:true})
+    });
+    const signInData = await signInRes.json();
+    if(signInData.error){
+      msg.className='form-msg err'; msg.textContent='Mot de passe actuel incorrect.';
+      btn.disabled=false; spinner.classList.remove('show'); label.textContent='Changer le mot de passe';
+      return;
+    }
+    // Étape 2 : change le mot de passe avec ce jeton frais.
+    const updateRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${FIREBASE_API_KEY}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({idToken: signInData.idToken, password: next, returnSecureToken:true})
+    });
+    const updateData = await updateRes.json();
+    if(updateData.error) throw new Error(updateData.error.message || 'Échec du changement de mot de passe');
+
+    // On garde la session ouverte avec le nouveau jeton, pas besoin de se
+    // reconnecter tout de suite.
+    _adminIdToken = updateData.idToken;
+    _adminRefreshToken = updateData.refreshToken;
+    _adminIdTokenExpiry = Date.now() + (parseInt(updateData.expiresIn,10)*1000) - 60000;
+    saveAdminSession();
+
+    msg.className='form-msg ok'; msg.textContent='✅ Mot de passe changé avec succès.';
+    document.getElementById('pwd-current').value='';
+    document.getElementById('pwd-new').value='';
+    document.getElementById('pwd-confirm').value='';
+  }catch(err){
+    msg.className='form-msg err'; msg.textContent='Erreur : ' + (err.message || 'impossible de changer le mot de passe.');
+  }
+  btn.disabled=false; spinner.classList.remove('show'); label.textContent='Changer le mot de passe';
 }
 
 /* ============ FIREBASE HELPERS (REST via fetch) ============ */

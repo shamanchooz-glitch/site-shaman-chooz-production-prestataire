@@ -316,7 +316,11 @@ nav{display:flex;gap:4px;align-items:center;}
 .mcat-dropdown{display:none;position:absolute;left:0;right:0;top:100%;margin-top:4px;background:#fff;border:1.5px solid var(--gold);border-radius:12px;max-height:240px;overflow-y:auto;z-index:60;box-shadow:var(--shadow);}
 .mcat-option{padding:9px 14px;font-size:0.87rem;cursor:pointer;}
 .mcat-option:hover{background:var(--paper-soft);}
+.mcat-option-custom{color:var(--wine);font-weight:700;border-top:1px solid var(--line);}
 .mcat-limit{padding:9px 14px;font-size:0.82rem;color:var(--ink-soft);font-style:italic;}
+.btn-edit-profile{background:var(--wine);color:#fff;border:none;padding:10px 16px;border-radius:10px;font-weight:700;font-size:0.85rem;cursor:pointer;margin-top:10px;}
+.edit-mode-banner{background:var(--paper-soft);border:1.5px solid var(--gold);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:0.85rem;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.edit-mode-banner button{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:0.8rem;cursor:pointer;}
 .dial-select{width:auto;max-width:150px;}
 .btn-geo{
   background:var(--paper-soft);border:1.5px solid var(--line);color:var(--ink);
@@ -792,6 +796,10 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               <input type="checkbox" id="c-cgu" required>
               J'ai lu et j'approuve les <a onclick="event.preventDefault();openCGUModal();" href="#">Conditions Générales d'Utilisation</a>.
             </label>
+            <div class="edit-mode-banner" id="c-edit-banner" style="display:none;">
+              ✏️ Vous modifiez votre profil existant. Vos changements seront appliqués après vérification par notre équipe.
+              <button type="button" onclick="cancelCandidateEdit()">Annuler</button>
+            </div>
             <button type="submit" class="btn-submit" id="c-submit-btn">
               <span class="spinner" id="c-spinner"></span>
               <span id="c-submit-label">Envoyer ma candidature</span>
@@ -800,8 +808,9 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           </form>
 
           <div class="track-box">
-            <h4>Déjà inscrit ? Suivre ma candidature</h4>
+            <h4>Déjà inscrit ? Suivre ma candidature / modifier mon profil</h4>
             <div class="track-row" style="flex-wrap:wrap;">
+              <input type="text" id="track-nom" placeholder="Votre nom" style="flex:1;min-width:160px;">
               <div class="phone-row" style="flex:1;min-width:220px;">
                 <select id="track-dial" class="dial-select"></select>
                 <input type="tel" id="track-whatsapp" placeholder="07 00 00 00 00">
@@ -871,6 +880,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <h3>Publier une offre de casting</h3>
             <p class="hint">Décrivez votre besoin. Les candidats intéressés passeront par notre équipe, qui vous mettra en relation.</p>
             <form id="form-offre">
+              <div class="field"><label>Nom du recruteur ou de la société</label><input type="text" id="o-nom" required></div>
               <div class="field"><label>Titre de l'offre</label><input type="text" id="o-titre" required></div>
               <div class="field"><label>Description</label><textarea id="o-description" required></textarea></div>
               <div class="field-row">
@@ -901,6 +911,10 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
                 <input type="checkbox" id="o-cgu" required>
                 J'ai lu et j'approuve les <a onclick="event.preventDefault();openCGUModal();" href="#">Conditions Générales d'Utilisation</a>.
               </label>
+              <div class="edit-mode-banner" id="o-edit-banner" style="display:none;">
+                ✏️ Vous modifiez votre offre existante. Vos changements seront appliqués après vérification par notre équipe.
+                <button type="button" onclick="cancelOfferEdit()">Annuler</button>
+              </div>
               <button type="submit" class="btn-submit" id="o-submit-btn">
                 <span class="spinner" id="o-spinner"></span>
                 <span id="o-submit-label">Publier l'offre</span>
@@ -909,8 +923,9 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             </form>
 
             <div class="track-box">
-              <h4>Déjà publié ? Suivre mon offre / activer sa mise en ligne</h4>
+              <h4>Déjà publié ? Suivre mon offre / modifier / activer sa mise en ligne</h4>
               <div class="track-row" style="flex-wrap:wrap;">
+                <input type="text" id="track-offre-nom" placeholder="Votre nom / société" style="flex:1;min-width:160px;">
                 <div class="phone-row" style="flex:1;min-width:220px;">
                   <select id="track-offre-dial" class="dial-select"></select>
                   <input type="tel" id="track-offre-whatsapp" placeholder="07 00 00 00 00">
@@ -1014,6 +1029,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <div class="sub-tabs" style="justify-content:space-between;">
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <button class="sub-tab-btn" data-sub="interets" onclick="openAdminSub('interets')">🔔 Intérêts<span class="tab-count" id="adm-interets-badge" style="display:none;"></span></button>
+            <button class="sub-tab-btn" data-sub="modifications" onclick="openAdminSub('modifications')">✏️ Modifications<span class="tab-count" id="adm-modifications-badge" style="display:none;"></span></button>
             <button class="sub-tab-btn active" data-sub="valider" onclick="openAdminSub('valider')">Candidats à valider</button>
             <button class="sub-tab-btn" data-sub="valides" onclick="openAdminSub('valides')">Candidats validés</button>
             <button class="sub-tab-btn" data-sub="offres-attente" onclick="openAdminSub('offres-attente')">Offres à valider</button>
@@ -1036,6 +1052,11 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             <input type="checkbox" id="adm-interets-hide-traites" checked onchange="renderAdminInterets()"> Masquer les intérêts déjà traités
           </label>
           <div id="adm-interets-list"><p class="empty-state">Chargement…</p></div>
+        </div>
+        <div id="adm-modifications" class="sub-panel card">
+          <h3>✏️ Demandes de modification</h3>
+          <p class="hint">Un candidat ou un recruteur qui modifie son profil (après vérification numéro + nom) envoie une demande ici, plutôt que de changer directement la fiche en ligne. Vérifiez et cliquez « Appliquer » pour mettre à jour la fiche publiée, ou « Refuser » pour l'ignorer.</p>
+          <div id="adm-modifications-list"><p class="empty-state">Chargement…</p></div>
         </div>
         <div id="adm-valider" class="sub-panel active card">
           <h3>Candidats en attente de validation</h3>
@@ -1876,11 +1897,18 @@ function renderCategoryDropdown(id){
     dropdown.style.display='block';
     return;
   }
-  const q = normalizeSearchStr(input.value.trim());
+  const raw = input.value.trim();
+  const q = normalizeSearchStr(raw);
   let matches = ALL_METIERS.filter(m=>!selected.includes(m) && (!q || normalizeSearchStr(m).includes(q)));
   matches = matches.slice(0,40);
-  if(matches.length===0){ dropdown.style.display='none'; return; }
-  dropdown.innerHTML = matches.map(m=>`<div class="mcat-option" onclick="addCategoryTag('${id}','${m.replace(/'/g,"\\'")}')">${m}</div>`).join('');
+  let html = matches.map(m=>`<div class="mcat-option" onclick="addCategoryTag('${id}','${m.replace(/'/g,"\\'")}')">${m}</div>`).join('');
+  const exactExists = raw && ALL_METIERS.some(m=>normalizeSearchStr(m)===q);
+  const alreadySelected = raw && selected.some(m=>normalizeSearchStr(m)===q);
+  if(raw && !exactExists && !alreadySelected){
+    html += `<div class="mcat-option mcat-option-custom" onclick="addCategoryTag('${id}','${raw.replace(/'/g,"\\'")}')">➕ Ajouter « ${raw} » comme métier</div>`;
+  }
+  if(!html){ dropdown.style.display='none'; return; }
+  dropdown.innerHTML = html;
   dropdown.style.display='block';
 }
 function addCategoryTag(id, metier){
@@ -1920,6 +1948,10 @@ function resetCategoryPicker(id){
   renderCategoryTags(id);
   const dropdown = document.getElementById(id+'-dropdown');
   if(dropdown) dropdown.style.display='none';
+}
+function setCategoryValue(id, commaSeparated){
+  categoryPickerState[id] = (commaSeparated||'').split(',').map(s=>s.trim()).filter(Boolean).slice(0,MAX_CATEGORIES);
+  renderCategoryTags(id);
 }
 ['c-categorie','o-categorie','filter-categorie','filter-categorie-offres'].forEach(id=>initCategoryPicker(id));
 
@@ -3074,6 +3106,72 @@ function openAdminSub(name){
   if(name==='offres-live') loadAdminOffresLive();
   if(name==='chats') loadAdminChatSessions();
   if(name==='interets') loadAdminInterets();
+  if(name==='modifications') renderAdminModifications();
+}
+
+function collectPendingModifications(){
+  const result = [];
+  Object.entries(window._adminCandidats||{}).forEach(([id,c])=>{
+    Object.entries(c.modifications||{}).forEach(([modifId,m])=>{
+      result.push({modifId, type:'candidat', cibleId:id, cibleNom:c.nom||'', data:m});
+    });
+  });
+  Object.entries(window._adminOffres||{}).forEach(([id,o])=>{
+    Object.entries(o.modifications||{}).forEach(([modifId,m])=>{
+      result.push({modifId, type:'offre', cibleId:id, cibleNom:o.titre||'', data:m});
+    });
+  });
+  return result;
+}
+function updateModifBadge(count){
+  const badge = document.getElementById('adm-modifications-badge');
+  if(!badge) return;
+  if(count>0){ badge.textContent=count; badge.style.display='inline-block'; }
+  else { badge.style.display='none'; }
+}
+function renderAdminModifications(){
+  const listEl = document.getElementById('adm-modifications-list');
+  if(!listEl) return;
+  const items = collectPendingModifications();
+  updateModifBadge(items.length);
+  if(items.length===0){ listEl.innerHTML = '<p class="empty-state">Aucune demande de modification en attente.</p>'; return; }
+  listEl.innerHTML = items.map(it=>{
+    const d = it.data;
+    const champs = it.type==='candidat'
+      ? `Nom : ${d.nom||'—'} · Âge : ${d.age||'—'} · Ville : ${d.ville||'—'} · Catégorie(s) : ${d.categorie||'—'}<br>WhatsApp : ${d.whatsapp||'—'}${d.photos&&d.photos.length? ' · '+d.photos.length+' photo(s)' : ''}`
+      : `Titre : ${d.titre||'—'} · Nom : ${d.nom||'—'} · Ville : ${d.ville||'—'} · Catégorie(s) : ${d.categorie||'—'}<br>Contact : ${d.contact||'—'}`;
+    return `
+    <div class="offer-item interet-item">
+      <div class="info">
+        <b>${it.type==='candidat'?"🙋 Modification de profil candidat":"🏢 Modification d'offre"}</b> — ${it.cibleNom||'(sans nom actuel)'}
+        <div style="margin-top:6px;font-size:0.85rem;">${champs}</div>
+      </div>
+      <div class="mini-actions">
+        <button class="btn-mini" onclick="applyModification('${it.modifId}','${it.type}','${it.cibleId}')">✅ Appliquer</button>
+        <button class="btn-mini" onclick="rejectModification('${it.modifId}','${it.type}','${it.cibleId}')">✕ Refuser</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function applyModification(modifId, type, cibleId){
+  const collection = type==='candidat' ? 'candidats' : 'offres';
+  const record = (type==='candidat' ? window._adminCandidats : window._adminOffres)[cibleId];
+  const modif = record && record.modifications ? record.modifications[modifId] : null;
+  if(!modif){ alert('Introuvable — la liste a peut-être changé, rechargez.'); return; }
+  try{
+    await fbPatch(`${collection}/${cibleId}`, modif);
+    await fbDelete(`${collection}/${cibleId}/modifications/${modifId}`);
+    await loadAdminData();
+    openAdminSub('modifications');
+  }catch(e){ alert("Échec : "+e.message); }
+}
+async function rejectModification(modifId, type, cibleId){
+  const collection = type==='candidat' ? 'candidats' : 'offres';
+  try{
+    await fbDelete(`${collection}/${cibleId}/modifications/${modifId}`);
+    await loadAdminData();
+    openAdminSub('modifications');
+  }catch(e){ alert("Échec : "+e.message); }
 }
 
 let cachedInterets = {};
@@ -3227,13 +3325,16 @@ renderSingleSlot('full','slot-full-photo');
 
 /* ============ CV & AUTRES DOCUMENTS (photo ou fichier) ============ */
 let cvSelectedFile = null;
+let existingCvKept = null;
 function setCvFile(file){
   if(!file) return;
   cvSelectedFile = file;
+  existingCvKept = null;
   document.getElementById('c-cv-chip').innerHTML = `<span>📎 ${file.name} <button type="button" onclick="clearCvFile()">×</button></span>`;
 }
 function clearCvFile(){
   cvSelectedFile = null;
+  existingCvKept = null;
   document.getElementById('c-cv-chip').innerHTML = '';
 }
 document.getElementById('c-cv-camera').addEventListener('change', function(){ setCvFile(this.files[0]); this.value=''; });
@@ -3241,8 +3342,9 @@ document.getElementById('c-cv-file').addEventListener('change', function(){ setC
 
 const MAX_DOCS = 10;
 let docsSelectedFiles = [];
+let existingDocsKept = [];
 function addDocFiles(files){
-  const remaining = MAX_DOCS - docsSelectedFiles.length;
+  const remaining = MAX_DOCS - docsSelectedFiles.length - existingDocsKept.length;
   if(remaining <= 0){ renderDocsChips(); return; }
   const accepted = files.slice(0, remaining);
   docsSelectedFiles.push(...accepted);
@@ -3252,9 +3354,15 @@ function removeDocFile(i){
   docsSelectedFiles.splice(i,1);
   renderDocsChips();
 }
+function removeExistingDoc(i){
+  existingDocsKept.splice(i,1);
+  renderDocsChips();
+}
 function renderDocsChips(){
-  document.getElementById('c-docs-chips').innerHTML = docsSelectedFiles.map((f,i)=>`<span>📎 ${f.name} <button type="button" onclick="removeDocFile(${i})">×</button></span>`).join('');
-  const atLimit = docsSelectedFiles.length >= MAX_DOCS;
+  const existingHtml = existingDocsKept.map((d,i)=>`<span>📎 ${d.name} (déjà enregistré) <button type="button" onclick="removeExistingDoc(${i})">×</button></span>`).join('');
+  const newHtml = docsSelectedFiles.map((f,i)=>`<span>📎 ${f.name} <button type="button" onclick="removeDocFile(${i})">×</button></span>`).join('');
+  document.getElementById('c-docs-chips').innerHTML = existingHtml + newHtml;
+  const atLimit = (existingDocsKept.length + docsSelectedFiles.length) >= MAX_DOCS;
   document.getElementById('c-docs-camera-slot').style.display = atLimit ? 'none' : '';
   document.getElementById('c-docs-file-slot').style.display = atLimit ? 'none' : '';
   document.getElementById('c-docs-hint').textContent = atLimit
@@ -3263,6 +3371,95 @@ function renderDocsChips(){
 }
 document.getElementById('c-docs-camera').addEventListener('change', function(){ addDocFiles(Array.from(this.files)); this.value=''; });
 document.getElementById('c-docs-file').addEventListener('change', function(){ addDocFiles(Array.from(this.files)); this.value=''; });
+
+/* ============ SUIVI / ACCÈS À SON PROFIL POUR LE MODIFIER ============ */
+function splitPhoneNumber(fullNumber){
+  const digits = (fullNumber||'').replace(/\D/g,'');
+  for(const [name, dial] of COUNTRIES_BY_DIAL_LEN){
+    if(digits.startsWith(dial)) return {dial, local: digits.slice(dial.length)};
+  }
+  return {dial:'225', local: digits};
+}
+let editingCandidateId = null;
+function loadCandidateForEdit(){
+  if(!lastTrackedCandidate) return;
+  const {id, record} = lastTrackedCandidate;
+  editingCandidateId = id;
+  document.getElementById('c-nom').value = record.nom || '';
+  document.getElementById('c-age').value = record.age || '';
+  document.getElementById('c-ville').value = record.ville || '';
+  const {dial, local} = splitPhoneNumber(record.whatsapp);
+  document.getElementById('c-dial').value = dial;
+  document.getElementById('c-whatsapp').value = local;
+  document.getElementById('c-email').value = record.email || '';
+  document.getElementById('c-bio').value = record.bio || '';
+  setCategoryValue('c-categorie', record.categorie || '');
+  candidatePhotos = Array.isArray(record.photos) ? [...record.photos] : [];
+  buildPhotoSlots();
+  singlePhotos.id = record.photoIdentite || null;
+  singlePhotos.full = record.photoEntiere || null;
+  renderSingleSlot('id','slot-id-photo');
+  renderSingleSlot('full','slot-full-photo');
+  cvSelectedFile = null;
+  existingCvKept = record.cv || null;
+  document.getElementById('c-cv-chip').innerHTML = existingCvKept ? `<span>📎 ${existingCvKept.name} (déjà enregistré) <button type="button" onclick="clearCvFile()">×</button></span>` : '';
+  docsSelectedFiles = [];
+  existingDocsKept = Array.isArray(record.documents) ? [...record.documents] : [];
+  renderDocsChips();
+  candidateGeo = record.geo || null;
+  document.getElementById('c-geo-result').innerHTML = record.geo ? `<a href="https://www.google.com/maps?q=${record.geo.lat},${record.geo.lng}" target="_blank">📍 Localisation déjà enregistrée</a>` : '';
+  document.getElementById('c-submit-label').textContent = 'Enregistrer les modifications';
+  document.getElementById('c-edit-banner').style.display='flex';
+  document.getElementById('form-candidat').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function cancelCandidateEdit(){
+  editingCandidateId = null;
+  existingCvKept = null;
+  existingDocsKept = [];
+  document.getElementById('form-candidat').reset();
+  candidatePhotos = []; buildPhotoSlots();
+  singlePhotos.id = null; singlePhotos.full = null;
+  renderSingleSlot('id','slot-id-photo'); renderSingleSlot('full','slot-full-photo');
+  cvSelectedFile = null; document.getElementById('c-cv-chip').innerHTML='';
+  docsSelectedFiles = []; renderDocsChips();
+  candidateGeo = null; document.getElementById('c-geo-result').innerHTML='';
+  document.getElementById('c-geo-btn').textContent='📍 Activer ma localisation';
+  populateDialSelects();
+  resetCategoryPicker('c-categorie');
+  document.getElementById('c-submit-label').textContent = 'Envoyer ma candidature';
+  document.getElementById('c-edit-banner').style.display='none';
+}
+let editingOfferId = null;
+function loadOfferForEdit(id){
+  const record = trackedOffers[id];
+  if(!record) return;
+  editingOfferId = id;
+  document.getElementById('o-nom').value = record.nom || '';
+  document.getElementById('o-titre').value = record.titre || '';
+  document.getElementById('o-description').value = record.description || '';
+  setCategoryValue('o-categorie', record.categorie || '');
+  document.getElementById('o-ville').value = record.ville || '';
+  document.getElementById('o-date').value = record.dateLimite || '';
+  const {dial, local} = splitPhoneNumber(record.contact);
+  document.getElementById('o-dial').value = dial;
+  document.getElementById('o-contact').value = local;
+  document.getElementById('o-email').value = record.email || '';
+  offreGeo = record.geo || null;
+  document.getElementById('o-geo-result').innerHTML = record.geo ? `<a href="https://www.google.com/maps?q=${record.geo.lat},${record.geo.lng}" target="_blank">📍 Localisation déjà enregistrée</a>` : '';
+  document.getElementById('o-submit-label').textContent = 'Enregistrer les modifications';
+  document.getElementById('o-edit-banner').style.display='flex';
+  document.getElementById('form-offre').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function cancelOfferEdit(){
+  editingOfferId = null;
+  document.getElementById('form-offre').reset();
+  populateDialSelects();
+  resetCategoryPicker('o-categorie');
+  offreGeo = null; document.getElementById('o-geo-result').innerHTML='';
+  document.getElementById('o-geo-btn').textContent='📍 Activer ma localisation';
+  document.getElementById('o-submit-label').textContent = "Publier l'offre";
+  document.getElementById('o-edit-banner').style.display='none';
+}
 
 /* ============ FORM: CANDIDAT ============ */
 document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
@@ -3337,14 +3534,25 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
 
   try{
     if(!navigator.onLine) throw new Error('offline');
-    let cv = null;
-    let documents = [];
+    let cv = existingCvKept || null;
+    let documents = existingDocsKept ? [...existingDocsKept] : [];
     if(cvFile){ cv = {name:cvFile.name, url: await uploadToCloudinary(cvFile)}; }
     for(const f of docFiles){ documents.push({name:f.name, url: await uploadToCloudinary(f)}); }
-    await fbPush('candidats', {...data, cv, documents});
-    msg.className='form-msg ok'; msg.textContent="Votre candidature a bien été envoyée. Une fois validée par notre équipe, vous pourrez régler les frais de prestation pour la mettre en ligne — suivez son statut ci-dessous avec votre numéro WhatsApp.";
-    resetForm();
+    if(editingCandidateId){
+      await fbPush(`candidats/${editingCandidateId}/modifications`, {...data, cv, documents});
+      msg.className='form-msg ok'; msg.textContent="Votre demande de modification a bien été envoyée. Elle sera appliquée par notre équipe après vérification, généralement sous peu.";
+      cancelCandidateEdit();
+    } else {
+      await fbPush('candidats', {...data, cv, documents});
+      msg.className='form-msg ok'; msg.textContent="Votre candidature a bien été envoyée. Une fois validée par notre équipe, vous pourrez régler les frais de prestation pour la mettre en ligne — suivez son statut ci-dessous avec votre numéro WhatsApp.";
+      resetForm();
+    }
   }catch(err){
+    if(editingCandidateId){
+      msg.className='form-msg err'; msg.textContent="Connexion indisponible, réessayez dans un instant pour envoyer votre modification.";
+      btn.disabled=false; spinner.classList.remove('show'); label.textContent='Enregistrer les modifications';
+      return;
+    }
     // Connexion faible, absente, ou coupée en cours d'envoi : on enregistre
     // la candidature sur le téléphone, elle partira automatiquement dès le retour du réseau.
     try{
@@ -3512,10 +3720,20 @@ function renderTrackStatus(type, id, record){
   }
   return `<span class="badge badge-attente">Statut inconnu</span>`;
 }
+function namesMatch(typed, stored){
+  if(!stored) return true; // ancienne fiche sans nom enregistré : on ne bloque pas l'accès
+  const t = normalizeSearchStr((typed||'').trim());
+  const s = normalizeSearchStr((stored||'').trim());
+  if(!t) return false;
+  return s.includes(t) || t.includes(s);
+}
+let lastTrackedCandidate = null;
 async function trackCandidate(){
   const num = document.getElementById('track-whatsapp').value.trim();
+  const nom = document.getElementById('track-nom').value.trim();
   const result = document.getElementById('track-result');
   if(!num){ result.textContent='Entrez votre numéro WhatsApp.'; return; }
+  if(!nom){ result.textContent='Entrez votre nom.'; return; }
   result.textContent = 'Recherche…';
   const all = await fbGet('candidats');
   await fetchPaiements();
@@ -3525,25 +3743,33 @@ async function trackCandidate(){
   const entry = Object.entries(all||{}).find(([id,c])=>c.whatsapp && c.whatsapp.replace(/\D/g,'')===digits);
   if(!entry){ result.innerHTML = 'Aucune candidature trouvée avec ce numéro.'; return; }
   const [id, match] = entry;
-  result.innerHTML = renderTrackStatus('candidat', id, match);
+  if(!namesMatch(nom, match.nom)){ result.innerHTML = 'Le nom saisi ne correspond pas au numéro renseigné. Vérifiez l\'orthographe.'; return; }
+  lastTrackedCandidate = {id, record: match};
+  result.innerHTML = renderTrackStatus('candidat', id, match) + `<button type="button" class="btn-edit-profile" onclick="loadCandidateForEdit()">✏️ Modifier mon profil / ajouter des photos</button>`;
   updatePaymentInstructions('candidat', id);
 }
+let trackedOffers = {};
 async function trackOffer(){
   const num = document.getElementById('track-offre-whatsapp').value.trim();
+  const nom = document.getElementById('track-offre-nom').value.trim();
   const result = document.getElementById('track-offre-result');
   if(!num){ result.textContent='Entrez votre numéro WhatsApp.'; return; }
+  if(!nom){ result.textContent='Entrez votre nom ou celui de votre société.'; return; }
   result.textContent = 'Recherche…';
   const all = await fbGet('offres');
   await fetchPaiements();
   const dial = document.getElementById('track-offre-dial').value;
   const full = buildInternationalNumber(dial, num.replace(/\D/g,''));
   const digits = full.replace(/\D/g,'');
-  const entries = Object.entries(all||{}).filter(([id,o])=>o.contact && o.contact.replace(/\D/g,'')===digits);
-  if(entries.length===0){ result.innerHTML = 'Aucune offre trouvée avec ce numéro.'; return; }
+  const entries = Object.entries(all||{}).filter(([id,o])=>o.contact && o.contact.replace(/\D/g,'')===digits && namesMatch(nom, o.nom));
+  if(entries.length===0){ result.innerHTML = 'Aucune offre trouvée avec ce numéro et ce nom. Vérifiez l\'orthographe.'; return; }
+  trackedOffers = {};
+  entries.forEach(([id,o])=>{ trackedOffers[id]=o; });
   result.innerHTML = entries.map(([id,o])=>`
     <div style="border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;text-align:left;">
       <b style="display:block;margin-bottom:8px;">${o.titre||'Offre'}</b>
       ${renderTrackStatus('offre', id, o)}
+      <button type="button" class="btn-edit-profile" onclick="loadOfferForEdit('${id}')">✏️ Modifier cette offre</button>
     </div>`).join('');
   entries.forEach(([id])=>updatePaymentInstructions('offre', id));
 }
@@ -3571,6 +3797,7 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
 
   btn.disabled=true; spinner.classList.add('show'); label.textContent='Publication…';
   const data = {
+    nom: document.getElementById('o-nom').value.trim(),
     titre: document.getElementById('o-titre').value.trim(),
     description: document.getElementById('o-description').value.trim(),
     categorie: getCategoryValue('o-categorie'),
@@ -3593,10 +3820,21 @@ document.getElementById('form-offre').addEventListener('submit', async (e)=>{
 
   try{
     if(!navigator.onLine) throw new Error('offline');
-    await fbPush('offres', data);
-    msg.className='form-msg ok'; msg.textContent="Votre offre a bien été envoyée. Une fois validée par notre équipe, vous pourrez régler les frais de prestation pour la mettre en ligne — suivez son statut ci-dessus avec « Suivre mon offre ».";
-    resetForm();
+    if(editingOfferId){
+      await fbPush(`offres/${editingOfferId}/modifications`, data);
+      msg.className='form-msg ok'; msg.textContent="Votre demande de modification a bien été envoyée. Elle sera appliquée par notre équipe après vérification, généralement sous peu.";
+      cancelOfferEdit();
+    } else {
+      await fbPush('offres', data);
+      msg.className='form-msg ok'; msg.textContent="Votre offre a bien été envoyée. Une fois validée par notre équipe, vous pourrez régler les frais de prestation pour la mettre en ligne — suivez son statut ci-dessus avec « Suivre mon offre ».";
+      resetForm();
+    }
   }catch(err){
+    if(editingOfferId){
+      msg.className='form-msg err'; msg.textContent="Connexion indisponible, réessayez dans un instant pour envoyer votre modification.";
+      btn.disabled=false; spinner.classList.remove('show'); label.textContent='Enregistrer les modifications';
+      return;
+    }
     try{
       await queueOfflineSubmission('offres', data, null, []);
       msg.className='form-msg ok'; msg.textContent="Connexion indisponible : votre offre est enregistrée sur votre téléphone et sera envoyée automatiquement dès que la connexion reviendra.";
@@ -3750,6 +3988,7 @@ async function loadAdminData(){
   renderAdminPaiements();
   renderStats(all, offres);
   loadAdminInterets();
+  updateModifBadge(collectPendingModifications().length);
 }
 function renderAdminCandidates(all, statuts, elId, mode){
   const el = document.getElementById(elId);
@@ -4212,8 +4451,20 @@ function nativeShare(){
   shPickVoice();
 
   function shSetStatus(text, isError) {
-    if (!text) return;
+    if (!text) {
+      const el = document.getElementById('sh-voice-status');
+      if (el) el.style.display = 'none';
+      return;
+    }
     console.log('[Shaman voix]', text);
+    const el = document.getElementById('sh-voice-status');
+    if (el) {
+      el.textContent = text;
+      el.style.background = isError ? 'rgba(150,20,20,0.9)' : 'rgba(0,0,0,0.8)';
+      el.style.display = 'block';
+      clearTimeout(el._hideTimer);
+      el._hideTimer = setTimeout(() => { el.style.display = 'none'; }, isError ? 7000 : 3000);
+    }
   }
   if (location.protocol === 'file:') {
     shSetStatus('⚠️ Ce fichier est ouvert en local (file://) : héberge la page (http:// ou https://) pour que tout fonctionne.', true);
@@ -4329,5 +4580,7 @@ function nativeShare(){
   }
   shAttachListener();
 </script>
+<div id="sh-voice-status" style="position:fixed;bottom:10px;left:10px;right:10px;z-index:99999;text-align:center;font-size:0.72rem;color:#fff;background:rgba(0,0,0,0.8);padding:7px 12px;border-radius:8px;display:none;pointer-events:none;"></div>
+<button id="sh-voice-test-btn" type="button" onclick="shSpeak('Ceci est un test de la voix de Shaman.')" style="position:fixed;bottom:64px;right:14px;z-index:99999;background:#7a1f2b;color:#fff;border:none;border-radius:999px;padding:10px 14px;font-size:0.75rem;font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,0.25);cursor:pointer;">🔊 Tester la voix</button>
 </body>
 </html>

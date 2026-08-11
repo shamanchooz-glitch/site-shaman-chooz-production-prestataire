@@ -4516,22 +4516,47 @@ function nativeShare(){
   let shPending = [];
   let shGetUserTries = 0;
 
+  // Un message Botpress porte presque toujours un signal direct (direction
+  // ou rôle de l'auteur) : on s'y fie en priorité, car il est fiable quel
+  // que soit l'ordre d'arrivée des messages. L'ancienne logique déduisait
+  // "qui est l'utilisateur" du tout premier message reçu — si le bot
+  // envoyait un message d'accueil automatique avant que le visiteur écrive
+  // quoi que ce soit, ce premier message (celui du bot) était pris à tort
+  // pour l'utilisateur, ce qui inversait ensuite bot/utilisateur pour
+  // toute la conversation et empêchait la lecture à voix haute.
+  function shHasDirectSignal(m) {
+    return m?.direction === 'incoming' || m?.direction === 'outgoing' ||
+           m?.authorRole === 'bot' || m?.authorRole === 'user' ||
+           m?.from === 'bot' || m?.from === 'user';
+  }
   function shIsBotMessage(m) {
     if (!m) return false;
+    if (m.direction === 'incoming') return true;
+    if (m.direction === 'outgoing') return false;
+    if (m.authorRole === 'bot' || m.from === 'bot') return true;
+    if (m.authorRole === 'user' || m.from === 'user') return false;
+    // Repli uniquement si aucun signal direct n'est disponible.
     if (m.authorId && shSelfUserId) return m.authorId !== shSelfUserId;
-    return m?.direction === 'incoming' || m?.authorRole === 'bot' || m?.from === 'bot';
+    return false;
   }
   function shExtractText(m) { return m?.payload?.text || m?.text || (typeof m?.payload === 'string' ? m.payload : '') || ''; }
 
   function shHandleMessage(message) {
     const text = shExtractText(message);
-    if (shSelfUserId === null && message?.authorId) {
-      shPending.push(message);
-      if (shPending.length >= 2) shFallback();
+    if (!text) return;
+    console.log('[Shaman voix] message reçu', {
+      direction: message?.direction, authorRole: message?.authorRole, from: message?.from,
+      authorId: message?.authorId, shSelfUserId, signalDirect: shHasDirectSignal(message)
+    });
+    if (shHasDirectSignal(message)) {
+      if (shIsBotMessage(message)) shSpeak(text);
       return;
     }
-    const bot = shIsBotMessage(message);
-    if (bot && text) shSpeak(text);
+    if (shSelfUserId === null) {
+      shPending.push(message);
+      return;
+    }
+    if (shIsBotMessage(message)) shSpeak(text);
   }
 
   function shTryGetUser() {

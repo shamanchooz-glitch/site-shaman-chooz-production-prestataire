@@ -4520,9 +4520,9 @@ function nativeShare(){
   // mobile, où la console du navigateur n'est pas accessible facilement).
   const shDebugEntries = [];
   function shDebugLog(label, data) {
-    const line = new Date().toLocaleTimeString() + ' — ' + label + (data ? ' — ' + JSON.stringify(data) : '');
+    const line = new Date().toLocaleTimeString() + ' — ' + label + (data ? '\n' + JSON.stringify(data, null, 1) : '');
     shDebugEntries.push(line);
-    if (shDebugEntries.length > 30) shDebugEntries.shift();
+    if (shDebugEntries.length > 12) shDebugEntries.shift();
     console.log('[Shaman voix]', label, data || '');
     const panel = document.getElementById('sh-debug-panel');
     if (panel && panel.style.display !== 'none') shRenderDebugPanel();
@@ -4565,15 +4565,32 @@ function nativeShare(){
     if (m.authorId && shSelfUserId) return m.authorId !== shSelfUserId;
     return false;
   }
-  function shExtractText(m) { return m?.payload?.text || m?.text || (typeof m?.payload === 'string' ? m.payload : '') || ''; }
+  function shExtractText(m) {
+    return m?.payload?.text || m?.text || m?.payload?.markdown || m?.markdown ||
+           m?.content?.text || m?.message?.payload?.text || m?.message?.text ||
+           (typeof m?.payload === 'string' ? m.payload : '') || '';
+  }
+  // Aplatit récursivement l'objet message (profondeur limitée) pour qu'on
+  // puisse voir sa vraie structure dans le panneau de diagnostic, plutôt
+  // que de deviner à l'aveugle où se trouve le texte.
+  function shDumpShallow(obj, depth) {
+    depth = depth === undefined ? 2 : depth;
+    if (obj === null || obj === undefined) return obj;
+    if (depth <= 0) return Array.isArray(obj) ? '[…]' : (typeof obj === 'object' ? '{…}' : obj);
+    if (Array.isArray(obj)) return obj.slice(0, 3).map(v => shDumpShallow(v, depth - 1));
+    if (typeof obj === 'object') {
+      const out = {};
+      for (const k in obj) { out[k] = shDumpShallow(obj[k], depth - 1); }
+      return out;
+    }
+    return obj;
+  }
 
   function shHandleMessage(message) {
     const text = shExtractText(message);
     shDebugLog('message reçu', {
       texte: text ? (text.length > 40 ? text.slice(0, 40) + '…' : text) : '(vide)',
-      direction: message?.direction, authorRole: message?.authorRole, from: message?.from,
-      authorId: message?.authorId, shSelfUserId, signalDirect: shHasDirectSignal(message),
-      estLeBot: shIsBotMessage(message)
+      brut: shDumpShallow(message, 3)
     });
     if (!text) return;
     if (shHasDirectSignal(message)) {

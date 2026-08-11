@@ -4516,6 +4516,32 @@ function nativeShare(){
   let shPending = [];
   let shGetUserTries = 0;
 
+  // Panneau de diagnostic visible directement sur la page (utile sur
+  // mobile, où la console du navigateur n'est pas accessible facilement).
+  const shDebugEntries = [];
+  function shDebugLog(label, data) {
+    const line = new Date().toLocaleTimeString() + ' — ' + label + (data ? ' — ' + JSON.stringify(data) : '');
+    shDebugEntries.push(line);
+    if (shDebugEntries.length > 30) shDebugEntries.shift();
+    console.log('[Shaman voix]', label, data || '');
+    const panel = document.getElementById('sh-debug-panel');
+    if (panel && panel.style.display !== 'none') shRenderDebugPanel();
+  }
+  function shRenderDebugPanel() {
+    const panel = document.getElementById('sh-debug-panel');
+    if (!panel) return;
+    panel.textContent = shDebugEntries.length
+      ? shDebugEntries.join('\n\n')
+      : 'Aucun événement enregistré pour le moment.';
+  }
+  function shToggleDebugPanel() {
+    const panel = document.getElementById('sh-debug-panel');
+    if (!panel) return;
+    const show = panel.style.display === 'none';
+    panel.style.display = show ? 'block' : 'none';
+    if (show) shRenderDebugPanel();
+  }
+
   // Un message Botpress porte presque toujours un signal direct (direction
   // ou rôle de l'auteur) : on s'y fie en priorité, car il est fiable quel
   // que soit l'ordre d'arrivée des messages. L'ancienne logique déduisait
@@ -4543,11 +4569,13 @@ function nativeShare(){
 
   function shHandleMessage(message) {
     const text = shExtractText(message);
-    if (!text) return;
-    console.log('[Shaman voix] message reçu', {
+    shDebugLog('message reçu', {
+      texte: text ? (text.length > 40 ? text.slice(0, 40) + '…' : text) : '(vide)',
       direction: message?.direction, authorRole: message?.authorRole, from: message?.from,
-      authorId: message?.authorId, shSelfUserId, signalDirect: shHasDirectSignal(message)
+      authorId: message?.authorId, shSelfUserId, signalDirect: shHasDirectSignal(message),
+      estLeBot: shIsBotMessage(message)
     });
+    if (!text) return;
     if (shHasDirectSignal(message)) {
       if (shIsBotMessage(message)) shSpeak(text);
       return;
@@ -4588,6 +4616,7 @@ function nativeShare(){
   function shAttachListener(attempt) {
     attempt = attempt || 0;
     if (window.botpress && typeof window.botpress.on === 'function') {
+      shDebugLog('window.botpress trouvé, écouteur "message" attaché', { tentative: attempt });
       window.botpress.on('message', shHandleMessage);
       // "initialized" veut seulement dire que le widget a fini de charger —
       // pas qu'on peut déjà lui envoyer des messages. D'après la doc
@@ -4595,8 +4624,8 @@ function nativeShare(){
       // "webchat:ready", qui ne se déclenche qu'une fois le chat ouvert pour
       // la première fois. Avant ce correctif, le mode mains libres pouvait
       // perdre le tout premier message dicté juste après l'ouverture auto.
-      window.botpress.on('webchat:initialized', () => { shTryGetUser(); });
-      window.botpress.on('webchat:ready', () => { shBotpressReady = true; });
+      window.botpress.on('webchat:initialized', () => { shDebugLog('webchat:initialized'); shTryGetUser(); });
+      window.botpress.on('webchat:ready', () => { shDebugLog('webchat:ready'); shBotpressReady = true; });
       shTryGetUser();
       setTimeout(shFallback, 5000);
       return;
@@ -4607,5 +4636,7 @@ function nativeShare(){
 </script>
 <div id="sh-voice-status" style="position:fixed;bottom:10px;left:10px;right:10px;z-index:99999;text-align:center;font-size:0.72rem;color:#fff;background:rgba(0,0,0,0.8);padding:7px 12px;border-radius:8px;display:none;pointer-events:none;"></div>
 <button id="sh-voice-test-btn" type="button" onclick="shSpeak('Ceci est un test de la voix de Shaman.')" style="position:fixed;bottom:64px;right:14px;z-index:99999;background:#7a1f2b;color:#fff;border:none;border-radius:999px;padding:10px 14px;font-size:0.75rem;font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,0.25);cursor:pointer;">🔊 Tester la voix</button>
+<button id="sh-debug-toggle-btn" type="button" onclick="shToggleDebugPanel()" style="position:fixed;bottom:64px;left:14px;z-index:99999;background:#333;color:#fff;border:none;border-radius:999px;padding:10px 14px;font-size:0.75rem;font-weight:700;box-shadow:0 2px 10px rgba(0,0,0,0.25);cursor:pointer;">🪲 Diagnostic voix</button>
+<pre id="sh-debug-panel" style="display:none;position:fixed;top:8px;left:8px;right:8px;bottom:120px;z-index:100000;background:rgba(0,0,0,0.95);color:#0f0;font-size:0.68rem;line-height:1.35;padding:10px;border-radius:10px;overflow:auto;white-space:pre-wrap;margin:0;"></pre>
 </body>
 </html>

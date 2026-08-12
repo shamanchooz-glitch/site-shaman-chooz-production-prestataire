@@ -4585,9 +4585,34 @@ function nativeShare(){
       .replace(/^\s*[-*+]\s+/gm, '')            // listes à puces
       .replace(/^\s*\d+\.\s+/gm, '')            // listes numérotées
       .replace(/[*_~`#]/g, '')                  // symboles résiduels
+      .replace(/[\u{1F1E6}-\u{1FFFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2300}-\u{23FF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu, '') // emojis
       .replace(/[ \t]{2,}/g, ' ')
       .trim();
   }
+
+  // Empêche l'écran de s'éteindre pendant que Shaman parle (sinon Chrome
+  // met la page en veille et coupe la synthèse vocale au milieu d'une
+  // réponse). Se libère automatiquement dès que la lecture est finie.
+  let shWakeLock = null;
+  async function shRequestWakeLock() {
+    try {
+      if ('wakeLock' in navigator) {
+        shWakeLock = await navigator.wakeLock.request('screen');
+        shWakeLock.addEventListener('release', () => { shWakeLock = null; });
+      }
+    } catch (e) { /* refusé par le navigateur : on continue sans bloquer la veille */ }
+  }
+  function shReleaseWakeLock() {
+    if (shWakeLock) { shWakeLock.release().catch(() => {}); shWakeLock = null; }
+  }
+  // Si l'écran s'éteint puis se rallume pendant que Shaman parle encore,
+  // on redemande le verrou (le navigateur le libère automatiquement quand
+  // la page passe en arrière-plan).
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && window.speechSynthesis && window.speechSynthesis.speaking) {
+      shRequestWakeLock();
+    }
+  });
 
   function shSpeak(text, isRetry) {
     if (!window.speechSynthesis) {
@@ -4603,10 +4628,11 @@ function nativeShare(){
     if (currentVoice) utter.voice = currentVoice;
     utter.rate = 1.02;
     let started = false;
-    utter.onstart = () => { started = true; shSetStatus('🔊 Shaman parle…'); };
-    utter.onend = () => { shSetStatus(''); };
+    utter.onstart = () => { started = true; shSetStatus('🔊 Shaman parle…'); shRequestWakeLock(); };
+    utter.onend = () => { shSetStatus(''); shReleaseWakeLock(); };
     utter.onerror = (e) => {
       shSetStatus('❌ Erreur de lecture audio (' + (e && e.error ? e.error : 'inconnue') + ')', true);
+      shReleaseWakeLock();
     };
     window.speechSynthesis.speak(utter);
     if (!isRetry) {
@@ -4756,8 +4782,8 @@ function nativeShare(){
   shAttachListener();
 </script>
 <div id="sh-voice-status" style="position:fixed;bottom:10px;left:10px;right:10px;z-index:99999;text-align:center;font-size:0.72rem;color:#fff;background:rgba(0,0,0,0.8);padding:7px 12px;border-radius:8px;display:none;pointer-events:none;"></div>
-<button id="sh-settings-btn" type="button" onclick="shToggleSettingsPanel()" title="Réglages voix" aria-label="Réglages voix" style="position:fixed;bottom:64px;right:14px;z-index:99999;background:#7a1f2b;color:#fff;border:none;border-radius:999px;width:44px;height:44px;font-size:1.15rem;box-shadow:0 2px 10px rgba(0,0,0,0.25);cursor:pointer;">⚙️</button>
-<div id="sh-settings-panel" style="display:none;position:fixed;bottom:116px;right:14px;left:14px;max-width:340px;margin-left:auto;z-index:100000;background:#fff;color:#222;border-radius:12px;padding:14px;box-shadow:0 4px 18px rgba(0,0,0,0.3);font-family:var(--font-body, sans-serif);">
+<button id="sh-settings-btn" type="button" onclick="shToggleSettingsPanel()" title="Réglages voix" aria-label="Réglages voix" style="position:fixed;bottom:150px;right:16px;z-index:99999;background:#7a1f2b;color:#fff;border:none;border-radius:999px;width:44px;height:44px;font-size:1.15rem;box-shadow:0 2px 10px rgba(0,0,0,0.25);cursor:pointer;">⚙️</button>
+<div id="sh-settings-panel" style="display:none;position:fixed;bottom:202px;right:14px;left:14px;max-width:340px;margin-left:auto;z-index:100000;background:#fff;color:#222;border-radius:12px;padding:14px;box-shadow:0 4px 18px rgba(0,0,0,0.3);font-family:var(--font-body, sans-serif);">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     <strong style="font-size:0.85rem;">🔊 Voix de Shaman</strong>
     <button type="button" onclick="shToggleSettingsPanel()" aria-label="Fermer" style="background:none;border:none;font-size:1.1rem;cursor:pointer;line-height:1;">✕</button>

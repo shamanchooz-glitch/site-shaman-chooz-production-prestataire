@@ -4550,13 +4550,20 @@ function nativeShare(){
   // quoi que ce soit, ce premier message (celui du bot) était pris à tort
   // pour l'utilisateur, ce qui inversait ensuite bot/utilisateur pour
   // toute la conversation et empêchait la lecture à voix haute.
+  // Signal le plus fiable, indépendant de l'ordre d'arrivée : les réponses
+  // générées par le bot portent toujours des "citations" (même vide), les
+  // messages envoyés par le visiteur portent toujours un "clientMessageId"
+  // (l'identifiant temporaire attribué côté client avant confirmation).
   function shHasDirectSignal(m) {
+    if (m?.metadata && ('citations' in m.metadata || 'clientMessageId' in m.metadata)) return true;
     return m?.direction === 'incoming' || m?.direction === 'outgoing' ||
            m?.authorRole === 'bot' || m?.authorRole === 'user' ||
            m?.from === 'bot' || m?.from === 'user';
   }
   function shIsBotMessage(m) {
     if (!m) return false;
+    if (m.metadata && 'clientMessageId' in m.metadata) return false;
+    if (m.metadata && 'citations' in m.metadata) return true;
     if (m.direction === 'incoming') return true;
     if (m.direction === 'outgoing') return false;
     if (m.authorRole === 'bot' || m.from === 'bot') return true;
@@ -4566,7 +4573,7 @@ function nativeShare(){
     return false;
   }
   function shExtractText(m) {
-    return m?.payload?.text || m?.text || m?.payload?.markdown || m?.markdown ||
+    return m?.block?.text || m?.payload?.text || m?.text || m?.payload?.markdown || m?.markdown ||
            m?.content?.text || m?.message?.payload?.text || m?.message?.text ||
            (typeof m?.payload === 'string' ? m.payload : '') || '';
   }
@@ -4590,7 +4597,8 @@ function nativeShare(){
     const text = shExtractText(message);
     shDebugLog('message reçu', {
       texte: text ? (text.length > 40 ? text.slice(0, 40) + '…' : text) : '(vide)',
-      brut: shDumpShallow(message, 3)
+      estLeBot: shIsBotMessage(message),
+      signalDirect: shHasDirectSignal(message)
     });
     if (!text) return;
     if (shHasDirectSignal(message)) {

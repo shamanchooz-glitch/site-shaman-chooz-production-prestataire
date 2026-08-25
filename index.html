@@ -1225,11 +1225,14 @@ const ADMIN_EMAIL = "admin@shaman-chooz-production.local";
    les paiements mobile money avant d'activer une candidature ou une offre en ligne. */
 const PRESTATAIRE_WHATSAPP = "2250748935686"; // numéro WhatsApp du prestataire pour la mise en relation
 const PAYMENT_OPERATORS = [
-  {key:'wave', label:'Wave', numero:'0748935686', numeroAffiche:'+225 07 48 93 56 86', refLabel:'Référence de paiement (ID de transaction Wave)'},
-  {key:'mtn', label:'MTN Money', numero:'0574533636', numeroAffiche:'+225 05 74 53 36 36', refLabel:'Référence de paiement (ID de transaction MTN Money)'},
-  {key:'moov', label:'Moov Money', numero:'0173773939', numeroAffiche:'+225 01 73 77 39 39', refLabel:'Référence de paiement (ID de transaction Moov Money)'},
-  {key:'orange', label:'Orange Money', numero:'0749970918', numeroAffiche:'+225 07 49 97 09 18', refLabel:'Référence de paiement (ID de transaction Orange Money)'},
-  {key:'intl', label:'Transfert international (Western Union / WorldRemit / Wise / MoneyGram)', numero:'0748935686', numeroAffiche:'+225 07 48 93 56 86 (Wave)', refLabel:'Référence / code MTCN du transfert'}
+  {key:'wave', label:'Wave', numero:'0748935686', numeroAffiche:'+225 07 48 93 56 86', refLabel:'Référence de paiement (ID de transaction Wave)',
+    noteIntl:"Depuis l'étranger : Wave reçoit directement les paiements internationaux (appli Wave / Wave International). Taptap Send permet aussi d'envoyer directement vers ce numéro Wave depuis l'Europe, les USA, le Canada ou le Royaume-Uni, avec des frais très faibles."},
+  {key:'mtn', label:'MTN Money', numero:'0574533636', numeroAffiche:'+225 05 74 53 36 36', refLabel:'Référence de paiement (ID de transaction MTN Money)',
+    noteIntl:"Depuis l'étranger : Taptap Send est la solution la plus simple — il livre directement sur ce numéro MTN Money, sans passage en agence. Sinon, Wari, Ria ou Remitly fonctionnent aussi vers ce numéro. Notez la référence ou le code de retrait reçu."},
+  {key:'moov', label:'Moov Money', numero:'0173773939', numeroAffiche:'+225 01 73 77 39 39', refLabel:'Référence de paiement (ID de transaction Moov Money)',
+    noteIntl:"Depuis l'étranger : Taptap Send est la solution la plus simple — il livre directement sur ce numéro Moov Money, sans passage en agence. Sinon, Wari, Ria ou Remitly fonctionnent aussi vers ce numéro. Notez la référence ou le code de retrait reçu."},
+  {key:'orange', label:'Orange Money', numero:'0749970918', numeroAffiche:'+225 07 49 97 09 18', refLabel:'Référence de paiement (ID de transaction Orange Money)',
+    noteIntl:"Depuis l'étranger : Taptap Send est la solution la plus simple — il livre directement sur ce numéro Orange Money, sans passage en agence. Sinon, Wari, Ria ou Remitly fonctionnent aussi vers ce numéro. Notez la référence ou le code de retrait reçu."}
 ];
 function getOperator(key){ return PAYMENT_OPERATORS.find(o=>o.key===key) || PAYMENT_OPERATORS[0]; }
 
@@ -3626,9 +3629,9 @@ function updatePaymentInstructions(type, id){
   if(!sel || !box) return;
   const op = getOperator(sel.value);
   if(reflabel) reflabel.textContent = op.refLabel;
-  box.innerHTML = op.key==='intl'
-    ? `Envoyez le montant via Western Union, WorldRemit, Wise ou MoneyGram, destination <b>${op.numeroAffiche}</b> (Côte d'Ivoire). Notez ensuite le <b>code MTCN ou la référence du transfert</b> et collez-la ci-dessous.`
-    : `Envoyez le montant au numéro <b>${op.numeroAffiche}</b> via ${op.label}, suivez les instructions de l'opérateur, puis notez la <b>référence de la transaction</b> reçue par SMS et collez-la ci-dessous.`;
+  box.innerHTML = `
+    <div>🇨🇮 En Côte d'Ivoire : envoyez le montant au numéro <b>${op.numeroAffiche}</b> via ${op.label}, suivez les instructions de l'opérateur, puis notez la <b>référence de la transaction</b> reçue par SMS et collez-la ci-dessous.</div>
+    <div style="margin-top:8px;">🌍 ${op.noteIntl}</div>`;
 }
 async function pastePaymentRef(type, id){
   const uid = `${type}-${id}`;

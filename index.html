@@ -1225,14 +1225,22 @@ const ADMIN_EMAIL = "admin@shaman-chooz-production.local";
    les paiements mobile money avant d'activer une candidature ou une offre en ligne. */
 const PRESTATAIRE_WHATSAPP = "2250748935686"; // numéro WhatsApp du prestataire pour la mise en relation
 const PAYMENT_OPERATORS = [
-  {key:'wave', label:'Wave', numero:'0748935686', numeroAffiche:'+225 07 48 93 56 86', refLabel:'Référence de paiement (ID de transaction Wave)',
-    noteIntl:"Depuis l'étranger : Wave reçoit directement les paiements internationaux (appli Wave / Wave International). Taptap Send permet aussi d'envoyer directement vers ce numéro Wave depuis l'Europe, les USA, le Canada ou le Royaume-Uni, avec des frais très faibles."},
-  {key:'mtn', label:'MTN Money', numero:'0574533636', numeroAffiche:'+225 05 74 53 36 36', refLabel:'Référence de paiement (ID de transaction MTN Money)',
-    noteIntl:"Depuis l'étranger : Taptap Send est la solution la plus simple — il livre directement sur ce numéro MTN Money, sans passage en agence. Sinon, Wari, Ria ou Remitly fonctionnent aussi vers ce numéro. Notez la référence ou le code de retrait reçu."},
-  {key:'moov', label:'Moov Money', numero:'0173773939', numeroAffiche:'+225 01 73 77 39 39', refLabel:'Référence de paiement (ID de transaction Moov Money)',
-    noteIntl:"Depuis l'étranger : Taptap Send est la solution la plus simple — il livre directement sur ce numéro Moov Money, sans passage en agence. Sinon, Wari, Ria ou Remitly fonctionnent aussi vers ce numéro. Notez la référence ou le code de retrait reçu."},
-  {key:'orange', label:'Orange Money', numero:'0749970918', numeroAffiche:'+225 07 49 97 09 18', refLabel:'Référence de paiement (ID de transaction Orange Money)',
-    noteIntl:"Depuis l'étranger : Taptap Send est la solution la plus simple — il livre directement sur ce numéro Orange Money, sans passage en agence. Sinon, Wari, Ria ou Remitly fonctionnent aussi vers ce numéro. Notez la référence ou le code de retrait reçu."}
+  {key:'wave', label:'Wave', group:'CI', numero:'0748935686', numeroAffiche:'+225 07 48 93 56 86', refLabel:'Référence de paiement (ID de transaction Wave)'},
+  {key:'mtn', label:'MTN Money', group:'CI', numero:'0574533636', numeroAffiche:'+225 05 74 53 36 36', refLabel:'Référence de paiement (ID de transaction MTN Money)'},
+  {key:'moov', label:'Moov Money', group:'CI', numero:'0173773939', numeroAffiche:'+225 01 73 77 39 39', refLabel:'Référence de paiement (ID de transaction Moov Money)'},
+  {key:'orange', label:'Orange Money', group:'CI', numero:'0749970918', numeroAffiche:'+225 07 49 97 09 18', refLabel:'Référence de paiement (ID de transaction Orange Money)'},
+  {key:'wave_intl', label:'Wave (depuis l\'étranger)', group:'INTL', refLabel:'Référence de paiement (ID de transaction Wave)',
+    instructions:"Ouvrez votre appli Wave (ou Wave International) et envoyez directement le montant vers <b>+225 07 48 93 56 86</b>. C'est le seul moyen qui reçoit l'international sans passer par un service tiers. Notez ensuite la référence de la transaction."},
+  {key:'taptap', label:'Taptap Send', group:'INTL', refLabel:'Référence de paiement (référence Taptap Send)',
+    instructions:"Depuis l'appli Taptap Send (Europe, USA, Canada, Royaume-Uni...), choisissez la Côte d'Ivoire puis l'opérateur mobile money que vous voulez utiliser et envoyez vers l'un de ces numéros : Wave <b>+225 07 48 93 56 86</b>, Orange Money <b>+225 07 49 97 09 18</b>, MTN Money <b>+225 05 74 53 36 36</b> ou Moov Money <b>+225 01 73 77 39 39</b>. Livraison quasi instantanée, frais très faibles. Notez ensuite la référence de la transaction."},
+  {key:'wari', label:'Wari', group:'INTL', refLabel:'Référence de paiement (référence Wari)',
+    instructions:"Depuis une agence Wari ou l'appli Wari, envoyez le montant vers l'un de ces numéros mobile money : Orange Money <b>+225 07 49 97 09 18</b>, MTN Money <b>+225 05 74 53 36 36</b> ou Moov Money <b>+225 01 73 77 39 39</b>. Notez ensuite la référence du transfert."},
+  {key:'ria', label:'Ria Money Transfer', group:'INTL', refLabel:'Référence de paiement (référence Ria)',
+    instructions:"Depuis l'appli ou une agence Ria, envoyez le montant vers l'un de ces numéros mobile money : Orange Money <b>+225 07 49 97 09 18</b>, MTN Money <b>+225 05 74 53 36 36</b> ou Moov Money <b>+225 01 73 77 39 39</b>. Notez ensuite la référence du transfert."},
+  {key:'remitly', label:'Remitly', group:'INTL', refLabel:'Référence de paiement (référence Remitly)',
+    instructions:"Depuis l'appli Remitly, envoyez le montant en livraison mobile money vers l'un de ces numéros : Orange Money <b>+225 07 49 97 09 18</b>, MTN Money <b>+225 05 74 53 36 36</b> ou Moov Money <b>+225 01 73 77 39 39</b>. Notez ensuite la référence du transfert."},
+  {key:'moneygram', label:'MoneyGram', group:'INTL', refLabel:'Référence de paiement (code MoneyGram)',
+    instructions:"Depuis l'appli ou une agence MoneyGram, envoyez le montant en livraison mobile money vers l'un de ces numéros : Orange Money <b>+225 07 49 97 09 18</b>, MTN Money <b>+225 05 74 53 36 36</b> ou Moov Money <b>+225 01 73 77 39 39</b>. Notez ensuite le code de référence reçu."}
 ];
 function getOperator(key){ return PAYMENT_OPERATORS.find(o=>o.key===key) || PAYMENT_OPERATORS[0]; }
 
@@ -3583,7 +3591,7 @@ function renderPendingPaiementHtml(p){
 }
 function buildPaymentFormHtml(type, id){
   const uid = `${type}-${id}`;
-  const opsHtml = PAYMENT_OPERATORS.map(o=>`<option value="${o.key}">${o.label}</option>`).join('');
+  const opsHtml = `<optgroup label="🇨🇮 Depuis la Côte d'Ivoire">${PAYMENT_OPERATORS.filter(o=>o.group==='CI').map(o=>`<option value="${o.key}">${o.label}</option>`).join('')}</optgroup><optgroup label="🌍 Depuis l'étranger">${PAYMENT_OPERATORS.filter(o=>o.group==='INTL').map(o=>`<option value="${o.key}">${o.label}</option>`).join('')}</optgroup>`;
   return `
   <div class="pay-box">
     <h5>💳 Payer les frais de prestation de service</h5>
@@ -3629,9 +3637,9 @@ function updatePaymentInstructions(type, id){
   if(!sel || !box) return;
   const op = getOperator(sel.value);
   if(reflabel) reflabel.textContent = op.refLabel;
-  box.innerHTML = `
-    <div>🇨🇮 En Côte d'Ivoire : envoyez le montant au numéro <b>${op.numeroAffiche}</b> via ${op.label}, suivez les instructions de l'opérateur, puis notez la <b>référence de la transaction</b> reçue par SMS et collez-la ci-dessous.</div>
-    <div style="margin-top:8px;">🌍 ${op.noteIntl}</div>`;
+  box.innerHTML = op.group==='CI'
+    ? `<div>Envoyez le montant au numéro <b>${op.numeroAffiche}</b> via ${op.label}, suivez les instructions de l'opérateur, puis notez la <b>référence de la transaction</b> reçue par SMS et collez-la ci-dessous.</div>`
+    : `<div>${op.instructions}</div>`;
 }
 async function pastePaymentRef(type, id){
   const uid = `${type}-${id}`;

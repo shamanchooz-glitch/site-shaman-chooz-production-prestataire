@@ -751,7 +751,7 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
               </div>
             </div>
             <div class="field">
-              <label>Catégorie(s) — 10 maximum</label>
+              <label>Catégorie de métiers — 10 maximum</label>
               <div class="mcat-picker" id="c-categorie-picker">
                 <div class="mcat-tags" id="c-categorie-tags"></div>
                 <input type="text" id="c-categorie-input" placeholder="🔍 Tapez les premières lettres du métier…" autocomplete="off">
@@ -760,6 +760,23 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             </div>
             <div class="field"><label>E-mail (optionnel)</label><input type="email" id="c-email" placeholder="vous@exemple.com"></div>
             <div class="field"><label>Présentation courte</label><textarea id="c-bio" placeholder="Expérience, taille, disponibilités…"></textarea></div>
+            <div class="field">
+              <label>Niveau d'étude (optionnel)</label>
+              <select id="c-niveau-etude">
+                <option value="">— Sélectionner —</option>
+                <option value="Aucun / Non scolarisé">Aucun / Non scolarisé</option>
+                <option value="Primaire">Primaire</option>
+                <option value="Collège (BEPC)">Collège (BEPC)</option>
+                <option value="Lycée (BAC)">Lycée (BAC)</option>
+                <option value="BAC+2">BAC+2</option>
+                <option value="BAC+3 / Licence">BAC+3 / Licence</option>
+                <option value="BAC+4">BAC+4</option>
+                <option value="BAC+5 et plus">BAC+5 et plus</option>
+                <option value="Formation professionnelle / CAP">Formation professionnelle / CAP</option>
+              </select>
+            </div>
+            <div class="field"><label>Compétences (optionnel)</label><textarea id="c-competences" placeholder="Ex : cuisine, ménage, conduite, couture, informatique…"></textarea></div>
+            <div class="field"><label>Expérience professionnelle (optionnel)</label><textarea id="c-experience" placeholder="Postes précédents, durée, employeurs, missions réalisées…"></textarea></div>
             <div class="field">
               <label>Photo d'identité (optionnel)</label>
               <div class="photo-slots single" id="slot-id-photo"></div>
@@ -3404,6 +3421,9 @@ function loadCandidateForEdit(){
   document.getElementById('c-whatsapp').value = local;
   document.getElementById('c-email').value = record.email || '';
   document.getElementById('c-bio').value = record.bio || '';
+  document.getElementById('c-niveau-etude').value = record.niveauEtude || '';
+  document.getElementById('c-competences').value = record.competences || '';
+  document.getElementById('c-experience').value = record.experience || '';
   setCategoryValue('c-categorie', record.categorie || '');
   candidatePhotos = Array.isArray(record.photos) ? [...record.photos] : [];
   buildPhotoSlots();
@@ -3515,6 +3535,9 @@ document.getElementById('form-candidat').addEventListener('submit', async (e)=>{
     email: document.getElementById('c-email').value.trim(),
     categorie: getCategoryValue('c-categorie'),
     bio: document.getElementById('c-bio').value.trim(),
+    niveauEtude: document.getElementById('c-niveau-etude').value,
+    competences: document.getElementById('c-competences').value.trim(),
+    experience: document.getElementById('c-experience').value.trim(),
     photos: candidatePhotos,
     photoIdentite: singlePhotos.id,
     photoEntiere: singlePhotos.full,
@@ -4240,6 +4263,9 @@ function viewCandidateDossier(id){
         <tr><td class="label">Catégorie</td><td>${c.categorie||''}</td></tr>
         <tr><td class="label">Numéro WhatsApp (inscription)</td><td>${c.whatsapp||''}</td></tr>
         <tr><td class="label">Présentation</td><td>${c.bio||''}</td></tr>
+        <tr><td class="label">Niveau d'étude</td><td>${c.niveauEtude||''}</td></tr>
+        <tr><td class="label">Compétences</td><td>${c.competences||''}</td></tr>
+        <tr><td class="label">Expérience professionnelle</td><td>${c.experience||''}</td></tr>
         <tr><td class="label">Documents</td><td>${docsHtml}</td></tr>
       </table>
     </div>
@@ -4341,6 +4367,9 @@ function printCandidateDossier(id){
         <tr><td class="label">Numéro WhatsApp (inscription)</td><td>${c.whatsapp||''}</td></tr>
         <tr><td class="label">Statut</td><td>${c.statut||''}</td></tr>
         <tr><td class="label">Présentation</td><td>${c.bio||''}</td></tr>
+        <tr><td class="label">Niveau d'étude</td><td>${c.niveauEtude||''}</td></tr>
+        <tr><td class="label">Compétences</td><td>${c.competences||''}</td></tr>
+        <tr><td class="label">Expérience professionnelle</td><td>${c.experience||''}</td></tr>
         <tr><td class="label">CV</td><td>${c.cv ? c.cv.name : '—'}</td></tr>
         <tr><td class="label">Documents joints</td><td>${(c.documents||[]).map(d=>d.name).join(', ') || '—'}</td></tr>
       </table>

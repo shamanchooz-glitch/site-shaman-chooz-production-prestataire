@@ -1,8 +1,9 @@
 # SHAMAN CHOOZ PRODUCTION — Chatbot WhatsApp & site
 
 Ce dossier contient le serveur qui fait fonctionner :
-1. Les réponses automatiques sur vos trois numéros WhatsApp Business
-   (+225 07 48 93 56 86 et +225 07 49 97 09 18 et +225 05 74 53 36 36)
+1. Les réponses automatiques sur vos quatre numéros WhatsApp Business
+   (+225 07 48 93 56 86, +225 07 49 97 09 18, +225 05 74 53 36 36
+   et +225 01 73 77 39 39)
 2. Le petit chat intégré sur votre site (déjà ajouté dans `index.html`)
 
 Il fallait un vrai serveur pour ça — GitHub Pages ne peut héberger que
@@ -26,18 +27,20 @@ des fichiers statiques, pas un programme qui tourne en continu.
    Account) de test — c'est normal, on y ajoutera vos vrais numéros
    ensuite
 
-## Étape 3 — Ajouter vos deux numéros
+## Étape 3 — Ajouter vos quatre numéros
 
 ⚠️ Important : un numéro déjà utilisé dans l'appli WhatsApp Business
 classique doit être **migré**. Faites-le d'abord avec un seul numéro,
-vérifiez que tout fonctionne, puis migrez le second.
+vérifiez que tout fonctionne, puis migrez les trois autres un par un.
 
 1. Dans le tableau de bord WhatsApp de votre app → "Numéros de
    téléphone" → "Ajouter un numéro"
 2. Entrez +225 07 48 93 56 86, suivez la vérification par SMS/appel
 3. Notez le **"Phone number ID"** affiché (une longue suite de
-   chiffres) — vous en aurez besoin
+   chiffres) — vous en aurez besoin pour chaque numéro
 4. Recommencez pour +225 07 49 97 09 18
+5. Recommencez pour +225 05 74 53 36 36
+6. Recommencez pour +225 01 73 77 39 39
 
 ## Étape 4 — Générer un token permanent
 
@@ -85,8 +88,9 @@ vous faut un token permanent :
 
 ## Étape 8 — Tester
 
-Envoyez un message WhatsApp à l'un de vos deux numéros depuis votre
+Envoyez un message WhatsApp à l'un de vos quatre numéros depuis votre
 téléphone personnel. Le bot doit répondre en quelques secondes.
+Testez bien chacun des quatre numéros, pas seulement le premier.
 Vérifiez aussi dans Firebase → Data → `whatsapp_conversations` que la
 conversation est bien enregistrée.
 

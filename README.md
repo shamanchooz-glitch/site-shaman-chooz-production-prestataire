@@ -1,8 +1,8 @@
 # SHAMAN CHOOZ PRODUCTION — Chatbot WhatsApp & site
 
 Ce dossier contient le serveur qui fait fonctionner :
-1. Les réponses automatiques sur vos deux numéros WhatsApp Business
-   (+225 07 48 93 56 86 et +225 07 49 97 09 18)
+1. Les réponses automatiques sur vos trois numéros WhatsApp Business
+   (+225 07 48 93 56 86 et +225 07 49 97 09 18 et +225 05 74 53 36 36)
 2. Le petit chat intégré sur votre site (déjà ajouté dans `index.html`)
 
 Il fallait un vrai serveur pour ça — GitHub Pages ne peut héberger que

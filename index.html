@@ -385,6 +385,15 @@ nav{display:flex;gap:4px;align-items:center;}
 .badge-pending{background:#FBF0DA;color:#8A6415;}
 .badge-expired{background:#FBE7E7;color:var(--wine);}
 
+.trust-strip{background:var(--ink);color:var(--paper);}
+.trust-strip .wrap{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 34px;padding:22px 24px;}
+.trust-strip .trust-item{display:flex;align-items:center;gap:9px;font-size:0.85rem;font-weight:700;opacity:0.95;}
+.trust-strip .trust-item svg{width:19px;height:19px;flex-shrink:0;}
+
+.sectors-wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:26px;}
+.sector-chip{background:var(--paper-soft);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:9px 18px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:background .15s,color .15s;}
+.sector-chip:hover{background:var(--wine);color:#fff;border-color:var(--wine);}
+
 .sub-tabs{display:flex;gap:8px;margin-bottom:22px;}
 .sub-tab-btn{background:var(--paper-soft);border:none;padding:9px 18px;border-radius:999px;font-size:0.85rem;font-weight:700;color:var(--ink-soft);}
 .sub-tab-btn.active{background:var(--ink);color:var(--paper);}
@@ -610,6 +619,15 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
   </div>
 </section>
 
+<div class="trust-strip">
+  <div class="wrap">
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg> Profils vérifiés avant mise en ligne</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2c2.5 2.7 4 6.3 4 10s-1.5 7.3-4 10c-2.5-2.7-4-6.3-4-10s1.5-7.3 4-10z"/></svg> Présent partout dans le monde</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg> Paiement vérifié avant activation</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-4-1L3 20l1.2-4.9A8.4 8.4 0 1121 11.5z"/></svg> Réponse rapide sur WhatsApp</div>
+  </div>
+</div>
+
 <section class="steps">
   <div class="wrap">
     <div class="section-head">
@@ -705,6 +723,59 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
         <p>Depuis l'espace admin : ce qui est réellement en ligne, les paiements à vérifier, et les visiteurs à relancer — tout au même endroit, à jour à la seconde.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="features" style="background:var(--paper-soft);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Pourquoi nous choisir</span>
+      <h2>Une agence sérieuse, pensée pour la confiance</h2>
+      <p>Chaque profil, chaque offre, chaque paiement passe par une vérification humaine avant d'être en ligne.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        <h3>Aucun contact non filtré</h3>
+        <p>Candidats et recruteurs ne s'échangent jamais leurs coordonnées directement : notre équipe encadre chaque mise en relation.</p>
+      </div>
+      <div class="feat-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2c2.5 2.7 4 6.3 4 10s-1.5 7.3-4 10c-2.5-2.7-4-6.3-4-10s1.5-7.3 4-10z"/></svg>
+        <h3>Plus de 300 métiers, partout dans le monde</h3>
+        <p>D'Abidjan à l'international, la plateforme couvre plus de 20 secteurs d'activité différents.</p>
+      </div>
+      <div class="feat-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+        <h3>Paiement vérifié, pas automatique</h3>
+        <p>Chaque référence de transaction est contrôlée par notre équipe avant l'activation d'un profil ou d'une offre.</p>
+      </div>
+      <div class="feat-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <h3>Suivi en temps réel</h3>
+        <p>Suivez l'état de votre candidature ou de votre offre à tout moment, directement depuis le site.</p>
+      </div>
+      <div class="feat-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-4-1L3 20l1.2-4.9A8.4 8.4 0 1121 11.5z"/></svg>
+        <h3>Une équipe joignable directement</h3>
+        <p>Une question, un besoin urgent ? Écrivez-nous sur WhatsApp, un conseiller répond personnellement.</p>
+      </div>
+      <div class="feat-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 18c1-2.5 3-3.5 5-3.5s4 1 5 3.5"/></svg>
+        <h3>Un dossier qui reste à vous</h3>
+        <p>Modifiable à tout moment, imprimable, avec l'historique de vos paiements toujours accessible.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Nos secteurs</span>
+      <h2>Une agence multi-secteurs</h2>
+      <p>Cliquez sur un secteur pour aller directement à l'inscription.</p>
+    </div>
+    <div class="sectors-wrap" id="sectors-showcase"></div>
   </div>
 </section>
 
@@ -1773,6 +1844,22 @@ function buildInternationalNumber(dial, rawDigits){
   return '+'+dial+n;
 }
 
+// Filet de sécurité anti-"numéro non reconnu" : compare d'abord les numéros complets,
+// et si ça ne correspond pas (ex. indicatif pays différent entre inscription et vérification,
+// zéro initial oublié ou en trop), compare quand même les 9 derniers chiffres, suffisants
+// pour identifier un numéro local sans ambiguïté.
+function phoneDigitsMatch(storedNumber, checkedNumber){
+  const a = (storedNumber||'').replace(/\D/g,'');
+  const b = (checkedNumber||'').replace(/\D/g,'');
+  if(!a || !b) return false;
+  if(a === b) return true;
+  const TAIL = 9;
+  if(a.length >= TAIL && b.length >= TAIL){
+    return a.slice(-TAIL) === b.slice(-TAIL);
+  }
+  return false;
+}
+
 /* ============ CATÉGORIES DE MÉTIERS (secteurs d'activité) ============ */
 const CATEGORIES = {
   "Travaux domestiques": [
@@ -1899,6 +1986,24 @@ function populateCategorySelects(){
   // rien à peupler ici, conservé pour compatibilité avec d'éventuels appels existants.
 }
 populateCategorySelects();
+
+/* ============ VITRINE DES SECTEURS (page d'accueil) ============ */
+function renderSectorsShowcase(){
+  const el = document.getElementById('sectors-showcase');
+  if(!el) return;
+  el.innerHTML = Object.keys(CATEGORIES).map(name=>
+    `<button type="button" class="sector-chip" onclick="goToCandidatSector('${name.replace(/'/g,"\\'")}')">${name}</button>`
+  ).join('');
+}
+function goToCandidatSector(sectorName){
+  openSpace('candidat');
+  document.querySelector('#candidat .sub-tab-btn[data-sub="postuler"]')?.click();
+  setTimeout(()=>{
+    setCategoryValue('c-categorie', sectorName);
+    document.getElementById('form-candidat').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 50);
+}
+renderSectorsShowcase();
 
 /* ============ RECHERCHE EN DIRECT DANS LES CATÉGORIES DE MÉTIERS ============ */
 function normalizeSearchStr(s){
@@ -2995,8 +3100,7 @@ async function checkCandidateAccess(){
   const all = await fbGet('candidats');
   const dial = document.getElementById('offres-gate-dial').value;
   const full = buildInternationalNumber(dial, num.replace(/\D/g,''));
-  const digits = full.replace(/\D/g,'');
-  const match = Object.values(all).find(c=>c.whatsapp && c.whatsapp.replace(/\D/g,'')===digits);
+  const match = Object.values(all).find(c=>phoneDigitsMatch(c.whatsapp, full));
   if(!match){ msg.className='form-msg err'; msg.textContent="Aucun profil trouvé avec ce numéro. Inscrivez-vous d'abord dans l'onglet Postuler."; return; }
   if(match.statut!=='valide'){ msg.className='form-msg err'; msg.textContent="Votre profil n'est pas encore validé par notre équipe. Revenez une fois votre candidature validée."; return; }
   currentCandidateWhatsapp = match.whatsapp || num;
@@ -3019,8 +3123,7 @@ async function checkRecruteurAccess(){
   const all = await fbGet('offres');
   const dial = document.getElementById('parcourir-gate-dial').value;
   const full = buildInternationalNumber(dial, num.replace(/\D/g,''));
-  const digits = full.replace(/\D/g,'');
-  const match = Object.values(all).find(o=>o.contact && o.contact.replace(/\D/g,'')===digits && o.statut==='active');
+  const match = Object.values(all).find(o=>phoneDigitsMatch(o.contact, full) && o.statut==='active');
   if(!match){ msg.className='form-msg err'; msg.textContent="Aucune offre validée trouvée avec ce numéro. Publiez d'abord une offre, ou attendez sa validation par notre équipe."; return; }
   currentRecruteurWhatsapp = match.contact || num;
   currentRecruteurGeo = match.geo || null;
@@ -3778,8 +3881,7 @@ async function trackCandidate(){
   await fetchPaiements();
   const dial = document.getElementById('track-dial').value;
   const full = buildInternationalNumber(dial, num.replace(/\D/g,''));
-  const digits = full.replace(/\D/g,'');
-  const entry = Object.entries(all||{}).find(([id,c])=>c.whatsapp && c.whatsapp.replace(/\D/g,'')===digits);
+  const entry = Object.entries(all||{}).find(([id,c])=>phoneDigitsMatch(c.whatsapp, full));
   if(!entry){ result.innerHTML = 'Aucune candidature trouvée avec ce numéro.'; return; }
   const [id, match] = entry;
   if(!namesMatch(nom, match.nom)){ result.innerHTML = 'Le nom saisi ne correspond pas au numéro renseigné. Vérifiez l\'orthographe.'; return; }
@@ -3799,8 +3901,7 @@ async function trackOffer(){
   await fetchPaiements();
   const dial = document.getElementById('track-offre-dial').value;
   const full = buildInternationalNumber(dial, num.replace(/\D/g,''));
-  const digits = full.replace(/\D/g,'');
-  const entries = Object.entries(all||{}).filter(([id,o])=>o.contact && o.contact.replace(/\D/g,'')===digits && namesMatch(nom, o.nom));
+  const entries = Object.entries(all||{}).filter(([id,o])=>phoneDigitsMatch(o.contact, full) && namesMatch(nom, o.nom));
   if(entries.length===0){ result.innerHTML = 'Aucune offre trouvée avec ce numéro et ce nom. Vérifiez l\'orthographe.'; return; }
   trackedOffers = {};
   entries.forEach(([id,o])=>{ trackedOffers[id]=o; });

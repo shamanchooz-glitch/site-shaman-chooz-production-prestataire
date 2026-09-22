@@ -1,0 +1,33 @@
+name: Publication automatique Facebook
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+    - cron: "0 13 * * *"
+    - cron: "0 17 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publier sur Facebook
+        run: |
+          python3 -c "
+          import json, random, requests, os
+          with open('publications-facebook/textes.json') as f:
+              posts = json.load(f)
+          post = random.choice(posts)
+          token = os.environ['FB_PAGE_TOKEN']
+          page_id = os.environ['FB_PAGE_ID']
+          image_url = 'https://raw.githubusercontent.com/shamanchooz-glitch/site-shaman-chooz-production-prestataire/main/' + post['image']
+          r = requests.post(
+              f'https://graph.facebook.com/{page_id}/photos',
+              data={'url': image_url, 'caption': post['texte'], 'access_token': token}
+          )
+          print(r.status_code, r.text)
+          "
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}

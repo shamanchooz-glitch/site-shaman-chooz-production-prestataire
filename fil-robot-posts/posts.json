@@ -1,152 +1,1502 @@
 [
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🔍 Vous cherchez un emploi ou du personnel de confiance ?\nSHAMAN CHOOZ PRODUCTION vous met en relation en toute sécurité, dans plus de 300 métiers, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub01.png"
+    "texte": "🏢 Vous cherchez un(e) Aide-ménagère / Fille de ménage ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Travaux domestiques, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub001.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "💼 Vous cherchez du travail ? Inscrivez-vous gratuitement sur SHAMAN CHOOZ PRODUCTION.\nMénage, restauration, bâtiment, sécurité, informatique, événementiel… plus de 20 secteurs vous attendent.\nUn profil, une validation, un placement.",
-    "image": "fil-robot-posts/pub02.png"
+    "texte": "🏢 Recruteur ? Un(e) Homme de ménage vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub002.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🏢 Besoin de personnel fiable rapidement ?\nPubliez votre offre sur SHAMAN CHOOZ PRODUCTION et accédez à des candidats vérifiés dans votre secteur, où que vous soyez.",
-    "image": "fil-robot-posts/pub03.png"
+    "texte": "🏢 Besoin d'un(e) Nounou / Garde d'enfants de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub003.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🤝 Chez SHAMAN CHOOZ PRODUCTION, chaque profil et chaque offre est vérifié par notre équipe avant mise en ligne. Aucun contact non filtré, aucune mauvaise surprise.",
-    "image": "fil-robot-posts/pub04.png"
+    "texte": "🏢 Baby-sitter recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub004.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🛡 Besoin d'un agent de sécurité fiable ?\nSHAMAN CHOOZ PRODUCTION propose des profils vérifiés en sécurité, gardiennage et surveillance, partout où vous en avez besoin.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub05.png"
+    "texte": "🏢 Vous cherchez un(e) Cuisinier(ère) à domicile ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Travaux domestiques, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub005.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🏗 Un chantier à renforcer ?\nMaçons, électriciens, plombiers, ouvriers qualifiés : trouvez la bonne personne rapidement avec SHAMAN CHOOZ PRODUCTION.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub06.png"
+    "texte": "🏢 Recruteur ? Un(e) Chef à domicile vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub006.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "💻 Vous cherchez un profil en informatique ou technologie ?\nDéveloppeurs, techniciens, support informatique : SHAMAN CHOOZ PRODUCTION vous connecte aux bons talents.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub07.png"
+    "texte": "🏢 Besoin d'un(e) Jardinier(ère) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub007.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "⚕ Un professionnel de la santé ou du bien-être à recruter ?\nAides-soignants, esthéticiennes, coachs sportifs : notre plateforme couvre aussi ce secteur.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub08.png"
+    "texte": "🏢 Chauffeur particulier recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub008.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🎓 Besoin d'un formateur ou d'un enseignant ?\nSHAMAN CHOOZ PRODUCTION met en relation écoles, centres de formation et particuliers avec des profils qualifiés.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub09.png"
+    "texte": "🏢 Vous cherchez un(e) Garde-malade à domicile ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Travaux domestiques, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub009.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🍽 Un restaurant ou un hôtel à renforcer en personnel ?\nServeurs, cuisiniers, réceptionnistes : trouvez du personnel fiable pour l'hôtellerie-restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub10.png"
+    "texte": "🏢 Recruteur ? Un(e) Aide-soignant(e) à domicile vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub010.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🚚 Besoin d'un chauffeur ou d'un agent logistique ?\nSHAMAN CHOOZ PRODUCTION couvre aussi le transport et la logistique, avec des profils vérifiés.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub11.png"
+    "texte": "🏢 Besoin d'un(e) Repasseuse / Repasseur de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub011.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "💅 Un profil en beauté ou esthétique à recruter ?\nCoiffeurs, esthéticiennes, prothésistes ongulaires : notre plateforme les référence aussi.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub12.png"
+    "texte": "🏢 Blanchisseur(se) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub012.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🌾 Du personnel pour l'agriculture ou l'élevage ?\nSHAMAN CHOOZ PRODUCTION met aussi en relation dans ce secteur, partout où le besoin se trouve.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub13.png"
+    "texte": "🏢 Vous cherchez un(e) Femme de chambre ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Travaux domestiques, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub013.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🛒 Besoin d'un vendeur ou d'un agent commercial ?\nLe commerce et la vente font partie des secteurs couverts par SHAMAN CHOOZ PRODUCTION.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub14.png"
+    "texte": "🏢 Recruteur ? Un(e) Majordome vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub014.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🎉 Un événement à organiser, du personnel d'accueil à trouver ?\nHôtes, hôtesses, agents d'accueil : SHAMAN CHOOZ PRODUCTION vous accompagne aussi pour l'événementiel.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub15.png"
+    "texte": "🏢 Besoin d'un(e) Gouvernante de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub015.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "📋 Besoin de renfort en administration ou bureau ?\nSecrétaires, assistants administratifs, agents de saisie : trouvez le bon profil rapidement.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub16.png"
+    "texte": "🏢 Dame de compagnie recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub016.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🌍 Une agence de placement qui ne connaît pas de frontières.\nCandidats et recruteurs peuvent s'inscrire depuis n'importe quel pays sur SHAMAN CHOOZ PRODUCTION.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub17.png"
+    "texte": "🏢 Vous cherchez un(e) Garde d'animaux / Pet-sitter ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Travaux domestiques, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub017.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "📋 Trois étapes, et votre recherche avance.\nInscrivez-vous, précisez votre besoin, notre équipe valide et vous met en relation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub18.png"
+    "texte": "🏢 Recruteur ? Un(e) Homme à tout faire vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub018.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🤝 Une agence qui vérifie avant de mettre en relation.\nChaque profil et chaque offre passent par un contrôle humain avant d'être visibles sur SHAMAN CHOOZ PRODUCTION.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub19.png"
+    "texte": "🏢 Besoin d'un(e) Agent d'entretien à domicile de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub019.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🏢 Recruteur pressé par le temps ?\nGagnez du temps : accédez directement à des profils déjà vérifiés, sans trier des centaines de candidatures.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub20.png"
+    "texte": "🏢 Cuisinière traditionnelle recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Travaux domestiques.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub020.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "💼 Débutant ou sans grande expérience ? Ne vous découragez pas.\nSHAMAN CHOOZ PRODUCTION référence aussi des postes ouverts aux profils juniors, dans de nombreux secteurs.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub21.png"
+    "texte": "🧹 Vous cherchez un(e) Agent de nettoyage ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Nettoyage & entretien, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub021.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "✨ Un profil bien présenté attire plus vite l'attention.\nDécrivez clairement vos compétences et votre expérience lors de votre inscription sur SHAMAN CHOOZ PRODUCTION.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub22.png"
+    "texte": "🧹 Recruteur ? Un(e) Agent de nettoyage industriel vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub022.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "📈 Une offre claire attire les bons candidats.\nDétaillez précisément le poste, le secteur et la localisation pour recevoir des candidatures pertinentes.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub23.png"
+    "texte": "🧹 Besoin d'un(e) Technicien de surface de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub023.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "📱 Une question ? Une équipe vous répond directement.\nContactez-nous sur WhatsApp pour toute question sur votre candidature ou votre offre.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub24.png"
+    "texte": "🧹 Laveur de vitres recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub024.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🌟 Plus de 20 secteurs d'activité, une seule plateforme.\nSHAMAN CHOOZ PRODUCTION centralise le recrutement et le placement pour de nombreux métiers.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub25.png"
+    "texte": "🧹 Vous cherchez un(e) Nettoyeur de tapis / moquettes ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Nettoyage & entretien, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub025.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🤝 Derrière chaque dossier, une équipe humaine.\nAucune mise en relation automatique sans vérification : c'est notre équipe qui valide chaque profil.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub26.png"
+    "texte": "🧹 Recruteur ? Un(e) Agent de propreté urbaine vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub026.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🔍 Vous ne trouvez pas votre secteur dans nos publications ?\nSHAMAN CHOOZ PRODUCTION couvre plus de 20 secteurs : contactez-nous, votre besoin y trouve probablement sa place.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub27.png"
+    "texte": "🧹 Besoin d'un(e) Éboueur de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub027.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🧹 Besoin d'aide pour l'entretien ou le nettoyage ?\nMénage, nettoyage industriel, entretien : trouvez du personnel de confiance rapidement.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub28.png"
+    "texte": "🧹 Agent de désinfection recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub028.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🏨 Un profil polyvalent pour plusieurs missions ?\nCertains candidats sur SHAMAN CHOOZ PRODUCTION sont disponibles pour du travail extra ou ponctuel.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub29.png"
+    "texte": "🧹 Vous cherchez un(e) Nettoyeur de piscine ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Nettoyage & entretien, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub029.jpg"
   },
   {
     "nom": "SHAMAN CHOOZ",
-    "texte": "🙏 Merci de faire confiance à SHAMAN CHOOZ PRODUCTION.\nChaque inscription, chaque mise en relation nous aide à mieux servir candidats et recruteurs.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
-    "image": "fil-robot-posts/pub30.png"
+    "texte": "🧹 Recruteur ? Un(e) Agent d'entretien d'espaces verts vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub030.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Besoin d'un(e) Cantonnier de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub031.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Balayeur recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub032.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Vous cherchez un(e) Agent de blanchisserie industrielle ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Nettoyage & entretien, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub033.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Recruteur ? Un(e) Femme / Homme de ménage en entreprise vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub034.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Besoin d'un(e) Nettoyeur après chantier de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Nettoyage & entretien.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub035.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Cuisinier(ère) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub036.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Vous cherchez un(e) Chef cuisinier ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Hôtellerie & restauration, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub037.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Recruteur ? Un(e) Second de cuisine vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub038.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Besoin d'un(e) Commis de cuisine de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub039.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Pâtissier(ère) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub040.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Vous cherchez un(e) Boulanger(ère) ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Hôtellerie & restauration, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub041.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Recruteur ? Un(e) Serveur(se) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub042.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Besoin d'un(e) Barman / Barmaid de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub043.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Réceptionniste d'hôtel recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub044.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Vous cherchez un(e) Femme / Valet de chambre ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Hôtellerie & restauration, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub045.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Recruteur ? Un(e) Concierge vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub046.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Besoin d'un(e) Maître d'hôtel de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub047.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Sommelier(ère) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub048.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Vous cherchez un(e) Plongeur(se) ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Hôtellerie & restauration, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub049.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Recruteur ? Un(e) Traiteur vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub050.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Besoin d'un(e) Chef de rang de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub051.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Gouvernante d'hôtel recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub052.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Vous cherchez un(e) Agent de restauration collective ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Hôtellerie & restauration, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub053.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Recruteur ? Un(e) Livreur de repas vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub054.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🍽 Besoin d'un(e) Gérant de restaurant de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Hôtellerie & restauration.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub055.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Maçon recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub056.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Vous cherchez un(e) Menuisier ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Bâtiment & construction, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub057.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Recruteur ? Un(e) Électricien bâtiment vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub058.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Besoin d'un(e) Plombier de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub059.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Peintre en bâtiment recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub060.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Vous cherchez un(e) Carreleur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Bâtiment & construction, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub061.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Recruteur ? Un(e) Charpentier vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub062.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Besoin d'un(e) Couvreur de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub063.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Soudeur recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub064.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Vous cherchez un(e) Ferrailleur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Bâtiment & construction, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub065.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Recruteur ? Un(e) Coffreur vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub066.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Besoin d'un(e) Chef de chantier de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub067.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Conducteur d'engins recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub068.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Vous cherchez un(e) Grutier ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Bâtiment & construction, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub069.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Recruteur ? Un(e) Étancheur vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub070.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Besoin d'un(e) Plâtrier de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub071.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Vitrier recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub072.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Vous cherchez un(e) Poseur de placo ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Bâtiment & construction, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub073.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Recruteur ? Un(e) Maçon carreleur vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub074.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Besoin d'un(e) Manœuvre BTP de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Bâtiment & construction.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub075.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Mécanicien automobile recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Mécanique & automobile.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub076.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Vous cherchez un(e) Mécanicien moto ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Mécanique & automobile, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub077.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Recruteur ? Un(e) Électricien auto vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Mécanique & automobile.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub078.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Besoin d'un(e) Carrossier de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Mécanique & automobile.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub079.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Peintre automobile recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Mécanique & automobile.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub080.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Vous cherchez un(e) Vidangeur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Mécanique & automobile, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub081.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Recruteur ? Un(e) Vulcanisateur vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Mécanique & automobile.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub082.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Besoin d'un(e) Dépanneur auto de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Mécanique & automobile.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub083.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Diagnostiqueur auto recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Mécanique & automobile.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub084.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Vous cherchez un(e) Technicien poids lourds ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Mécanique & automobile, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub085.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Recruteur ? Un(e) Laveur de véhicules vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Mécanique & automobile.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub086.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚗 Besoin d'un(e) Vendeur pièces détachées de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Mécanique & automobile.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub087.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Chauffeur de taxi recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub088.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Vous cherchez un(e) Chauffeur VTC ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Transport & logistique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub089.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Recruteur ? Un(e) Chauffeur poids lourd vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub090.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Besoin d'un(e) Chauffeur de bus de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub091.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Livreur moto recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub092.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Vous cherchez un(e) Coursier ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Transport & logistique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub093.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Recruteur ? Un(e) Magasinier vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub094.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Besoin d'un(e) Cariste de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub095.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Agent logistique recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub096.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Vous cherchez un(e) Déménageur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Transport & logistique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub097.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Recruteur ? Un(e) Convoyeur vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub098.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Besoin d'un(e) Agent de manutention de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub099.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Coordinateur transport recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub100.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Vous cherchez un(e) Agent de fret ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Transport & logistique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub101.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🚚 Recruteur ? Un(e) Motard livreur vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Transport & logistique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub102.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛡 Besoin d'un(e) Agent de sécurité de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Sécurité.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub103.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛡 Vigile recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Sécurité.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub104.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛡 Vous cherchez un(e) Maître-chien ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Sécurité, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub105.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛡 Recruteur ? Un(e) Agent de sûreté aéroportuaire vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Sécurité.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub106.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛡 Besoin d'un(e) Garde du corps de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Sécurité.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub107.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛡 Agent de surveillance recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Sécurité.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub108.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛡 Vous cherchez un(e) Portier ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Sécurité, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub109.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛡 Recruteur ? Un(e) Agent de sécurité incendie vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Sécurité.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub110.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛡 Besoin d'un(e) Contrôleur d'accès de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Sécurité.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub111.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛡 Agent de sécurité événementielle recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Sécurité.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub112.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Vous cherchez un(e) Infirmier(ère) ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Santé & bien-être, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub113.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Recruteur ? Un(e) Aide-soignant(e) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub114.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Besoin d'un(e) Sage-femme de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub115.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Kinésithérapeute recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub116.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Vous cherchez un(e) Pharmacien(ne) ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Santé & bien-être, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub117.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Recruteur ? Un(e) Préparateur en pharmacie vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub118.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Besoin d'un(e) Dentiste de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub119.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Assistant(e) dentaire recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub120.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Vous cherchez un(e) Psychologue ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Santé & bien-être, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub121.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Recruteur ? Un(e) Nutritionniste vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub122.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Besoin d'un(e) Masseur(se) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub123.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Ambulancier(ère) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub124.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Vous cherchez un(e) Technicien de laboratoire ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Santé & bien-être, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub125.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Recruteur ? Un(e) Opticien(ne) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub126.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Besoin d'un(e) Sophrologue de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub127.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Naturopathe recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub128.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Vous cherchez un(e) Auxiliaire de puériculture ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Santé & bien-être, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub129.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "⚕ Recruteur ? Un(e) Brancardier vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Santé & bien-être.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub130.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Besoin d'un(e) Coiffeur(se) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub131.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Coiffeur(se) tresseuse recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub132.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Vous cherchez un(e) Barbier ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Beauté & esthétique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub133.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Recruteur ? Un(e) Esthéticien(ne) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub134.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Besoin d'un(e) Manucure de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub135.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Maquilleur(se) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub136.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Vous cherchez un(e) Prothésiste ongulaire ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Beauté & esthétique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub137.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Recruteur ? Un(e) Spa thérapeute vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub138.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Besoin d'un(e) Onglerie de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub139.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Extension de cils recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub140.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Vous cherchez un(e) Cosméticien(ne) ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Beauté & esthétique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub141.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Recruteur ? Un(e) Styliste capillaire vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub142.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Besoin d'un(e) Perruquier(ère) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub143.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Masseur bien-être recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Beauté & esthétique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub144.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💅 Vous cherchez un(e) Conseiller(ère) beauté ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Beauté & esthétique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub145.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Recruteur ? Un(e) Enseignant(e) primaire vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub146.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Besoin d'un(e) Enseignant(e) secondaire de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub147.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Professeur particulier recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub148.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Vous cherchez un(e) Répétiteur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Éducation & formation, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub149.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Recruteur ? Un(e) Éducateur(trice) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub150.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Besoin d'un(e) Formateur(trice) professionnel de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub151.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Animateur(trice) pédagogique recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub152.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Vous cherchez un(e) Bibliothécaire ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Éducation & formation, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub153.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Recruteur ? Un(e) Documentaliste vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub154.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Besoin d'un(e) Surveillant(e) scolaire de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub155.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Conseiller d'orientation recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub156.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Vous cherchez un(e) Professeur de langue ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Éducation & formation, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub157.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Recruteur ? Un(e) Instituteur(trice) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub158.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Besoin d'un(e) Assistant(e) maternelle de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub159.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎓 Directeur(trice) d'école recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Éducation & formation.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub160.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Vous cherchez un(e) Développeur web ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Informatique & technologie, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub161.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Recruteur ? Un(e) Développeur mobile vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub162.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Besoin d'un(e) Technicien informatique de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub163.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Administrateur système recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub164.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Vous cherchez un(e) Administrateur réseau ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Informatique & technologie, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub165.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Recruteur ? Un(e) Data analyst vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub166.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Besoin d'un(e) Community manager de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub167.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Designer graphique recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub168.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Vous cherchez un(e) Webmaster ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Informatique & technologie, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub169.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Recruteur ? Un(e) Technicien maintenance informatique vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub170.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Besoin d'un(e) Développeur logiciel de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub171.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Expert cybersécurité recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub172.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Vous cherchez un(e) Chef de projet IT ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Informatique & technologie, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub173.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Recruteur ? Un(e) Testeur QA vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub174.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Besoin d'un(e) Monteur vidéo de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub175.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Infographiste recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub176.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Vous cherchez un(e) Photographe ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Informatique & technologie, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub177.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "💻 Recruteur ? Un(e) Technicien audiovisuel vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Informatique & technologie.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub178.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Besoin d'un(e) Vendeur(se) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub179.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Caissier(ère) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub180.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Vous cherchez un(e) Commercial(e) ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Commerce & vente, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub181.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Recruteur ? Un(e) Représentant commercial vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub182.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Besoin d'un(e) Merchandiser de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub183.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Responsable de magasin recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub184.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Vous cherchez un(e) Gérant(e) de boutique ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Commerce & vente, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub185.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Recruteur ? Un(e) Télévendeur(se) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub186.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Besoin d'un(e) Agent commercial de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub187.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Chargé(e) de clientèle recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub188.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Vous cherchez un(e) Démonstrateur(trice) ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Commerce & vente, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub189.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Recruteur ? Un(e) Négociateur immobilier vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub190.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Besoin d'un(e) Agent immobilier de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub191.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Courtier recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub192.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Vous cherchez un(e) Distributeur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Commerce & vente, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub193.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Recruteur ? Un(e) Vendeur ambulant vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub194.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Besoin d'un(e) Marchand(e) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub195.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🛒 Grossiste recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Commerce & vente.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub196.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Vous cherchez un(e) Agriculteur(trice) ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Agriculture & élevage, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub197.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Recruteur ? Un(e) Ouvrier agricole vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub198.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Besoin d'un(e) Éleveur(se) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub199.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Maraîcher(ère) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub200.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Vous cherchez un(e) Pêcheur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Agriculture & élevage, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub201.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Recruteur ? Un(e) Aviculteur(trice) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub202.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Besoin d'un(e) Apiculteur(trice) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub203.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Planteur recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub204.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Vous cherchez un(e) Cacaoculteur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Agriculture & élevage, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub205.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Recruteur ? Un(e) Producteur de vivriers vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub206.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Besoin d'un(e) Technicien agricole de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub207.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Vétérinaire recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub208.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Vous cherchez un(e) Assistant vétérinaire ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Agriculture & élevage, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub209.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Recruteur ? Un(e) Horticulteur(trice) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub210.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🌾 Besoin d'un(e) Agent forestier de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Agriculture & élevage.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub211.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Ouvrier de production recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub212.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Vous cherchez un(e) Technicien de maintenance industrielle ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Industrie & production, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub213.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Recruteur ? Un(e) Chef d'équipe production vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub214.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Besoin d'un(e) Contrôleur qualité de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub215.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Agent de conditionnement recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub216.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Vous cherchez un(e) Opérateur de machine ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Industrie & production, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub217.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Recruteur ? Un(e) Technicien chimiste vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub218.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Besoin d'un(e) Soudeur industriel de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub219.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Monteur assembleur recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub220.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Vous cherchez un(e) Régleur machine ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Industrie & production, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub221.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Recruteur ? Un(e) Agent de fabrication vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub222.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Besoin d'un(e) Technicien méthodes de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub223.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Responsable de production recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub224.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Vous cherchez un(e) Ingénieur industriel ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Industrie & production, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub225.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🏗 Recruteur ? Un(e) Manutentionnaire vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Industrie & production.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub226.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Besoin d'un(e) Secrétaire de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub227.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Assistant(e) administratif(ve) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub228.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Vous cherchez un(e) Réceptionniste ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Administration & bureau, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub229.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Recruteur ? Un(e) Standardiste vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub230.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Besoin d'un(e) Comptable de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub231.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Aide-comptable recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub232.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Vous cherchez un(e) Gestionnaire de paie ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Administration & bureau, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub233.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Recruteur ? Un(e) Ressources humaines vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub234.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Besoin d'un(e) Chargé(e) de recrutement de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub235.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Assistant(e) de direction recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub236.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Vous cherchez un(e) Archiviste ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Administration & bureau, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub237.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Recruteur ? Un(e) Agent d'accueil vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub238.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Besoin d'un(e) Agent de saisie de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub239.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Data entry recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Administration & bureau.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub240.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📋 Vous cherchez un(e) Office manager ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Administration & bureau, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub241.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Recruteur ? Un(e) Comptable vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Finance & juridique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub242.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Besoin d'un(e) Auditeur(trice) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Finance & juridique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub243.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Analyste financier recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Finance & juridique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub244.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Vous cherchez un(e) Conseiller bancaire ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Finance & juridique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub245.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Recruteur ? Un(e) Agent de change vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Finance & juridique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub246.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Besoin d'un(e) Notaire de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Finance & juridique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub247.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Avocat(e) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Finance & juridique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub248.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Vous cherchez un(e) Huissier ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Finance & juridique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub249.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Recruteur ? Un(e) Juriste vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Finance & juridique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub250.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Besoin d'un(e) Assistant(e) juridique de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Finance & juridique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub251.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Fiscaliste recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Finance & juridique.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub252.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Vous cherchez un(e) Contrôleur de gestion ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Finance & juridique, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub253.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Recruteur ? Un(e) Mannequin vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub254.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Besoin d'un(e) Acteur / Actrice de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub255.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Figurant(e) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub256.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Vous cherchez un(e) Danseur(se) ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Artistique & spectacle, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub257.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Recruteur ? Un(e) Chanteur(se) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub258.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Besoin d'un(e) Musicien(ne) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub259.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Comédien(ne) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub260.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Vous cherchez un(e) Humoriste ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Artistique & spectacle, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub261.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Recruteur ? Un(e) Animateur(trice) événementiel vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub262.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Besoin d'un(e) Voix off / Doublage de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub263.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Photographe modèle recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub264.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Vous cherchez un(e) Régisseur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Artistique & spectacle, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub265.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Recruteur ? Un(e) Metteur en scène vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub266.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Besoin d'un(e) Chorégraphe de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub267.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Costumier(ère) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub268.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Vous cherchez un(e) Maquilleur de plateau ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Artistique & spectacle, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub269.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Recruteur ? Un(e) Cascadeur(se) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub270.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Besoin d'un(e) DJ de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Artistique & spectacle.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub271.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Hôte / Hôtesse d'accueil recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Événementiel & accueil.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub272.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Vous cherchez un(e) Hôtesse de l'air ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Événementiel & accueil, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub273.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Recruteur ? Un(e) Steward vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Événementiel & accueil.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub274.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Besoin d'un(e) Organisateur(trice) d'événements de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Événementiel & accueil.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub275.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Wedding planner recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Événementiel & accueil.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub276.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Vous cherchez un(e) Traiteur événementiel ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Événementiel & accueil, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub277.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Recruteur ? Un(e) Technicien son et lumière vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Événementiel & accueil.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub278.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Besoin d'un(e) Décorateur événementiel de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Événementiel & accueil.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub279.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Agent de billetterie recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Événementiel & accueil.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub280.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Vous cherchez un(e) Animateur de rue ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Événementiel & accueil, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub281.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Recruteur ? Un(e) Photographe événementiel vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Événementiel & accueil.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub282.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🎉 Besoin d'un(e) Vidéaste événementiel de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Événementiel & accueil.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub283.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Couturier(ère) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Textile & artisanat.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub284.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Vous cherchez un(e) Tailleur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Textile & artisanat, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub285.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Recruteur ? Un(e) Styliste modéliste vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Textile & artisanat.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub286.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Besoin d'un(e) Cordonnier(ère) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Textile & artisanat.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub287.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Tisserand(e) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Textile & artisanat.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub288.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Vous cherchez un(e) Teinturier(ère) ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Textile & artisanat, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub289.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Recruteur ? Un(e) Brodeur(se) vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Textile & artisanat.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub290.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Besoin d'un(e) Tricoteur(se) de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Textile & artisanat.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub291.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Artisan bijoutier recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Textile & artisanat.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub292.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Vous cherchez un(e) Sculpteur ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Textile & artisanat, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub293.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Recruteur ? Un(e) Menuisier d'art vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Textile & artisanat.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub294.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "🧹 Besoin d'un(e) Céramiste de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Textile & artisanat.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub295.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Chargé(e) de communication recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Communication & marketing.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub296.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Vous cherchez un(e) Community manager ?\nSHAMAN CHOOZ PRODUCTION vous met en relation avec des profils vérifiés en Communication & marketing, partout dans le monde.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub297.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Recruteur ? Un(e) Attaché(e) de presse vérifié(e) vous attend sur SHAMAN CHOOZ PRODUCTION.\nSecteur : Communication & marketing.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub298.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Besoin d'un(e) Rédacteur(trice) web de confiance ?\nSHAMAN CHOOZ PRODUCTION référence des profils vérifiés en Communication & marketing.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub299.jpg"
+  },
+  {
+    "nom": "SHAMAN CHOOZ",
+    "texte": "📈 Traducteur(trice) recherché(e) ou disponible ?\nSHAMAN CHOOZ PRODUCTION facilite la mise en relation dans le secteur Communication & marketing.\n✅ Profils vérifiés · ✅ Paiement sécurisé · ✅ Mise en relation encadrée",
+    "image": "fil-robot-posts/pub300.jpg"
   }
-    ]
+]

@@ -11,6 +11,8 @@ import os
 import time
 import datetime
 import requests
+from google.oauth2 import service_account
+from google.auth.transport.requests import Request
 
 FIREBASE_URL = "https://shaman-chooz-production-prest-default-rtdb.firebaseio.com"
 REPO_RAW_BASE = "https://raw.githubusercontent.com/shamanchooz-glitch/site-shaman-chooz-production-prestataire/main"
@@ -36,10 +38,23 @@ body = {
     "likes": 0,
 }
 
-secret = os.environ["FIREBASE_DB_SECRET"]
-url = f"{FIREBASE_URL}/fil_actualite.json?auth={secret}"
+# Authentification via le compte de service Firebase (remplace l'ancien
+# "Database secret" qui n'existe plus sur les nouveaux projets).
+service_account_info = json.loads(os.environ["FIREBASE_SERVICE_ACCOUNT"])
+credentials = service_account.Credentials.from_service_account_info(
+    service_account_info,
+    scopes=[
+        "https://www.googleapis.com/auth/firebase.database",
+        "https://www.googleapis.com/auth/userinfo.email",
+    ],
+)
+credentials.refresh(Request())
+token = credentials.token
 
-r = requests.post(url, json=body)
+url = f"{FIREBASE_URL}/fil_actualite.json"
+headers = {"Authorization": f"Bearer {token}"}
+
+r = requests.post(url, json=body, headers=headers)
 print("Publication choisie :", index, "-", post["texte"][:60].replace("\n", " "))
 print(r.status_code, r.text)
 r.raise_for_status()

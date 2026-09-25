@@ -1302,9 +1302,44 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
             </div>
 
             <div id="robot-mode-personnalise-block" style="display:none;">
-              <p class="hint">Ajoutez une ou plusieurs plages : cochez les jours, choisissez l'heure, indiquez le nombre de publications pour cette plage. Vous pouvez en ajouter autant que vous voulez (ex : 5 publications le lundi et le mercredi à 8h, 3 publications tous les jours à 18h).</p>
-              <div id="robot-programmations-list"></div>
-              <button type="button" class="sub-tab-btn" onclick="addProgrammationRow()" style="margin-top:6px;">➕ Ajouter une plage</button>
+              <p class="hint">Construisez votre planning ligne par ligne : choisissez un jour, une heure et un nombre de publications, puis "Ajouter". Vous pouvez ajouter plusieurs lignes pour le même jour avec des heures différentes (ex : Lundi 08h → 5 publications, puis Lundi 14h → 3 publications).</p>
+              <div style="overflow-x:auto;">
+                <table id="robot-creneaux-table" style="width:100%;border-collapse:collapse;min-width:480px;">
+                  <thead>
+                    <tr style="text-align:left;border-bottom:2px solid var(--gold);">
+                      <th style="padding:8px 6px;">Jour</th>
+                      <th style="padding:8px 6px;">Heure</th>
+                      <th style="padding:8px 6px;">Nombre de publications</th>
+                      <th style="padding:8px 6px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="robot-creneaux-tbody"></tbody>
+                </table>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:14px;padding-top:14px;border-top:1px dashed var(--gold);">
+                <div class="field" style="max-width:150px;">
+                  <label>Jour</label>
+                  <select id="robot-new-jour">
+                    <option value="lun">Lundi</option>
+                    <option value="mar">Mardi</option>
+                    <option value="mer">Mercredi</option>
+                    <option value="jeu">Jeudi</option>
+                    <option value="ven">Vendredi</option>
+                    <option value="sam">Samedi</option>
+                    <option value="dim">Dimanche</option>
+                    <option value="tous">Tous les jours</option>
+                  </select>
+                </div>
+                <div class="field" style="max-width:130px;">
+                  <label>Heure</label>
+                  <select id="robot-new-heure"></select>
+                </div>
+                <div class="field" style="max-width:150px;">
+                  <label>Nombre</label>
+                  <input type="number" id="robot-new-nombre" min="1" max="300" value="5">
+                </div>
+                <button type="button" class="btn btn-gold" onclick="addCreneauRow()">➕ Ajouter cette ligne</button>
+              </div>
             </div>
 
             <div class="admin-tools" style="margin-top:16px;">
@@ -3630,21 +3665,22 @@ function openAdminSub(name){
 }
 
 /* ============ PROGRAMMATION DU ROBOT (mode par défaut / personnalisé) ============ */
-const ROBOT_JOURS = [
-  {code:'lun', label:'Lun'}, {code:'mar', label:'Mar'}, {code:'mer', label:'Mer'},
-  {code:'jeu', label:'Jeu'}, {code:'ven', label:'Ven'}, {code:'sam', label:'Sam'}, {code:'dim', label:'Dim'}
-];
-let _robotProgrammations = [];
+const ROBOT_JOURS_LABELS = {lun:'Lundi', mar:'Mardi', mer:'Mercredi', jeu:'Jeudi', ven:'Vendredi', sam:'Samedi', dim:'Dimanche', tous:'Tous les jours'};
+const ROBOT_JOURS_ORDRE = ['tous','lun','mar','mer','jeu','ven','sam','dim'];
+let _robotCreneaux = []; // [{jour:'lun'|'tous', heure:8, nombre:5}, ...]
+
+function fillRobotHeureSelect(){
+  const sel = document.getElementById('robot-new-heure');
+  sel.innerHTML = Array.from({length:24}, (_,h) => `<option value="${h}">${String(h).padStart(2,'0')}h00</option>`).join('');
+}
 
 async function loadRobotConfig(){
   let cfg = {};
   try{ cfg = await fbGetAdmin('config_robot') || {}; }catch(e){}
   document.getElementById('robot-defaut-nombre').value = (cfg.defaut && cfg.defaut.nombre) || 10;
-  _robotProgrammations = (cfg.personnalise && cfg.personnalise.programmations) || [];
-  if(_robotProgrammations.length === 0){
-    _robotProgrammations = [{jours:['lun','mar','mer','jeu','ven','sam','dim'], heure:8, nombre:10}];
-  }
-  renderRobotProgrammations();
+  _robotCreneaux = (cfg.personnalise && cfg.personnalise.creneaux) || [];
+  fillRobotHeureSelect();
+  renderCreneauxTable();
   setRobotMode(cfg.mode === 'personnalise' ? 'personnalise' : 'defaut');
 }
 
@@ -3656,45 +3692,46 @@ function setRobotMode(mode){
   document.getElementById('adm-fil').dataset.robotMode = mode;
 }
 
-function renderRobotProgrammations(){
-  const box = document.getElementById('robot-programmations-list');
-  box.innerHTML = _robotProgrammations.map((p, i) => `
-    <div class="admin-feed-card">
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
-        ${ROBOT_JOURS.map(j => `
-          <label style="display:flex;align-items:center;gap:4px;font-size:0.8rem;background:var(--paper-soft);padding:4px 8px;border-radius:6px;">
-            <input type="checkbox" ${p.jours.includes(j.code) ? 'checked' : ''} onchange="toggleProgrammationJour(${i},'${j.code}',this.checked)"> ${j.label}
-          </label>`).join('')}
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
-        <div class="field" style="max-width:130px;">
-          <label>Heure</label>
-          <select onchange="updateProgrammationField(${i},'heure',parseInt(this.value,10))">
-            ${Array.from({length:24}, (_,h) => `<option value="${h}" ${p.heure===h?'selected':''}>${String(h).padStart(2,'0')}h00</option>`).join('')}
-          </select>
-        </div>
-        <div class="field" style="max-width:130px;">
-          <label>Nombre</label>
-          <input type="number" min="1" max="300" value="${p.nombre}" onchange="updateProgrammationField(${i},'nombre',parseInt(this.value,10)||1)">
-        </div>
-        <button type="button" class="admin-feed-reject" onclick="removeProgrammationRow(${i})" title="Supprimer cette plage">✖ Supprimer</button>
-      </div>
-    </div>
+function renderCreneauxTable(){
+  const tbody = document.getElementById('robot-creneaux-tbody');
+  if(_robotCreneaux.length === 0){
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:14px 6px;color:var(--muted);">Aucune ligne pour l'instant — ajoutez-en une ci-dessous.</td></tr>`;
+    return;
+  }
+  // Tri d'affichage : par jour (dans l'ordre de la semaine) puis par heure, pour que le tableau reste lisible même avec beaucoup de lignes.
+  const triees = _robotCreneaux
+    .map((c, i) => ({...c, _i: i}))
+    .sort((a,b) => (ROBOT_JOURS_ORDRE.indexOf(a.jour) - ROBOT_JOURS_ORDRE.indexOf(b.jour)) || (a.heure - b.heure));
+  tbody.innerHTML = triees.map(c => `
+    <tr style="border-bottom:1px solid var(--paper-soft);">
+      <td style="padding:8px 6px;font-weight:600;">${ROBOT_JOURS_LABELS[c.jour] || c.jour}</td>
+      <td style="padding:8px 6px;">${String(c.heure).padStart(2,'0')}h00</td>
+      <td style="padding:8px 6px;">${c.nombre} publication${c.nombre>1?'s':''}</td>
+      <td style="padding:8px 6px;text-align:right;"><button type="button" class="admin-feed-reject" onclick="removeCreneauRow(${c._i})" title="Supprimer cette ligne">✖</button></td>
+    </tr>
   `).join('');
 }
-function toggleProgrammationJour(i, code, checked){
-  const jours = _robotProgrammations[i].jours;
-  if(checked && !jours.includes(code)) jours.push(code);
-  if(!checked) _robotProgrammations[i].jours = jours.filter(c => c !== code);
+
+function addCreneauRow(){
+  const jour = document.getElementById('robot-new-jour').value;
+  const heure = parseInt(document.getElementById('robot-new-heure').value, 10);
+  const nombre = parseInt(document.getElementById('robot-new-nombre').value, 10);
+  const msg = document.getElementById('robot-config-msg');
+  if(!nombre || nombre < 1){
+    msg.textContent = '⚠️ Indiquez un nombre de publications valide (au moins 1).';
+    msg.className = 'form-msg err';
+    return;
+  }
+  // Si une ligne existe déjà pour ce même jour + cette même heure, on met à jour son nombre plutôt que de créer un doublon.
+  const existante = _robotCreneaux.find(c => c.jour === jour && c.heure === heure);
+  if(existante){ existante.nombre = nombre; }
+  else { _robotCreneaux.push({jour, heure, nombre}); }
+  msg.textContent = '';
+  renderCreneauxTable();
 }
-function updateProgrammationField(i, field, value){ _robotProgrammations[i][field] = value; }
-function addProgrammationRow(){
-  _robotProgrammations.push({jours:['lun','mar','mer','jeu','ven','sam','dim'], heure:8, nombre:10});
-  renderRobotProgrammations();
-}
-function removeProgrammationRow(i){
-  _robotProgrammations.splice(i,1);
-  renderRobotProgrammations();
+function removeCreneauRow(i){
+  _robotCreneaux.splice(i,1);
+  renderCreneauxTable();
 }
 
 async function saveRobotConfig(){
@@ -3714,19 +3751,18 @@ async function saveRobotConfig(){
     }
     payload.defaut = { nombre };
   } else {
-    const valid = _robotProgrammations.filter(p => p.jours.length > 0 && p.nombre >= 1);
-    if(valid.length === 0){
-      msg.textContent = '⚠️ Ajoutez au moins une plage avec un jour coché et un nombre valide.';
+    if(_robotCreneaux.length === 0){
+      msg.textContent = '⚠️ Ajoutez au moins une ligne au tableau avant d\'enregistrer.';
       msg.className = 'form-msg err';
       return;
     }
-    payload.personnalise = { programmations: valid };
+    payload.personnalise = { creneaux: _robotCreneaux };
   }
 
   btn.disabled = true; spinner.classList.add('show'); label.textContent = 'Enregistrement…';
   try{
     // Remplacement complet (pas une fusion) pour ne jamais garder d'anciennes
-    // plages supprimées : on ne touche pas au curseur de progression existant.
+    // lignes supprimées : on préserve juste le curseur de progression existant.
     const token = await ensureAdminToken();
     const cfgActuelle = await fbGetAdmin('config_robot') || {};
     payload.curseur = cfgActuelle.curseur || 0;

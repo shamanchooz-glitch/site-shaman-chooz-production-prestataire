@@ -2422,6 +2422,11 @@ function goToCandidatSector(sectorName){
 }
 renderSectorsShowcase();
 renderFeed();
+// Le fil se rafraîchit tout seul (comme Facebook) : les nouvelles publications
+// (du robot, d'un visiteur validé, ou publiées directement par l'admin)
+// apparaissent sans que la personne ait besoin de recharger la page.
+setInterval(renderFeed, 30000);
+document.addEventListener('visibilitychange', () => { if(!document.hidden) renderFeed(); });
 
 /* ============ RECHERCHE EN DIRECT DANS LES CATÉGORIES DE MÉTIERS ============ */
 function normalizeSearchStr(s){

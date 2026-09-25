@@ -15,8 +15,10 @@ Modele de configuration (Firebase, chemin config_robot) :
   "mode": "defaut" | "personnalise",
   "defaut": { "nombre": 10 },                     # tous les jours a 08h00
   "personnalise": {
-    "programmations": [
-      {"jours": ["lun","mar",...], "heure": 8, "nombre": 10},
+    "creneaux": [
+      {"jour": "lun", "heure": 8, "nombre": 5},
+      {"jour": "lun", "heure": 14, "nombre": 3},
+      {"jour": "tous", "heure": 20, "nombre": 2},
       ...
     ]
   },
@@ -25,6 +27,11 @@ Modele de configuration (Firebase, chemin config_robot) :
                  # a la main (un bouton "Recommencer le cycle" dans l'admin
                  # permet de le remettre a 0 si besoin)
 }
+Chaque ligne du tableau (creneau) represente un jour precis (ou "tous" pour
+tous les jours) + une heure + un nombre de publications a poster a ce
+moment-la. Plusieurs lignes peuvent partager le meme jour avec des heures
+differentes, permettant plusieurs publications le meme jour a des heures
+differentes.
 
 Le curseur avance a chaque publication et reboucle automatiquement une fois
 que toute la banque de contenus (fil-robot-posts/posts.json) a ete parcourue,
@@ -83,10 +90,11 @@ heure_actuelle = now.hour
 nombre_a_publier = 0
 
 if mode == "personnalise":
-    programmations = (config.get("personnalise") or {}).get("programmations") or []
-    for p in programmations:
-        if jour_actuel in (p.get("jours") or []) and int(p.get("heure", -1)) == heure_actuelle:
-            nombre_a_publier += int(p.get("nombre", 0))
+    creneaux = (config.get("personnalise") or {}).get("creneaux") or []
+    for c in creneaux:
+        jour_c = c.get("jour")
+        if jour_c in (jour_actuel, "tous") and int(c.get("heure", -1)) == heure_actuelle:
+            nombre_a_publier += int(c.get("nombre", 0))
 else:
     # Mode par defaut : tous les jours a 08h00.
     if heure_actuelle == 8:

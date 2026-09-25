@@ -276,6 +276,26 @@ nav{display:flex;gap:4px;align-items:center;}
 
 /* ===== FIL D'ACTUALITÉ ===== */
 .feed-section{background:var(--paper-soft);}
+.feed-fullscreen-overlay{
+  position:fixed;inset:0;z-index:150;display:none;flex-direction:column;
+  background:var(--paper-soft);
+}
+.feed-fullscreen-overlay.active{display:flex;animation:lbFade .18s ease;}
+.feed-fullscreen-header{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 18px;background:#fff;border-bottom:1px solid var(--line);
+  box-shadow:0 2px 10px rgba(0,0,0,0.06);flex-shrink:0;
+  padding-top:calc(14px + env(safe-area-inset-top, 0px));
+}
+.feed-fullscreen-title{font-weight:700;font-size:1.05rem;color:var(--ink);}
+.feed-fullscreen-close{
+  background:var(--paper-soft);border:1px solid var(--line);border-radius:50%;
+  width:36px;height:36px;font-size:1rem;cursor:pointer;line-height:1;
+}
+.feed-fullscreen-body{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:20px 16px calc(30px + env(safe-area-inset-bottom, 0px));
+}
 .feed-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px;}
 .feed-compose-btn{background:var(--wine);color:#fff;border:none;padding:12px 22px;border-radius:999px;font-weight:700;font-size:.9rem;cursor:pointer;}
 .feed-compose-btn:hover{background:var(--wine-light);}
@@ -681,14 +701,27 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
       <div class="section-head" style="margin-bottom:0;">
         <span class="eyebrow">Actualités</span>
         <h2>Le fil SHAMAN CHOOZ</h2>
+        <p class="hint" style="margin-top:6px;">Retrouvez toutes les publications, photos et vidéos dans un espace à part — il s'ouvre par-dessus le site, sans en perturber la navigation.</p>
       </div>
-      <button type="button" class="feed-compose-btn" onclick="openFeedModal()">✍️ Publier quelque chose</button>
+      <button type="button" class="feed-compose-btn" onclick="openFeedFullscreen()">📰 Ouvrir le fil d'actualité</button>
     </div>
+  </div>
+</section>
+
+<div class="feed-fullscreen-overlay" id="feed-fullscreen-overlay">
+  <div class="feed-fullscreen-header">
+    <span class="feed-fullscreen-title">📰 Le fil SHAMAN CHOOZ</span>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button type="button" class="feed-compose-btn" onclick="openFeedModal()">✍️ Publier</button>
+      <button type="button" class="feed-fullscreen-close" onclick="closeFeedFullscreen()" aria-label="Fermer le fil d'actualité">✖</button>
+    </div>
+  </div>
+  <div class="feed-fullscreen-body">
     <div class="feed-list" id="feed-list">
       <div class="feed-empty">Chargement des publications…</div>
     </div>
   </div>
-</section>
+</div>
 
 <div class="feed-modal-overlay" id="feed-modal-overlay">
   <div class="feed-modal">
@@ -2588,6 +2621,20 @@ function openLightbox(src){
 function closeLightbox(){
   document.getElementById('lightbox').classList.remove('active');
 }
+
+/* ============ FENÊTRE PLEIN ÉCRAN DU FIL D'ACTUALITÉ (séparée du reste du site) ============ */
+function openFeedFullscreen(){
+  document.getElementById('feed-fullscreen-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden'; // bloque le défilement du site derrière
+  renderFeed(); // toujours à jour à l'ouverture
+}
+function closeFeedFullscreen(){
+  document.getElementById('feed-fullscreen-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape' && document.getElementById('feed-fullscreen-overlay').classList.contains('active')) closeFeedFullscreen();
+});
 
 /* ============ GALERIE PUBLIQUE (photos & vidéos) ============ */
 function openVideoModal(src){

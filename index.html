@@ -1866,7 +1866,7 @@ function feedCardHtml(id, p){
       <button class="feed-action-btn${liked?' liked':''}" onclick="likeFeedPost('${id}')">👍 J'aime <span id="feed-likes-${id}">(${p.likes||0})</span></button>
       <button class="feed-action-btn" onclick="toggleFeedComments('${id}')">💬 Commenter</button>
       <div class="feed-share-menu">
-        <button class="feed-action-btn" onclick="toggleShareMenu('${id}')">↗️ Partager</button>
+        <button class="feed-action-btn" onclick="shareFeedPostNative('${id}')">↗️ Partager</button>
         <div class="feed-share-list" id="feed-share-${id}">
           <a href="#" onclick="shareFeedPost('${id}','whatsapp');return false;">WhatsApp</a>
           <a href="#" onclick="shareFeedPost('${id}','facebook');return false;">Facebook</a>
@@ -1911,6 +1911,25 @@ async function likeFeedPost(id){
 function toggleShareMenu(id){
   document.querySelectorAll('.feed-share-list.active').forEach(el=>{ if(el.id!=='feed-share-'+id) el.classList.remove('active'); });
   document.getElementById('feed-share-'+id).classList.toggle('active');
+}
+async function shareFeedPostNative(id){
+  const url = `${location.origin}${location.pathname}#post-${id}`;
+  if(navigator.share){
+    // Ouvre le vrai menu de partage du téléphone/ordinateur : WhatsApp, Facebook,
+    // Messenger, Instagram, SMS, Mail... toutes les applications installées y
+    // apparaissent automatiquement, sans qu'on ait à les lister nous-mêmes.
+    let texte = 'Découvrez cette publication sur SHAMAN CHOOZ PRODUCTION';
+    try{
+      const post = await fbGet(`fil_actualite/${id}`);
+      if(post && post.texte) texte = post.texte;
+    }catch(e){}
+    try{
+      await navigator.share({title:'SHAMAN CHOOZ PRODUCTION', text: texte, url});
+      return;
+    }catch(e){ return; } // l'utilisateur a simplement annulé le partage
+  }
+  // Secours (navigateurs sans menu de partage natif, ex. certains PC) : notre liste déroulante.
+  toggleShareMenu(id);
 }
 function shareFeedPost(id, platform){
   const url = `${location.origin}${location.pathname}#post-${id}`;

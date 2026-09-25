@@ -1283,6 +1283,40 @@ footer .lead{color:rgba(251,244,230,0.7);max-width:42ch;margin-bottom:24px;}
           <h3>Modération du fil d'actualité</h3>
           <p class="hint">Les publications envoyées par les visiteurs apparaissent ici en attente. Une fois approuvées, elles passent automatiquement dans le fil public. Vous pouvez aussi publier directement, sans passer par la modération.</p>
           <button type="button" class="btn btn-gold" style="margin-bottom:16px;" onclick="openFeedModal(true)">✍️ Publier directement (validé immédiatement)</button>
+
+          <div class="admin-upload-box" style="margin-top:6px;">
+            <h4>🤖 Programmation du robot de publication automatique</h4>
+            <p class="hint">Le robot publie automatiquement des publications tirées de la banque de contenus (fil-robot-posts), en tournant en boucle sur l'ensemble des publications disponibles sans jamais répéter avant d'avoir fait le tour. Les heures sont celles de la Côte d'Ivoire.</p>
+
+            <div class="admin-tools" style="margin-bottom:14px;">
+              <button type="button" class="sub-tab-btn active" id="robot-mode-btn-defaut" onclick="setRobotMode('defaut')">Par défaut</button>
+              <button type="button" class="sub-tab-btn" id="robot-mode-btn-personnalise" onclick="setRobotMode('personnalise')">Personnalisé</button>
+            </div>
+
+            <div id="robot-mode-defaut-block">
+              <p class="hint">Le robot publie tous les jours à 08h00, un nombre fixe de publications.</p>
+              <div class="field" style="max-width:220px;">
+                <label>Nombre de publications par jour</label>
+                <input type="number" id="robot-defaut-nombre" min="1" max="300" value="10">
+              </div>
+            </div>
+
+            <div id="robot-mode-personnalise-block" style="display:none;">
+              <p class="hint">Ajoutez une ou plusieurs plages : cochez les jours, choisissez l'heure, indiquez le nombre de publications pour cette plage. Vous pouvez en ajouter autant que vous voulez (ex : 5 publications le lundi et le mercredi à 8h, 3 publications tous les jours à 18h).</p>
+              <div id="robot-programmations-list"></div>
+              <button type="button" class="sub-tab-btn" onclick="addProgrammationRow()" style="margin-top:6px;">➕ Ajouter une plage</button>
+            </div>
+
+            <div class="admin-tools" style="margin-top:16px;">
+              <button type="button" class="btn btn-gold" onclick="saveRobotConfig()">
+                <span class="spinner" id="robot-config-spinner"></span>
+                <span id="robot-config-label">💾 Enregistrer la programmation</span>
+              </button>
+              <button type="button" class="sub-tab-btn" onclick="resetRobotCursor()" title="Fait repartir le robot depuis la toute première publication de la banque de contenus">🔄 Recommencer le cycle depuis le début</button>
+            </div>
+            <div class="form-msg" id="robot-config-msg"></div>
+          </div>
+
           <h4 style="margin-bottom:10px;">En attente de vérification</h4>
           <div id="adm-fil-pending"><p class="hint">Chargement…</p></div>
         </div>
@@ -3592,7 +3626,132 @@ function openAdminSub(name){
   if(name==='chats') loadAdminChatSessions();
   if(name==='interets') loadAdminInterets();
   if(name==='modifications') renderAdminModifications();
-  if(name==='fil') loadAdminFeedPending();
+  if(name==='fil'){ loadAdminFeedPending(); loadRobotConfig(); }
+}
+
+/* ============ PROGRAMMATION DU ROBOT (mode par défaut / personnalisé) ============ */
+const ROBOT_JOURS = [
+  {code:'lun', label:'Lun'}, {code:'mar', label:'Mar'}, {code:'mer', label:'Mer'},
+  {code:'jeu', label:'Jeu'}, {code:'ven', label:'Ven'}, {code:'sam', label:'Sam'}, {code:'dim', label:'Dim'}
+];
+let _robotProgrammations = [];
+
+async function loadRobotConfig(){
+  let cfg = {};
+  try{ cfg = await fbGetAdmin('config_robot') || {}; }catch(e){}
+  document.getElementById('robot-defaut-nombre').value = (cfg.defaut && cfg.defaut.nombre) || 10;
+  _robotProgrammations = (cfg.personnalise && cfg.personnalise.programmations) || [];
+  if(_robotProgrammations.length === 0){
+    _robotProgrammations = [{jours:['lun','mar','mer','jeu','ven','sam','dim'], heure:8, nombre:10}];
+  }
+  renderRobotProgrammations();
+  setRobotMode(cfg.mode === 'personnalise' ? 'personnalise' : 'defaut');
+}
+
+function setRobotMode(mode){
+  document.getElementById('robot-mode-btn-defaut').classList.toggle('active', mode==='defaut');
+  document.getElementById('robot-mode-btn-personnalise').classList.toggle('active', mode==='personnalise');
+  document.getElementById('robot-mode-defaut-block').style.display = mode==='defaut' ? 'block' : 'none';
+  document.getElementById('robot-mode-personnalise-block').style.display = mode==='personnalise' ? 'block' : 'none';
+  document.getElementById('adm-fil').dataset.robotMode = mode;
+}
+
+function renderRobotProgrammations(){
+  const box = document.getElementById('robot-programmations-list');
+  box.innerHTML = _robotProgrammations.map((p, i) => `
+    <div class="admin-feed-card">
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+        ${ROBOT_JOURS.map(j => `
+          <label style="display:flex;align-items:center;gap:4px;font-size:0.8rem;background:var(--paper-soft);padding:4px 8px;border-radius:6px;">
+            <input type="checkbox" ${p.jours.includes(j.code) ? 'checked' : ''} onchange="toggleProgrammationJour(${i},'${j.code}',this.checked)"> ${j.label}
+          </label>`).join('')}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+        <div class="field" style="max-width:130px;">
+          <label>Heure</label>
+          <select onchange="updateProgrammationField(${i},'heure',parseInt(this.value,10))">
+            ${Array.from({length:24}, (_,h) => `<option value="${h}" ${p.heure===h?'selected':''}>${String(h).padStart(2,'0')}h00</option>`).join('')}
+          </select>
+        </div>
+        <div class="field" style="max-width:130px;">
+          <label>Nombre</label>
+          <input type="number" min="1" max="300" value="${p.nombre}" onchange="updateProgrammationField(${i},'nombre',parseInt(this.value,10)||1)">
+        </div>
+        <button type="button" class="admin-feed-reject" onclick="removeProgrammationRow(${i})" title="Supprimer cette plage">✖ Supprimer</button>
+      </div>
+    </div>
+  `).join('');
+}
+function toggleProgrammationJour(i, code, checked){
+  const jours = _robotProgrammations[i].jours;
+  if(checked && !jours.includes(code)) jours.push(code);
+  if(!checked) _robotProgrammations[i].jours = jours.filter(c => c !== code);
+}
+function updateProgrammationField(i, field, value){ _robotProgrammations[i][field] = value; }
+function addProgrammationRow(){
+  _robotProgrammations.push({jours:['lun','mar','mer','jeu','ven','sam','dim'], heure:8, nombre:10});
+  renderRobotProgrammations();
+}
+function removeProgrammationRow(i){
+  _robotProgrammations.splice(i,1);
+  renderRobotProgrammations();
+}
+
+async function saveRobotConfig(){
+  const mode = document.getElementById('adm-fil').dataset.robotMode || 'defaut';
+  const msg = document.getElementById('robot-config-msg');
+  const btn = document.querySelector('#adm-fil .btn-gold[onclick="saveRobotConfig()"]');
+  const spinner = document.getElementById('robot-config-spinner');
+  const label = document.getElementById('robot-config-label');
+
+  let payload = { mode };
+  if(mode === 'defaut'){
+    const nombre = parseInt(document.getElementById('robot-defaut-nombre').value, 10);
+    if(!nombre || nombre < 1){
+      msg.textContent = '⚠️ Indiquez un nombre valide (au moins 1).';
+      msg.className = 'form-msg err';
+      return;
+    }
+    payload.defaut = { nombre };
+  } else {
+    const valid = _robotProgrammations.filter(p => p.jours.length > 0 && p.nombre >= 1);
+    if(valid.length === 0){
+      msg.textContent = '⚠️ Ajoutez au moins une plage avec un jour coché et un nombre valide.';
+      msg.className = 'form-msg err';
+      return;
+    }
+    payload.personnalise = { programmations: valid };
+  }
+
+  btn.disabled = true; spinner.classList.add('show'); label.textContent = 'Enregistrement…';
+  try{
+    // Remplacement complet (pas une fusion) pour ne jamais garder d'anciennes
+    // plages supprimées : on ne touche pas au curseur de progression existant.
+    const token = await ensureAdminToken();
+    const cfgActuelle = await fbGetAdmin('config_robot') || {};
+    payload.curseur = cfgActuelle.curseur || 0;
+    const url = `${FIREBASE_URL}/config_robot.json` + (token ? `?auth=${token}` : '');
+    const res = await fetch(url, {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    if(!res.ok) throw new Error(`Erreur Firebase (${res.status})`);
+    msg.textContent = '✅ Programmation enregistrée. Le robot appliquera ces réglages dès sa prochaine vérification (chaque heure).';
+    msg.className = 'form-msg ok';
+  }catch(e){
+    msg.textContent = '❌ Erreur : ' + e.message;
+    msg.className = 'form-msg err';
+  }
+  btn.disabled = false; spinner.classList.remove('show'); label.textContent = '💾 Enregistrer la programmation';
+}
+
+async function resetRobotCursor(){
+  if(!confirm('Le robot recommencera la liste des publications depuis la toute première. Continuer ?')) return;
+  try{
+    await fbPatch('config_robot', {curseur: 0});
+    const msg = document.getElementById('robot-config-msg');
+    msg.textContent = '✅ Le cycle recommencera depuis la première publication.';
+    msg.className = 'form-msg ok';
+  }catch(e){
+    alert('Erreur : ' + e.message);
+  }
 }
 
 function collectPendingModifications(){

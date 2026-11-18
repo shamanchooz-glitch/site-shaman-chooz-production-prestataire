@@ -5,7 +5,7 @@
    cache : ils passent toujours par le réseau, et c'est le code de la page
    (file d'attente locale) qui gère les envois en cas de coupure. */
 
-const CACHE_NAME = 'shaman-chooz-shell-v2';
+const CACHE_NAME = 'shaman-chooz-shell-v3';
 const APP_SHELL = [
   './',
   './index.html',
@@ -66,11 +66,29 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Fichiers du chatbot (moteur, lexique, cours) : réseau en priorité pour recevoir
+  // les mises à jour (ex. build Kotlin), cache en secours hors-ligne. Les réponses
+  // en erreur (404 : fichier optionnel pas encore publié) ne sont jamais mises en cache.
+  if (/\/shaman-[a-z-]+\.(js|json)$/.test(url.pathname)) {
+    event.respondWith(
+      fetch(req).then((res) => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        }
+        return res;
+      }).catch(() => caches.match(req))
+    );
+    return;
+  }
+
   // Fichiers de l'app shell (manifest, icônes…) : cache en priorité, réseau en secours.
   event.respondWith(
     caches.match(req).then((cached) => cached || fetch(req).then((res) => {
-      const copy = res.clone();
-      caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+      if (res.ok) {
+        const copy = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+      }
       return res;
     }).catch(() => cached))
   );

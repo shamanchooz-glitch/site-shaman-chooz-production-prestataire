@@ -5168,9 +5168,8 @@ function nativeShare(){
 }
 </script>
 
-<!-- Widget Shaman (Botpress) — assistant IA réel, configuré avec les instructions de l'agence -->
-<script src="https://cdn.botpress.cloud/webchat/v5.0/inject.js"></script>
-<script src="https://files.bpcontent.cloud/2026/08/03/08/20260803083655-968F1KI0.js" defer></script>
+<!-- Chatbot SHAMAN : moteur Kotlin (shaman-engine-kotlin.js) ou port JS (shaman-engine.js) + interface. Remplace l'ancien widget Botpress. -->
+<script src="shaman-chatbot.js"></script>
 
 <script>
   const WORLD_LANGS = [
@@ -5415,134 +5414,7 @@ function nativeShare(){
   // intégré et ce widget Shaman) — pas besoin de le redéclarer ici.
 </script>
 
-<script>
-  let shSelfUserId = null;
-  let shPending = [];
-  let shGetUserTries = 0;
-
-  // Journal discret dans la console navigateur uniquement (plus de panneau
-  // visible sur la page — utile seulement en cas de nouveau souci à déboguer).
-  function shDebugLog(label, data) {
-    console.log('[Shaman voix]', label, data || '');
-  }
-
-  // Un message Botpress porte presque toujours un signal direct (direction
-  // ou rôle de l'auteur) : on s'y fie en priorité, car il est fiable quel
-  // que soit l'ordre d'arrivée des messages. L'ancienne logique déduisait
-  // "qui est l'utilisateur" du tout premier message reçu — si le bot
-  // envoyait un message d'accueil automatique avant que le visiteur écrive
-  // quoi que ce soit, ce premier message (celui du bot) était pris à tort
-  // pour l'utilisateur, ce qui inversait ensuite bot/utilisateur pour
-  // toute la conversation et empêchait la lecture à voix haute.
-  // Signal le plus fiable, indépendant de l'ordre d'arrivée : les réponses
-  // générées par le bot portent toujours des "citations" (même vide), les
-  // messages envoyés par le visiteur portent toujours un "clientMessageId"
-  // (l'identifiant temporaire attribué côté client avant confirmation).
-  function shHasDirectSignal(m) {
-    if (m?.metadata && ('citations' in m.metadata || 'clientMessageId' in m.metadata)) return true;
-    return m?.direction === 'incoming' || m?.direction === 'outgoing' ||
-           m?.authorRole === 'bot' || m?.authorRole === 'user' ||
-           m?.from === 'bot' || m?.from === 'user';
-  }
-  function shIsBotMessage(m) {
-    if (!m) return false;
-    if (m.metadata && 'clientMessageId' in m.metadata) return false;
-    if (m.metadata && 'citations' in m.metadata) return true;
-    if (m.direction === 'incoming') return true;
-    if (m.direction === 'outgoing') return false;
-    if (m.authorRole === 'bot' || m.from === 'bot') return true;
-    if (m.authorRole === 'user' || m.from === 'user') return false;
-    // Repli uniquement si aucun signal direct n'est disponible.
-    if (m.authorId && shSelfUserId) return m.authorId !== shSelfUserId;
-    return false;
-  }
-  function shExtractText(m) {
-    return m?.block?.text || m?.payload?.text || m?.text || m?.payload?.markdown || m?.markdown ||
-           m?.content?.text || m?.message?.payload?.text || m?.message?.text ||
-           (typeof m?.payload === 'string' ? m.payload : '') || '';
-  }
-  // Aplatit récursivement l'objet message (profondeur limitée) pour qu'on
-  // puisse voir sa vraie structure dans le panneau de diagnostic, plutôt
-  // que de deviner à l'aveugle où se trouve le texte.
-  function shDumpShallow(obj, depth) {
-    depth = depth === undefined ? 2 : depth;
-    if (obj === null || obj === undefined) return obj;
-    if (depth <= 0) return Array.isArray(obj) ? '[…]' : (typeof obj === 'object' ? '{…}' : obj);
-    if (Array.isArray(obj)) return obj.slice(0, 3).map(v => shDumpShallow(v, depth - 1));
-    if (typeof obj === 'object') {
-      const out = {};
-      for (const k in obj) { out[k] = shDumpShallow(obj[k], depth - 1); }
-      return out;
-    }
-    return obj;
-  }
-
-  function shHandleMessage(message) {
-    const text = shExtractText(message);
-    shDebugLog('message reçu', {
-      texte: text ? (text.length > 40 ? text.slice(0, 40) + '…' : text) : '(vide)',
-      estLeBot: shIsBotMessage(message),
-      signalDirect: shHasDirectSignal(message)
-    });
-    if (!text) return;
-    if (shHasDirectSignal(message)) {
-      if (shIsBotMessage(message)) shSpeak(text);
-      return;
-    }
-    if (shSelfUserId === null) {
-      shPending.push(message);
-      return;
-    }
-    if (shIsBotMessage(message)) shSpeak(text);
-  }
-
-  function shTryGetUser() {
-    shGetUserTries++;
-    if (window.botpress && typeof window.botpress.getUser === 'function') {
-      window.botpress.getUser().then((u) => {
-        const id = u?.user?.id || u?.id || u?.userId || u?.user?.userId || null;
-        if (id) {
-          shSelfUserId = id;
-          shPending.forEach(shHandleMessage);
-          shPending = [];
-        } else if (shGetUserTries < 12) setTimeout(shTryGetUser, 800);
-        else shFallback();
-      }).catch(() => { if (shGetUserTries < 12) setTimeout(shTryGetUser, 800); else shFallback(); });
-    } else if (shGetUserTries < 12) setTimeout(shTryGetUser, 800);
-    else shFallback();
-  }
-
-  function shFallback() {
-    if (shSelfUserId !== null || !shPending.length) return;
-    const first = shPending[0];
-    if (first?.authorId) {
-      shSelfUserId = first.authorId;
-      shPending.forEach(shHandleMessage);
-      shPending = [];
-    }
-  }
-
-  function shAttachListener(attempt) {
-    attempt = attempt || 0;
-    if (window.botpress && typeof window.botpress.on === 'function') {
-      shDebugLog('window.botpress trouvé, écouteur "message" attaché', { tentative: attempt });
-      window.botpress.on('message', shHandleMessage);
-      // "initialized" veut seulement dire que le widget a fini de charger —
-      // pas qu'on peut déjà lui envoyer des messages. D'après la doc
-      // officielle Botpress, sendMessage n'est garanti disponible qu'après
-      // "webchat:ready", qui ne se déclenche qu'une fois le chat ouvert pour
-      // la première fois. Avant ce correctif, le mode mains libres pouvait
-      // perdre le tout premier message dicté juste après l'ouverture auto.
-      window.botpress.on('webchat:initialized', () => { shDebugLog('webchat:initialized'); shTryGetUser(); });
-      window.botpress.on('webchat:ready', () => { shDebugLog('webchat:ready'); shBotpressReady = true; });
-      shTryGetUser();
-      setTimeout(shFallback, 5000);
-      return;
-    }
-    if (attempt < 20) setTimeout(() => shAttachListener(attempt + 1), 500);
-  }
-  shAttachListener();
-</script>
+<!-- Les messages du chatbot sont lus à voix haute par shSpeak() (voir shaman-chatbot.js) ; l'ancien écouteur Botpress a été retiré. -->
 <div id="sh-voice-status" style="position:fixed;bottom:10px;left:10px;right:10px;z-index:99999;text-align:center;font-size:0.72rem;color:#fff;background:rgba(0,0,0,0.8);padding:7px 12px;border-radius:8px;display:none;pointer-events:none;"></div>
 <button id="sh-settings-btn" type="button" onclick="shToggleSettingsPanel()" title="Réglages voix" aria-label="Réglages voix" style="position:fixed;bottom:150px;right:16px;z-index:99999;background:#7a1f2b;color:#fff;border:none;border-radius:999px;width:44px;height:44px;font-size:1.15rem;box-shadow:0 2px 10px rgba(0,0,0,0.25);cursor:pointer;">⚙️</button>
 <div id="sh-settings-panel" style="display:none;position:fixed;bottom:202px;right:14px;left:14px;max-width:340px;margin-left:auto;z-index:100000;background:#fff;color:#222;border-radius:12px;padding:14px;box-shadow:0 4px 18px rgba(0,0,0,0.3);font-family:var(--font-body, sans-serif);">

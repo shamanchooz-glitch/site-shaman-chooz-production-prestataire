@@ -1,0 +1,48 @@
+name: Build du moteur Kotlin du chatbot
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'shaman-lexicon.json'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Compiler le moteur Kotlin vers JavaScript
+        run: gradle jsBrowserProductionWebpack --no-daemon
+
+      - name: Récupérer le fichier compilé
+        run: |
+          F=$(find build -path '*roductionExecutable*' -name 'shaman-engine*.js' ! -name '*.map' | head -n 1)
+          echo "Fichier trouvé : $F"
+          test -n "$F"
+          cp "$F" shaman-engine-kotlin.js
+
+      - name: Test de fumée (le moteur compilé répond-il correctement ?)
+        run: node smoke-test.cjs shaman-engine-kotlin.js
+
+      - name: Publier shaman-engine-kotlin.js dans le dépôt
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add shaman-engine-kotlin.js
+          git diff --cached --quiet || (git commit -m "Build du moteur Kotlin du chatbot" && git push)

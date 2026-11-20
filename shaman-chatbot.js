@@ -46,6 +46,7 @@
     '.shb-btn{background:var(--wine,#7A1F30);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:.82rem;cursor:pointer;margin:0 6px 6px 0;font-family:inherit}.shb-btn.alt{background:#fff;color:var(--ink,#1C130D);border:1.5px solid var(--gold,#C6932F)}' +
     '.shb-note{font-size:.78rem;background:var(--paper-soft,#F1E4CC);border-radius:10px;padding:8px 10px;margin:4px 0 10px;display:none;white-space:pre-wrap}.shb-note.on{display:block}' +
     '.shb-seg{display:flex;gap:6px;margin-bottom:10px}.shb-seg button{flex:1;border:1.5px solid var(--gold,#C6932F);background:#fff;border-radius:999px;padding:6px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit}.shb-seg button.on{background:var(--gold,#C6932F)}' +
+    '.shb-admin .shb-tab{display:none}.shb-admin .shb-tab.on{display:block}.shb-admin .shb-pad{overflow:visible;padding:14px 4px}.shb-admin .shb-tabs{border-radius:12px;overflow:hidden;margin-bottom:6px}.shb-admin .hint{font-size:.85rem}.shb-admin .shb-note{font-size:.82rem}' +
     '.shb-item{display:flex;gap:8px;align-items:flex-start;background:#fff;border:1px solid var(--line,rgba(28,19,13,.13));border-radius:10px;padding:8px 10px;margin-bottom:6px;font-size:.78rem}.shb-item span{flex:1;overflow-wrap:anywhere}.shb-item button{border:none;background:none;cursor:pointer;font-size:1rem;color:var(--wine,#7A1F30)}';
 
   var ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>';
@@ -69,10 +70,11 @@
   var chips = h('div', { class: 'shb-chips' });
   var input = h('input', { type: 'text', placeholder: 'Écrivez votre message…', autocomplete: 'off', 'aria-label': 'Votre message', maxlength: '500' });
   var status = h('div', { class: 'shb-hs', text: 'Chargement…' });
+  var adminStatus = h('div', { class: 'shb-note on', text: 'Chargement du moteur…' });
   var voiceBtn = h('button', { type: 'button', title: 'Lecture à voix haute', 'aria-label': 'Lecture à voix haute', text: voiceOn ? '🔊' : '🔇' });
   var fullBtn = h('button', { type: 'button', title: 'Plein écran', 'aria-label': 'Plein écran', text: '⛶' });
   var closeBtn = h('button', { type: 'button', title: 'Fermer', 'aria-label': 'Fermer', text: '✕' });
-  var tabBtns = ['💬 Discuter', '🧩 Instructions', '🎓 Apprendre'].map(function (t, i) { return h('button', { type: 'button', text: t, onclick: function () { showTab(i); } }); });
+  var tabBtns = ['🧩 Instructions', '🎓 Apprendre'].map(function (t, i) { return h('button', { type: 'button', text: t, onclick: function () { showAdminTab(i); } }); });
 
   var chatTab = h('div', { class: 'shb-tab on' }, [msgs, chips,
     h('form', { class: 'shb-in', onsubmit: function (e) { e.preventDefault(); var v = input.value; input.value = ''; send(v); } }, [input, h('button', { type: 'submit', text: 'Envoyer' })])]);
@@ -116,20 +118,44 @@
     h('div', { class: 'shb-head' }, [h('div', { class: 'shb-av', text: 'S' }),
       h('div', {}, [h('div', { class: 'shb-ht', text: 'Assistant SHAMAN' }), status]),
       h('div', { class: 'shb-hb' }, [voiceBtn, fullBtn, closeBtn])]),
-    h('div', { class: 'shb-tabs' }, tabBtns), chatTab, instrTab, learnTab]);
+    chatTab]);
 
   document.head.appendChild(style);
   document.body.appendChild(launch);
   document.body.appendChild(panel);
 
   /* ---------- Comportements ---------- */
-  var tabs = [chatTab, instrTab, learnTab], opened = false;
-  function showTab(i) { tabs.forEach(function (t, j) { t.classList.toggle('on', i === j); tabBtns[j].classList.toggle('on', i === j); }); if (i === 0) input.focus(); }
+  var opened = false;
+  var adminTabs = [instrTab, learnTab];
+  function showAdminTab(i) { adminTabs.forEach(function (t, j) { t.classList.toggle('on', i === j); tabBtns[j].classList.toggle('on', i === j); }); }
+  /* Espace administrateur : moteur, instructions, apprentissage (le bloc #shb-admin-root est dans le tableau de bord admin du site) */
+  function mountAdmin() {
+    var root = document.getElementById('shb-admin-root');
+    if (!root) return;
+    root.classList.add('shb-admin');
+    root.appendChild(h('p', { class: 'hint', text: 'Les visiteurs ne voient que la conversation. Ici, vous voyez le moteur et vous le faites évoluer. Pour tester vos ajouts, ouvrez la bulle de chat sur cet appareil.' }));
+    root.appendChild(adminStatus);
+    root.appendChild(h('div', { class: 'shb-tabs' }, tabBtns));
+    root.appendChild(instrTab); root.appendChild(learnTab);
+    showAdminTab(0);
+  }
+  function refreshAdminStatus() {
+    if (!engine) return;
+    var s = JSON.parse(engine.stats()), n = function (x) { return Math.round(x / 1e6); };
+    var m = mergedMemory();
+    note(adminStatus, '⚙️ Moteur : ' + engineName + (engineName === 'Kotlin' ? ' ✅ (compilé par GitHub)' : ' — version JavaScript (le build Kotlin n\'est pas actif)') +
+      '\n💬 Messages possibles : ' + n(s.combinations) + ' M (emploi et recrutement) + ' + n(s.lifeCombinations) + ' M (vie courante) = ' + (n(s.combinations) + n(s.lifeCombinations)) + ' M' +
+      '\n🧭 Sujets de vie courante : ' + s.lifeTopics + ' · Intentions du site : ' + s.intents +
+      '\n🎓 Cours : ' + s.chapters + ' chapitres dans ' + s.subjects + ' matières' +
+      '\n🌐 Fichier du site (shaman-memoire.json) : ' + fileMem.qa.length + ' question(s), ' + fileMem.courses.length + ' cours, ' + (fileMem.instructions ? fileMem.instructions.split('\n').filter(function (x) { return x.trim(); }).length : 0) + ' consigne(s)' +
+      '\n📱 Ajouts locaux (cet appareil) : ' + learned.qa.length + ' question(s), ' + learned.courses.length + ' cours' +
+      '\n🧩 Total actif dans le chatbot : ' + m.qa.length + ' question(s), ' + m.courses.length + ' cours');
+  }
   function setMode(m) { mode = m; qaBox.style.display = m === 'qa' ? '' : 'none'; crBox.style.display = m === 'cr' ? '' : 'none'; segQa.classList.toggle('on', m === 'qa'); segCr.classList.toggle('on', m === 'cr'); }
   function toggle(open) {
     var o = open === undefined ? !panel.classList.contains('open') : open;
     panel.classList.toggle('open', o);
-    if (o) { if (engine && !opened) { opened = true; welcome(); } showTab(0); }
+    if (o) { if (engine && !opened) { opened = true; welcome(); } input.focus(); }
     else if (window.speechSynthesis) window.speechSynthesis.cancel();
   }
   launch.addEventListener('click', function () { toggle(); });
@@ -185,9 +211,10 @@
   function saveInstr() {
     lsSet(K.instr, instrTa.value);
     var r = applyEngine();
+    refreshAdminStatus();
     note(instrNote, '✅ ' + r.applied + ' consigne(s) appliquée(s) (site + vos ajouts).' + (r.ignored.length ? '\n⚠️ Non reconnue(s) :\n• ' + r.ignored.join('\n• ') : ''));
   }
-  function persistLearned() { lsSet(K.learned, JSON.stringify(learned)); applyEngine(); renderList(); }
+  function persistLearned() { lsSet(K.learned, JSON.stringify(learned)); applyEngine(); renderList(); refreshAdminStatus(); }
   function addLearned() {
     if (mode === 'qa') {
       if (!qIn.value.trim() || !aIn.value.trim()) return note(learnNote, '⚠️ Remplissez la question et la réponse.');
@@ -245,6 +272,8 @@
     r.readAsText(f);
   }
 
+  mountAdmin();
+
   /* ---------- Chargement du moteur ---------- */
   function loadScript(src) { return new Promise(function (ok) { var s = document.createElement('script'); s.src = src; s.onload = function () { ok(true); }; s.onerror = function () { ok(false); }; document.head.appendChild(s); }); }
   function getText(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + ' : ' + r.status); return r.text(); }); }
@@ -264,8 +293,8 @@
       applyEngine();
       if (fileMem.instructions) note(instrFileNote, '🌐 Instructions déjà dans le fichier du site :\n' + fileMem.instructions);
       var s = JSON.parse(engine.stats());
-      status.textContent = 'Moteur ' + engineName + ' · ' + Math.round(s.combinations / 1e6) + ' M + ' + Math.round(s.lifeCombinations / 1e6) + ' M de messages possibles';
-      renderList();
+      status.textContent = 'En ligne · répond tout de suite';
+      renderList(); refreshAdminStatus();
       if (panel.classList.contains('open') && !opened) { opened = true; welcome(); }
     })
     .catch(function (e) {

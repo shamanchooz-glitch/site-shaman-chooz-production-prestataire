@@ -145,6 +145,8 @@
     var m = mergedMemory();
     note(adminStatus, '⚙️ Moteur : ' + engineName + (engineName === 'Kotlin' ? ' ✅ (compilé par GitHub)' : ' — version JavaScript (le build Kotlin n\'est pas actif)') +
       '\n💬 Messages possibles : ' + n(s.combinations) + ' M (emploi et recrutement) + ' + n(s.lifeCombinations) + ' M (vie courante) = ' + (n(s.combinations) + n(s.lifeCombinations)) + ' M' +
+      (s.moteurs ? '\n🧠 8 moteurs thématiques (travail, perso, famille, couple, social, argent, recrutement, actualité) : ' + (Math.round(s.moteurs.total / 1e8) / 10) + ' milliards de messages complets possibles' : '\n🧠 8 moteurs thématiques : actifs au prochain build Kotlin') +
+      (s.moteurs && typeof engine.journal === 'function' ? '\n🔎 Dernier routage : ' + (JSON.parse(engine.journal()).filter(function (l) { return l.indexOf('ÉTAPES 4-5') >= 0; }).slice(-1)[0] || 'aucun message pour l\'instant') + '  (journal complet : ShamanDebug() dans la console)' : '') +
       '\n🧭 Sujets de vie courante : ' + s.lifeTopics + ' · Intentions du site : ' + s.intents +
       '\n🎓 Cours : ' + s.chapters + ' chapitres dans ' + s.subjects + ' matières' +
       '\n🌐 Fichier du site (shaman-memoire.json) : ' + fileMem.qa.length + ' question(s), ' + fileMem.courses.length + ' cours, ' + (fileMem.instructions ? fileMem.instructions.split('\n').filter(function (x) { return x.trim(); }).length : 0) + ' consigne(s)' +
@@ -180,6 +182,15 @@
   function ask(text) {
     try { return JSON.parse(engine.reply(text)); } catch (e) { console.warn('[Shaman]', e); return { text: 'Désolé, un incident technique est survenu. Pouvez-vous reformuler ?', chips: [] }; }
   }
+  /* Réponse asynchrone : les 8 moteurs préparent d'abord les données en direct (météo, actualité) ; repli synchrone sinon. */
+  function incident() { return { text: 'Désolé, un incident technique est survenu. Pouvez-vous reformuler ?', chips: [] }; }
+  function askAsync(text) {
+    var done = function (raw) { try { return JSON.parse(raw); } catch (e) { console.warn('[Shaman]', e); return incident(); } };
+    try {
+      if (typeof engine.replyAsync === 'function') return engine.replyAsync(text).then(done, function () { return incident(); });
+      return Promise.resolve(done(engine.reply(text)));
+    } catch (e) { console.warn('[Shaman]', e); return Promise.resolve(incident()); }
+  }
   function welcome() { var r = ask('Bonjour'); addMsg('bot', r.text); setChips(r.chips); }
   function send(text) {
     text = String(text || '').trim().slice(0, 500);
@@ -189,7 +200,7 @@
     addMsg('user', text); setChips([]);
     var t = h('div', { class: 'shb-typing', text: 'L\'assistant écrit…' }); msgs.appendChild(t); msgs.scrollTop = msgs.scrollHeight;
     setTimeout(function () {
-      var r = ask(text); t.remove(); addMsg('bot', r.text); setChips(r.chips); speak(r.text);
+      askAsync(text).then(function (r) { t.remove(); addMsg('bot', r.text); setChips(r.chips); speak(r.text); if (adminStatus && panel.classList.contains('open')) refreshAdminStatus(); });
     }, 250 + Math.floor(Math.random() * 450));
   }
 
@@ -279,18 +290,27 @@
   function getText(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + ' : ' + r.status); return r.text(); }); }
   function makeEngine(lex, cours) {
     if (typeof window.createShamanEngine === 'function') {
-      try { var k = window.createShamanEngine(lex, cours, 0); JSON.parse(k.stats()); JSON.parse(k.reply('bonjour')); k.reset(); engineName = 'Kotlin'; return k; }
+      try {
+        var k = window.createShamanEngine(lex, cours, 0); JSON.parse(k.stats()); JSON.parse(k.reply('bonjour')); k.reset();
+        /* Un ancien build Kotlin (sans les 8 moteurs thématiques) est mis de côté tant que le prochain build n'a pas tourné. */
+        if (typeof k.replyAsync === 'function' || !window.ShamanEngineJS) { engineName = 'Kotlin'; return k; }
+        console.warn('[Shaman] build Kotlin sans les 8 moteurs : port JS utilisé en attendant le prochain build GitHub');
+      }
       catch (e) { console.warn('[Shaman] moteur Kotlin inutilisable, repli sur le port JS', e); }
     }
     engineName = 'JavaScript'; return window.ShamanEngineJS.create(lex, cours, 0);
   }
   Promise.all([getText(BASE + 'shaman-lexicon.json'), getText(BASE + 'shaman-cours.json'), loadScript(BASE + 'shaman-engine.js'),
-    getText(BASE + 'shaman-memoire.json').catch(function () { return '{}'; })])
+    getText(BASE + 'shaman-memoire.json').catch(function () { return '{}'; }), loadScript(BASE + 'shaman-moteurs.js')])
     .then(function (r) { return loadScript(BASE + 'shaman-engine-kotlin.js').then(function () { return r; }); })
     .then(function (r) {
-      try { var fm = JSON.parse(r[3]); fileMem = { instructions: String(fm.instructions || ''), qa: fm.qa || [], courses: fm.courses || [] }; } catch (e) { console.warn('[Shaman] shaman-memoire.json illisible', e); }
+      try { var fm = JSON.parse(r[3]); fileMem = { instructions: String(fm.instructions || ''), qa: fm.qa || [], courses: fm.courses || [], actualite_url: String(fm.actualite_url || '') }; } catch (e) { console.warn('[Shaman] shaman-memoire.json illisible', e); }
       engine = makeEngine(r[0], r[1]);
       applyEngine();
+      /* Actualité (sports, infos, international) : fichier shaman-actualite.json, mis à jour toutes les heures par GitHub (actualite-flux.cjs). */
+      var live = String(window.SHAMAN_ACTUALITE_URL || fileMem.actualite_url || (BASE + 'shaman-actualite.json'));
+      if (live && typeof engine.configureLive === 'function') engine.configureLive(JSON.stringify({ proxy: live }));
+      window.ShamanDebug = function () { try { return JSON.parse(engine.journal()); } catch (e) { return []; } };
       if (fileMem.instructions) note(instrFileNote, '🌐 Instructions déjà dans le fichier du site :\n' + fileMem.instructions);
       var s = JSON.parse(engine.stats());
       status.textContent = 'En ligne · répond tout de suite';

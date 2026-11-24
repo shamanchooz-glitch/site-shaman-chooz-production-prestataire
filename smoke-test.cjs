@@ -4,6 +4,9 @@ const fs = require('fs'), vm = require('vm'), path = require('path');
 const file = process.argv[2] || 'shaman-engine-kotlin.js';
 const root = __dirname;
 globalThis.self = globalThis; globalThis.window = globalThis;
+// Les 8 moteurs thématiques en JavaScript (utilisés par le port JS ; sans effet pour le moteur Kotlin compilé).
+const mj = path.join(root, 'shaman-moteurs.js');
+if (fs.existsSync(mj)) vm.runInThisContext(fs.readFileSync(mj, 'utf8'), { filename: mj });
 vm.runInThisContext(fs.readFileSync(path.resolve(file), 'utf8'), { filename: file });
 const make = globalThis.createShamanEngine ||
   (globalThis.ShamanEngineJS && ((l, c, s) => globalThis.ShamanEngineJS.create(l, c, s)));

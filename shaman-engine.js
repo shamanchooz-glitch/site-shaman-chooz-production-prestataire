@@ -64,12 +64,15 @@
     for (var s in L.sectors) { var arr = L.sectors[s]; for (var i = 0; i < arr.length; i++) if (norm(arr[i]) !== 'autre') this.metiers.push({ m: arr[i], s: s, t: sig(norm(arr[i].replace(/\([^)]*\)/g, ' ')), 4) }); }
     this.userCourses = []; this.instr = this.emptyInstr(); this.learned = []; this.st = this.freshState();
     this.rebuild();
+    /* 8 moteurs thématiques + orchestrateur (shaman-moteurs.js) : branchés en plus des intentions et de la vie courante. */
+    var MJ = root.ShamanMoteursJS || (typeof module !== 'undefined' && module.exports && typeof require === 'function' ? (function () { try { return require('./shaman-moteurs.js'); } catch (e) { return null; } })() : null);
+    this.moteurs = (MJ && L.moteurs) ? MJ.create(L.moteurs, { seed: seed, politesse: 'VOUVOIEMENT' }) : null;
   }
   var P = Engine.prototype;
 
-  P.emptyInstr = function () { return { name: '', tone: '', signature: '', forbidden: [], rules: [], facts: [] }; };
+  P.emptyInstr = function () { return { name: '', tone: '', signature: '', politesse: '', forbidden: [], rules: [], facts: [] }; };
   P.freshState = function () { return { last: null, lastLife: null, name: '', course: null, quiz: null, menu: '', recent: {}, used: {} }; };
-  P.reset = function () { this.st = this.freshState(); return '{"ok":true}'; };
+  P.reset = function () { this.st = this.freshState(); if (this.moteurs) this.moteurs.oublier('web'); return '{"ok":true}'; };
 
   P.rebuild = function () {
     var map = {}, k, me0 = this;
@@ -106,23 +109,55 @@
     return s.replace(/\{secteur\}/g, sc[0]).replace(/\{secteur2\}/g, sc[1] || sc[0]).replace(/\{secteur3\}/g, sc[2] || sc[0])
       .replace(/\{metier\}/g, me[0].m.replace(/\([^)]*\)/g, '')).replace(/\{metier2\}/g, (me[1] || me[0]).m.replace(/\([^)]*\)/g, ''));
   };
-  P.out = function (text, chips, kind, intent) {
+  P.out = function (text, chips, kind, intent, extra) {
     var sg = this.instr.signature;
     if (sg && kind !== 'course' && kind !== 'quiz' && kind !== 'safety') text += '\n' + sg;
-    return JSON.stringify({ text: text, chips: chips || [], kind: kind || 'intent', intent: intent || '' });
+    var o = { text: text, chips: chips || [], kind: kind || 'intent', intent: intent || '' };
+    if (extra) for (var k in extra) o[k] = extra[k];
+    else if (this.moteurs) this.moteurs.relacher('web');   // une autre partie du chatbot répond : le sujet verrouillé est libéré
+    return JSON.stringify(o);
   };
+
+  /* ---------- Les 8 moteurs thématiques (orchestrateur) ---------- */
+  var AGENCE = { greeting: 1, howareyou: 1, thanks: 1, bye: 1, identity: 1, agency: 1, how: 1, candidate: 1, recruiter: 1, sectors: 1, fees: 1, validation: 1,
+    tracking: 1, contact: 1, documents: 1, security: 1, cv_tips: 1, job_search: 1, training: 1, international: 1, site_features: 1 };
+  /* Réponse de l'orchestrateur, ou null si le message est hors de ses 8 domaines (les autres moteurs essaient alors). */
+  P.moteursReply = function (raw, recentrer) {
+    var o = this.moteurs, ins = this.instr;
+    o.politesseMode = ins.politesse || 'VOUVOIEMENT';
+    o.tonFixe = /cool|chaleur|amical|decontract/.test(ins.tone) ? 'AMICAL' : /pro|formel|serieux/.test(ins.tone) ? 'PROFESSIONNEL' : null;
+    var r = o.traiter('web', raw, { prenom: this.st.name || null, passerHorsDomaine: !recentrer });
+    if (r.passe) return null;
+    var kind = r.type === 'DETRESSE' ? 'safety' : r.type === 'HORS_DOMAINE' ? 'fallback' : r.type === 'CLARIFICATION' ? 'clarification' : 'moteur';
+    this.st.last = null; this.st.lastLife = null;
+    return this.out(r.parties.join('\n\n'), r.chips || [], kind, r.theme || (r.domaine ? r.domaine.toLowerCase() : r.type.toLowerCase()),
+      { parts: r.parties, moteur: r.domaine || '', theme: r.theme || '', secondaire: r.secondaire || '', confiance: r.confiance || 0,
+        sujetChange: !!r.sujetChange, donnees: !!r.donnees, debug: r.journal });
+  };
+  P.replyAsync = function (input) {
+    var self = this, t = String(input == null ? '' : input);
+    if (!this.moteurs) return Promise.resolve(this.reply(t));
+    return this.moteurs.precharger('web', t).then(function () { return self.reply(t); }, function () { return self.reply(t); });
+  };
+  P.journal = function () { return JSON.stringify(this.moteurs ? this.moteurs.journal.slice(-80) : []); };
+  P.exportConversation = function () { return JSON.stringify({ v: 1, name: this.st.name, conv: this.moteurs ? JSON.parse(this.moteurs.exporter('web')) : null }); };
+  P.importConversation = function (json) {
+    try { var d = JSON.parse(json); if (d.name) this.st.name = d.name; if (this.moteurs && d.conv) this.moteurs.importer('web', JSON.stringify(d.conv)); return '{"ok":true}'; } catch (e) { return '{"ok":false}'; }
+  };
+  P.configureLive = function (json) { try { if (this.moteurs) this.moteurs.configurerActualite(JSON.parse(json)); return '{"ok":true}'; } catch (e) { return '{"ok":false}'; } };
 
   /* ---------- Instructions (onglet « Ajouter des instructions ») ---------- */
   P.setInstructions = function (text) {
     var ins = this.emptyInstr(), ok = 0, ignored = [], lines = String(text || '').split(/\r?\n/);
     for (var i = 0; i < lines.length; i++) {
       var t = lines[i].trim(); if (!t || t.charAt(0) === '#') continue;
-      var m = /^(nom|ton|signature|interdit|info)\s*[:=]\s*(.+)$/i.exec(t);
+      var m = /^(nom|ton|signature|interdit|info|politesse)\s*[:=]\s*(.+)$/i.exec(t);
       if (m) {
         var key = norm(m[1]), val = m[2].trim();
         if (key === 'nom') ins.name = val;
         else if (key === 'ton') ins.tone = norm(val);
         else if (key === 'signature') ins.signature = val;
+        else if (key === 'politesse') ins.politesse = /^(tu|tutoi)/.test(norm(val)) ? 'TUTOIEMENT' : /^auto/.test(norm(val)) ? 'AUTO' : 'VOUVOIEMENT';
         else if (key === 'interdit') val.split(/[,;]/).forEach(function (w) { var f = norm(w); if (f) ins.forbidden.push(f); });
         else if (key === 'info') ins.facts.push({ txt: val, t: sig(norm(val), 3) });
         ok++; continue;
@@ -186,7 +221,8 @@
   };
   P.stats = function () {
     return JSON.stringify({ engine: 'js', combinations: this.combinations(), lifeCombinations: this.lifeCombinations(), lifeTopics: this.life.topics.length, intents: this.L.intents.length, chapters: this.entries.length,
-      subjects: this.subjects.length, learnedQa: this.learned.length, learnedCourses: this.userCourses.length });
+      subjects: this.subjects.length, learnedQa: this.learned.length, learnedCourses: this.userCourses.length,
+      moteurs: this.moteurs ? this.moteurs.stats() : null });
   };
 
   /* ---------- Réponse principale ---------- */
@@ -210,6 +246,15 @@
     var lq = this.matchLearned(n); if (lq) return this.out(lq.a, [], 'learned');
     var fc = this.matchFact(n); if (fc) return this.out("Voici l'information de l'agence : " + fc.txt, [], 'rule');
     var cr = this.courseTurn(n, pad, toks); if (cr) return cr;
+    if (this.moteurs) {
+      var pre = this.score(pad, toks);
+      var agence = pre && AGENCE[pre.def.id] && (pre.score >= 4 || (pre.def.light && pre.score >= 2) ||
+        (pre.score >= 2 && [null, 'RECRUTEMENT'].indexOf(this.moteurs.apercu('web', raw).principal) >= 0));   // les réponses curatées de l'agence priment sur le moteur Recrutement générique
+      if (!agence) {
+        if (!pre || pre.score < 4) { var sr0 = this.sectorTurn(n, toks); if (sr0) return sr0; }
+        var mr = this.moteursReply(raw, false); if (mr) return mr;
+      }
+    }
     var fu = this.followUp(n, toks); if (fu) return fu;
 
     var best = this.score(pad, toks);
@@ -219,6 +264,7 @@
     if (best && cs >= 2) return this.compose(best.def);
     if (lb && ls >= 2) return this.composeLife(lb.def);
     if (st.lastLife && toks.length <= 12) { var lc = this.lifeMore(st.lastLife, true); if (lc) return lc; }
+    if (this.moteurs) { var rc = this.moteursReply(raw, true); if (rc) return rc; }
     return this.out(this.pick('lfb', this.life.fallback), L.fallback_chips, 'fallback');
   };
 
@@ -505,7 +551,9 @@
   root.ShamanEngineJS = { create: function (lex, courses, seed) {
     var e = new Engine(lex, courses, seed);
     return { reply: function (t) { return e.reply(t); }, setInstructions: function (t) { return e.setInstructions(t); },
-      setLearned: function (j) { return e.setLearned(j); }, stats: function () { return e.stats(); }, reset: function () { return e.reset(); } };
+      setLearned: function (j) { return e.setLearned(j); }, stats: function () { return e.stats(); }, reset: function () { return e.reset(); },
+      replyAsync: function (t) { return e.replyAsync(t); }, journal: function () { return e.journal(); }, exportConversation: function () { return e.exportConversation(); },
+      importConversation: function (j) { return e.importConversation(j); }, configureLive: function (j) { return e.configureLive(j); } };
   } };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.ShamanEngineJS;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -119,3 +119,36 @@ garde le serveur toujours actif.
   console.
 - Meta offre un quota de conversations gratuites par mois, au-delà
   c'est payant selon le pays.
+
+## Les 8 moteurs thématiques (travail, perso, famille, couple, social, argent, recrutement, actualité)
+
+Ils sont branchés dans le chatbot **en plus** de tout ce qui existait (intentions de l'agence, vie courante, cours, quiz,
+règles et consignes, réponses apprises, garde-fous). Chaque message passe par l'orchestrateur en 8 étapes :
+normaliser → charger l'historique (10 échanges) et l'état → analyser (domaine, sujet, intention, émotion, urgence) →
+router avec un score de confiance (moteur principal + secondaire) → verrouiller le sujet → appeler le(s) moteur(s) →
+contrôle qualité → mise à jour de l'état.
+
+| Fichier | Rôle |
+| --- | --- |
+| `src/jsMain/kotlin/shaman/moteurs/*.kt` | Version Kotlin (compilée par GitHub dans `shaman-engine-kotlin.js`) |
+| `shaman-moteurs.js` | Même algorithme en JavaScript : repli tant que le build Kotlin n'a pas tourné, et référence testable |
+| `shaman-lexicon.json` → clé `moteurs` | Toutes les données : mots-clés, sous-sujets, conseils, 8 blocs × 15 variantes par moteur, messages fixes |
+| `test-moteurs.cjs` | 55 scénarios (détection, changement de sujet, ambigu, mixte, suite, hors domaine, détresse, SMS, combinaisons, anti-répétition, politesse, actualité) |
+| `actualite-flux.cjs` | Robot GitHub : lit les flux d'actualité et écrit `shaman-actualite.json` |
+| `test-chatbot-moteurs.cjs` | 17 vérifications à travers l'API du chatbot (`reply`, `replyAsync`, `stats`, `journal`) |
+
+**Priorités dans `doReply`** : sécurité, nom, quiz, interdits, règles, réponses apprises, informations, cours → *intentions propres
+à l'agence quand elles sont fortes* (inscription, frais, suivi, contact…) → **8 moteurs** → vie courante (cuisine, humour, heure…) →
+recentrage poli. Un message hors des 8 domaines est laissé aux autres moteurs ; s'ils n'ont rien non plus, l'assistant recentre.
+
+**Réglages (consignes du chatbot)** : `politesse: vous` (défaut, règle de l'agence), `politesse: tu`, `politesse: auto` ;
+`ton: pro` ou `ton: chaleureux`.
+
+**Actualité en direct** : la météo vient d'Open-Meteo (directement depuis le navigateur, sans clé). Sports, infos et international
+viennent du fichier `shaman-actualite.json`, écrit toutes les heures par GitHub (`actualite-flux.cjs` + `.github/workflows/actualite.yml`,
+flux RSS de RFI / France 24 / BBC Afrique / Le Monde). Aucune clé, aucun serveur. Pour changer de média : modifier la liste `FLUX` dans
+`actualite-flux.cjs`. Si aucun flux ne répond, ou si l'information a plus de 12 h, le chatbot dit honnêtement qu'il n'a pas
+d'information récente ; il n'invente jamais.
+
+**Journal de debug** : `ShamanDebug()` dans la console du navigateur (pourquoi tel moteur, score, sujet verrouillé, contrôle qualité) ;
+le dernier routage s'affiche aussi dans l'onglet d'administration.

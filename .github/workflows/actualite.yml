@@ -1,0 +1,43 @@
+name: Actualité du chatbot (sports, infos, international)
+
+# Toutes les heures, GitHub lit des flux d'actualité et enregistre shaman-actualite.json dans le dépôt.
+# Le chatbot lit ce fichier : aucune clé, aucun serveur, rien à payer.
+# On peut aussi le lancer à la main : onglet Actions > cette ligne > Run workflow.
+on:
+  schedule:
+    - cron: '7 * * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'actualite-flux.cjs'
+      - '.github/workflows/actualite.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualite
+  cancel-in-progress: true
+
+jobs:
+  maj:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Lire les flux d'actualité
+        run: node actualite-flux.cjs
+      - name: Enregistrer shaman-actualite.json si le contenu a changé
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add shaman-actualite.json
+          if git diff --cached --quiet; then
+            echo "Aucun changement."
+          else
+            git commit -m "Actualité du chatbot (mise à jour automatique)"
+            git pull --rebase --autostash
+            git push
+          fi

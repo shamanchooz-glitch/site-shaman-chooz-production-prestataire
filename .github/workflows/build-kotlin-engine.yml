@@ -27,6 +27,9 @@ jobs:
         with:
           gradle-version: '8.10.2'
 
+      - name: Tests des 8 moteurs thématiques (55 scénarios, version JavaScript de référence)
+        run: node test-moteurs.cjs
+
       - name: Compiler le moteur Kotlin vers JavaScript
         run: gradle jsBrowserProductionWebpack --no-daemon
 
@@ -39,6 +42,11 @@ jobs:
 
       - name: Test de fumée (le moteur compilé répond-il correctement ?)
         run: node smoke-test.cjs shaman-engine-kotlin.js
+
+      - name: Tests chatbot des 8 moteurs sur le moteur Kotlin compilé
+        # Non bloquant au premier build : à passer en bloquant (supprimer la ligne suivante) quand tout est vert.
+        continue-on-error: true
+        run: node test-chatbot-moteurs.cjs shaman-engine-kotlin.js
 
       - name: Publier shaman-engine-kotlin.js dans le dépôt
         run: |

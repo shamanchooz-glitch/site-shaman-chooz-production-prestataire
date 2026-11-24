@@ -1,0 +1,143 @@
+{
+ "updated": "2026-11-24T15:39:23.023Z",
+ "cats": {
+  "sport": {
+   "source": "RFI",
+   "updated": "2026-11-24T15:39:23.023Z",
+   "items": [
+    {
+     "title": "Cyclisme: Egan Bernal prolonge officiellement avec l'équipe Netcompany-Ineos",
+     "date": "Tue, 24 Nov 2026 15:04:32 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Badminton: le Français Christo Popov n’est plus numéro 1 mondial",
+     "date": "Tue, 24 Nov 2026 13:32:01 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "CAN 2025 : le Tribunal Arbitral du Sport rendra sa décision demain",
+     "date": "Mon, 23 Nov 2026 17:00:24 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Ligue des champions: le PSG veut poursuivre son parcours sans faute, Lens et Lille aux abois",
+     "date": "Mon, 23 Nov 2026 16:07:42 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "L'UE propose d'interdire de compétition les athlètes russes sur son territoire",
+     "date": "Mon, 23 Nov 2026 15:35:01 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Foot: le Mondial féminin aura lieu aux États-Unis, au Mexique, au Costa Rica et en Jamaïque en 2031, celui de 2035 au Royaume-Uni",
+     "date": "Mon, 23 Nov 2026 15:30:24 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Le pape Léon XIV a salué le côté spirituel du cyclisme avec notamment Eddy Merckx",
+     "date": "Mon, 23 Nov 2026 14:57:20 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Tennis: Carlos Alcaraz domine Alexander Zverev et remporte son premier Masters ATP",
+     "date": "Sun, 22 Nov 2026 20:00:15 GMT",
+     "source": "RFI"
+    }
+   ]
+  },
+  "infos": {
+   "source": "RFI",
+   "updated": "2026-11-24T15:39:23.023Z",
+   "items": [
+    {
+     "title": "DIRECT- Le TAS déclare le Sénégal vainqueur de la CAN 2025",
+     "date": "Tue, 24 Nov 2026 13:09:52 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "La CAN 2025 attribuée définitivement au Sénégal par le Tribunal arbitral du sport",
+     "date": "Tue, 24 Nov 2026 14:27:25 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Éthiopie: Amnesty réclame une enquête sur de possibles crimes de guerre de l'armée fédérale au Tigré",
+     "date": "Tue, 24 Nov 2026 13:11:38 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "La Mauritanie et l'Union européenne s'accordent sur un nouveau protocole de pêche",
+     "date": "Tue, 24 Nov 2026 13:06:18 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "RDC: pourquoi les tensions s'accentuent entre l'Église catholique et le pouvoir",
+     "date": "Tue, 24 Nov 2026 03:30:20 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Mali: malgré les intimidations, les enseignants chercheurs très mobilisés au trentième jour de grève",
+     "date": "Tue, 24 Nov 2026 11:48:57 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Madagascar: l'Assemblée nationale destitue son président",
+     "date": "Tue, 24 Nov 2026 12:36:52 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Bénin: l'ex-directeur de la police Louis-Philippe Houndégnon condamné à deux ans de prison",
+     "date": "Tue, 24 Nov 2026 07:44:19 GMT",
+     "source": "RFI"
+    }
+   ]
+  },
+  "geopolitique": {
+   "source": "RFI",
+   "updated": "2026-11-24T15:39:23.023Z",
+   "items": [
+    {
+     "title": "Défaite républicaine au Congrès: le salto arrière d’Elon Musk",
+     "date": "Tue, 24 Nov 2026 12:57:12 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Thomas Pesquet: «Tout le monde veut aller sur la Lune... Pourquoi pas les Européens?»",
+     "date": "Tue, 24 Nov 2026 08:13:24 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "À la Une: le retour de Jensen Huang à la tête de Nvidia",
+     "date": "Tue, 24 Nov 2026 07:56:01 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Champignons : un super-aliment à cuisiner à toutes les sauces",
+     "date": "Tue, 24 Nov 2026 06:00:25 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "À la Une: une COP qui fait flop",
+     "date": "Mon, 23 Nov 2026 08:52:19 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "L'IA va t-elle creuser les inégalités entre étudiants?",
+     "date": "Mon, 23 Nov 2026 06:00:25 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Quelle place pour la télévision en République tchèque au Cameroun et au Brésil?",
+     "date": "Sun, 22 Nov 2026 10:27:32 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "A la Une: quelles sont les raisons d’espérer dans un monde aussi menaçant?",
+     "date": "Sun, 22 Nov 2026 09:11:17 GMT",
+     "source": "RFI"
+    }
+   ]
+  }
+ }
+}

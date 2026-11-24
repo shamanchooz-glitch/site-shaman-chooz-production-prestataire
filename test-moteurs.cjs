@@ -3,7 +3,11 @@
 // est utilisé par smoke-test.cjs via engine.reply() (voir la fin de ce fichier pour les tests « chatbot »).
 const fs = require('fs'), path = require('path');
 const lex = JSON.parse(fs.readFileSync(path.join(__dirname, 'shaman-lexicon.json'), 'utf8'));
-const M = require(path.resolve(process.argv[2] || path.join(__dirname, 'shaman-moteurs.js')));
+// Chargé comme un script (et non avec require) : le package.json du dépôt est en « type: module », ce qui ferait lire le .js comme un module ES.
+const vm = require('vm'), fichierMoteurs = path.resolve(process.argv[2] || path.join(__dirname, 'shaman-moteurs.js'));
+globalThis.self = globalThis;
+vm.runInThisContext(fs.readFileSync(fichierMoteurs, 'utf8'), { filename: fichierMoteurs });
+const M = globalThis.ShamanMoteursJS;
 const norm = M._internes.norm;
 let fails = 0, n = 0;
 const ok = (c, m, d) => { n++; console.log((c ? 'OK   ' : 'FAIL ') + m + (!c && d ? '\n       ' + d : '')); if (!c) fails++; };

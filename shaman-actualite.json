@@ -1,10 +1,25 @@
 {
- "updated": "2026-11-25T09:47:25.310Z",
+ "updated": "2026-11-25T19:53:28.575Z",
  "cats": {
   "sport": {
    "source": "RFI",
-   "updated": "2026-11-25T09:47:25.310Z",
+   "updated": "2026-11-25T19:53:28.575Z",
    "items": [
+    {
+     "title": "Au Salon des maires, Teddy Riner retrouve la foule et la polémique",
+     "date": "Wed, 25 Nov 2026 17:41:40 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Ligue des Champions : le Real Madrid fait le spectacle, Lens proche de la sortie",
+     "date": "Wed, 25 Nov 2026 17:00:46 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Présidence de la Fifa: Kozo Tashima promet s'il est élu de n'effectuer qu'un seul mandat",
+     "date": "Wed, 25 Nov 2026 14:43:49 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Ligue des champions: le Real renversant, Lens encore à terre",
      "date": "Tue, 24 Nov 2026 22:04:55 GMT",
@@ -29,76 +44,81 @@
      "title": "CAN 2025 : le Tribunal Arbitral du Sport rendra sa décision demain",
      "date": "Mon, 23 Nov 2026 17:00:24 GMT",
      "source": "RFI"
-    },
-    {
-     "title": "Ligue des champions: le PSG veut poursuivre son parcours sans faute, Lens et Lille aux abois",
-     "date": "Mon, 23 Nov 2026 16:07:42 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "L'UE propose d'interdire de compétition les athlètes russes sur son territoire",
-     "date": "Mon, 23 Nov 2026 15:35:01 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Foot: le Mondial féminin aura lieu aux États-Unis, au Mexique, au Costa Rica et en Jamaïque en 2031, celui de 2035 au Royaume-Uni",
-     "date": "Mon, 23 Nov 2026 15:30:24 GMT",
-     "source": "RFI"
     }
    ]
   },
   "infos": {
    "source": "RFI",
-   "updated": "2026-11-25T09:47:25.310Z",
+   "updated": "2026-11-25T19:53:28.575Z",
    "items": [
+    {
+     "title": "Mali: 349 combattants russes tués en trois ans, des chiffres «élevés, crédibles et cohérents»",
+     "date": "Wed, 25 Nov 2026 15:50:18 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Dans l’ouest du Tchad, la lassitude des refugiées de communautés arabes expulsées du Niger",
+     "date": "Wed, 25 Nov 2026 16:12:43 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Au Gabon, le combat d'une militante et de son ONG contre les violences faites aux femmes",
+     "date": "Wed, 25 Nov 2026 15:01:21 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Le leader de l'Est libyen Khalifa Haftar rencontre Recep Tayyip Erdogan et d'autres responsables en Turquie",
+     "date": "Wed, 25 Nov 2026 14:59:42 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "RDC: le procès de l'opposant Prince Epenge pour «propagation de faux bruits» renvoyé au 11 décembre",
+     "date": "Wed, 25 Nov 2026 14:30:11 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Cameroun: Maurice Kamto dépose sa candidature aux législatives dans la région de Yaoundé",
      "date": "Wed, 25 Nov 2026 09:24:04 GMT",
      "source": "RFI"
     },
     {
-     "title": "RDC: le gouvernement s'explique auprès du Vatican après les incidents visant l'Église catholique",
-     "date": "Wed, 25 Nov 2026 03:10:26 GMT",
+     "title": "Guinée: le FMI approuve un programme de 425 millions de dollars sur trois ans",
+     "date": "Wed, 25 Nov 2026 10:00:37 GMT",
      "source": "RFI"
     },
     {
-     "title": "Mali: près de 350 combattants russes tués en trois ans, selon une enquête du «Guardian»",
-     "date": "Wed, 25 Nov 2026 03:12:40 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Mali: les jihadistes du Jnim lancent un ultimatum aux habitants de Tonka, dans la région de Tombouctou",
-     "date": "Wed, 25 Nov 2026 03:13:46 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "CAN 2025: le Sénégal en joie après sa victoire réattribuée par le TAS, le Maroc fataliste",
-     "date": "Tue, 24 Nov 2026 21:09:23 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Cameroun: le leader séparatiste anglophone Lucas Cho Ayaba plaide non coupable à son procès en Norvège",
-     "date": "Wed, 25 Nov 2026 03:09:19 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Madagascar: après la destitution du président de l'Assemblée, «la pratique politique ne change pas», déplore un député",
-     "date": "Wed, 25 Nov 2026 06:05:53 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Centrafrique: une journée sans information pour dénoncer les menaces contre les journalistes",
-     "date": "Wed, 25 Nov 2026 06:02:44 GMT",
+     "title": "VIH: la riposte mondiale sous pression malgré des avancées, selon l'Onusida",
+     "date": "Wed, 25 Nov 2026 11:15:48 GMT",
      "source": "RFI"
     }
    ]
   },
   "geopolitique": {
    "source": "RFI",
-   "updated": "2026-11-25T09:47:25.310Z",
+   "updated": "2026-11-25T19:53:28.575Z",
    "items": [
     {
-     "title": "COP 31: faut-il changer les règles des négociations ?",
+     "title": "Peut-on s’opposer aux data centers?",
+     "date": "Wed, 25 Nov 2026 16:57:24 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Cuba: asphyxié par Trump, le régime castriste tient encore",
+     "date": "Wed, 25 Nov 2026 12:53:13 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Violences faites aux femmes: comment passer des avancées législatives à une justice effective?",
+     "date": "Wed, 25 Nov 2026 10:24:17 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "À la Une: l’hécatombe dans la guerre en Ukraine",
+     "date": "Wed, 25 Nov 2026 10:14:02 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "COP 31: faut-il changer les règles des négociations?",
      "date": "Wed, 25 Nov 2026 09:05:46 GMT",
      "source": "RFI"
     },
@@ -115,26 +135,6 @@
     {
      "title": "Du Pakistan aux Parlements d’Europe, les femmes politiques victimes de deepfakes pornographiques",
      "date": "Wed, 25 Nov 2026 05:44:07 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Comment l'IA infuse dans la société chinoise?",
-     "date": "Tue, 24 Nov 2026 17:33:46 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Défaite républicaine au Congrès: le salto arrière d’Elon Musk",
-     "date": "Tue, 24 Nov 2026 12:57:12 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Thomas Pesquet: «Tout le monde veut aller sur la Lune... Pourquoi pas les Européens?»",
-     "date": "Tue, 24 Nov 2026 08:13:24 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "À la Une: le retour de Jensen Huang à la tête de Nvidia",
-     "date": "Tue, 24 Nov 2026 07:56:01 GMT",
      "source": "RFI"
     }
    ]

@@ -8,6 +8,7 @@ on:
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
       - 'shaman-lexicon.json'
+      - '.github/workflows/build-kotlin-engine.yml'
 
 permissions:
   contents: write
@@ -31,7 +32,25 @@ jobs:
         run: node test-moteurs.cjs
 
       - name: Compiler le moteur Kotlin vers JavaScript
-        run: gradle jsBrowserProductionWebpack --no-daemon
+        run: |
+          set -o pipefail
+          gradle jsBrowserProductionWebpack --no-daemon 2>&1 | tee build.log
+
+      - name: Afficher les erreurs de compilation (uniquement si la compilation a échoué)
+        if: failure()
+        run: |
+          {
+            echo "### Erreurs de compilation Kotlin"
+            echo '```'
+            if [ -f build.log ]; then
+              grep -E "^e: " build.log | sed -E 's#file:///home/runner/work/[^/]+/[^/]+/##' | head -40
+              echo "--- Résumé Gradle ---"
+              grep -A6 "What went wrong" build.log | head -12
+            else
+              echo "Pas de journal de compilation : l'erreur est dans une étape précédente."
+            fi
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Récupérer le fichier compilé
         run: |

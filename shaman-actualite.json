@@ -1,10 +1,20 @@
 {
- "updated": "2026-11-24T15:39:23.023Z",
+ "updated": "2026-11-25T00:36:34.982Z",
  "cats": {
   "sport": {
    "source": "RFI",
-   "updated": "2026-11-24T15:39:23.023Z",
+   "updated": "2026-11-25T00:36:34.982Z",
    "items": [
+    {
+     "title": "Ligue des champions: le Real renversant, Lens encore à terre",
+     "date": "Tue, 24 Nov 2026 22:04:55 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Devant le TAS, le Sénégal récupère son titre de champion d'Afrique aux dépens du Maroc",
+     "date": "Tue, 24 Nov 2026 17:00:46 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Cyclisme: Egan Bernal prolonge officiellement avec l'équipe Netcompany-Ineos",
      "date": "Tue, 24 Nov 2026 15:04:32 GMT",
@@ -34,31 +44,41 @@
      "title": "Foot: le Mondial féminin aura lieu aux États-Unis, au Mexique, au Costa Rica et en Jamaïque en 2031, celui de 2035 au Royaume-Uni",
      "date": "Mon, 23 Nov 2026 15:30:24 GMT",
      "source": "RFI"
-    },
-    {
-     "title": "Le pape Léon XIV a salué le côté spirituel du cyclisme avec notamment Eddy Merckx",
-     "date": "Mon, 23 Nov 2026 14:57:20 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Tennis: Carlos Alcaraz domine Alexander Zverev et remporte son premier Masters ATP",
-     "date": "Sun, 22 Nov 2026 20:00:15 GMT",
-     "source": "RFI"
     }
    ]
   },
   "infos": {
    "source": "RFI",
-   "updated": "2026-11-24T15:39:23.023Z",
+   "updated": "2026-11-25T00:36:34.982Z",
    "items": [
     {
-     "title": "DIRECT- Le TAS déclare le Sénégal vainqueur de la CAN 2025",
-     "date": "Tue, 24 Nov 2026 13:09:52 GMT",
+     "title": "CAN 2025: le Sénégal en joie après sa victoire réattribuée par le TAS, le Maroc fataliste",
+     "date": "Tue, 24 Nov 2026 21:09:23 GMT",
      "source": "RFI"
     },
     {
-     "title": "La CAN 2025 attribuée définitivement au Sénégal par le Tribunal arbitral du sport",
-     "date": "Tue, 24 Nov 2026 14:27:25 GMT",
+     "title": "Ghana: Spiro, le pari gagnant du passage à la moto électrique?",
+     "date": "Tue, 24 Nov 2026 23:02:44 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "«Congo Boy»: à Bangui, quatre frères et sœurs à nourrir, et un rêve de rappeur",
+     "date": "Tue, 24 Nov 2026 23:14:25 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Ebola en RDC: «Le nombre de décès excédentaires était sept fois plus élevé que le nombre de décès officiels» mi-2026 à Bunia",
+     "date": "Tue, 24 Nov 2026 15:12:52 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Guinée: la troupe du Circus Baobab donne rendez-vous au festival de la Biennale internationale de Cirque Yiriwa à Conakry",
+     "date": "Tue, 24 Nov 2026 23:22:47 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "En Libye, les appels au départ des forces étrangères se multiplient après l'attaque ukrainienne de Benghazi",
+     "date": "Tue, 24 Nov 2026 14:57:52 GMT",
      "source": "RFI"
     },
     {
@@ -70,33 +90,18 @@
      "title": "La Mauritanie et l'Union européenne s'accordent sur un nouveau protocole de pêche",
      "date": "Tue, 24 Nov 2026 13:06:18 GMT",
      "source": "RFI"
-    },
-    {
-     "title": "RDC: pourquoi les tensions s'accentuent entre l'Église catholique et le pouvoir",
-     "date": "Tue, 24 Nov 2026 03:30:20 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Mali: malgré les intimidations, les enseignants chercheurs très mobilisés au trentième jour de grève",
-     "date": "Tue, 24 Nov 2026 11:48:57 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Madagascar: l'Assemblée nationale destitue son président",
-     "date": "Tue, 24 Nov 2026 12:36:52 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Bénin: l'ex-directeur de la police Louis-Philippe Houndégnon condamné à deux ans de prison",
-     "date": "Tue, 24 Nov 2026 07:44:19 GMT",
-     "source": "RFI"
     }
    ]
   },
   "geopolitique": {
    "source": "RFI",
-   "updated": "2026-11-24T15:39:23.023Z",
+   "updated": "2026-11-25T00:36:34.982Z",
    "items": [
+    {
+     "title": "Comment l'IA infuse dans la société chinoise?",
+     "date": "Tue, 24 Nov 2026 17:33:46 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Défaite républicaine au Congrès: le salto arrière d’Elon Musk",
      "date": "Tue, 24 Nov 2026 12:57:12 GMT",
@@ -130,11 +135,6 @@
     {
      "title": "Quelle place pour la télévision en République tchèque au Cameroun et au Brésil?",
      "date": "Sun, 22 Nov 2026 10:27:32 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "A la Une: quelles sont les raisons d’espérer dans un monde aussi menaçant?",
-     "date": "Sun, 22 Nov 2026 09:11:17 GMT",
      "source": "RFI"
     }
    ]

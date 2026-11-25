@@ -1,6 +1,16 @@
 package shaman
 
 import kotlin.js.Date
+import kotlin.js.Promise
+import shaman.moteurs.AssistantSmsOrchestrateur
+import shaman.moteurs.ChargeurDonnees
+import shaman.moteurs.Domaine
+import shaman.moteurs.ModePolitesse
+import shaman.moteurs.OptionsAssistant
+import shaman.moteurs.Ton
+import shaman.moteurs.TypeResultat
+import shaman.moteurs.jsonChaine
+import shaman.moteurs.jsonListe
 
 /*
  * SHAMAN CHOOZ PRODUCTION — moteur de conversation Kotlin.
@@ -132,6 +142,7 @@ internal class Instr {
     var name = ""
     var tone = ""
     var signature = ""
+    var politesse = ""
     val forbidden = ArrayList<String>()
     val rules = ArrayList<Rule>()
     val facts = ArrayList<Fact>()
@@ -203,6 +214,8 @@ class ShamanEngine(lexJson: String, coursesJson: String, seed: Int) {
     private var learned = ArrayList<Learned>()
     private var userCourses = ArrayList<UserCourse>()
     private var st = State()
+    /** Les 8 moteurs thématiques + orchestrateur (null si le lexique n'a pas la clé « moteurs »). */
+    private var moteurs: AssistantSmsOrchestrateur? = null
     private var entries = ArrayList<Entry>()
     private var subjects = ArrayList<String>()
     private var acc = HashMap<String, String>()
@@ -252,6 +265,13 @@ class ShamanEngine(lexJson: String, coursesJson: String, seed: Int) {
         val cj: dynamic = JSON.parse<dynamic>(if (coursesJson.isEmpty()) "{}" else coursesJson)
         for (k in keysOf(cj)) base[k] = cj[k] as String
         rebuild()
+        try {
+            if (L.moteurs != undefined && L.moteurs != null) {
+                moteurs = AssistantSmsOrchestrateur(ChargeurDonnees.depuis(L.moteurs), OptionsAssistant(), seed)
+            }
+        } catch (e: Throwable) {
+            moteurs = null // lexique invalide : le chatbot garde son fonctionnement d'origine
+        }
     }
 
     // ===== API exportée (chaînes JSON) =====
@@ -260,8 +280,9 @@ class ShamanEngine(lexJson: String, coursesJson: String, seed: Int) {
     fun setLearned(json: String): String = doSetLearned(json)
     fun stats(): String =
         "{\"engine\":\"kotlin\",\"combinations\":" + combinations() + ",\"lifeCombinations\":" + lifeCombinations() + ",\"lifeTopics\":" + lifeTopics.size + ",\"intents\":" + intents.size + ",\"chapters\":" + entries.size +
-            ",\"subjects\":" + subjects.size + ",\"learnedQa\":" + learned.size + ",\"learnedCourses\":" + userCourses.size + "}"
-    fun reset(): String { st = State(); return "{\"ok\":true}" }
+            ",\"subjects\":" + subjects.size + ",\"learnedQa\":" + learned.size + ",\"learnedCourses\":" + userCourses.size +
+            ",\"moteurs\":" + (moteurs?.statsJson() ?: "null") + "}"
+    fun reset(): String { st = State(); moteurs?.oublier("web"); return "{\"ok\":true}" }
 
     // ===== utilitaires =====
     private fun rebuild() {
@@ -326,9 +347,95 @@ class ShamanEngine(lexJson: String, coursesJson: String, seed: Int) {
     }
 
     private fun out(text0: String, chips: List<String>, kind: String, intent: String): String {
+        moteurs?.relacher("web") // une autre partie du chatbot répond : le sujet verrouillé des 8 moteurs est libéré
+        return outX(text0, chips, kind, intent, "")
+    }
+
+    /** Comme out(), avec des champs JSON supplémentaires (extra commence par une virgule). */
+    private fun outX(text0: String, chips: List<String>, kind: String, intent: String, extra: String): String {
         var text = text0
         if (instr.signature.isNotEmpty() && kind != "course" && kind != "quiz" && kind != "safety") text += "\n" + instr.signature
-        return "{\"text\":" + esc(text) + ",\"chips\":[" + chips.joinToString(",") { esc(it) } + "],\"kind\":" + esc(kind) + ",\"intent\":" + esc(intent) + "}"
+        return "{\"text\":" + esc(text) + ",\"chips\":[" + chips.joinToString(",") { esc(it) } + "],\"kind\":" + esc(kind) + ",\"intent\":" + esc(intent) + extra + "}"
+    }
+
+    // ===== les 8 moteurs thématiques (orchestrateur) =====
+    /** Intentions propres à l'agence : leurs réponses curatées gardent la priorité sur les moteurs thématiques. */
+    private val agence: Set<String> = setOf(
+        "greeting", "howareyou", "thanks", "bye", "identity", "agency", "how", "candidate", "recruiter", "sectors", "fees",
+        "validation", "tracking", "contact", "documents", "security", "cv_tips", "job_search", "training", "international", "site_features"
+    )
+
+    /** Réponse de l'orchestrateur, ou null si le message est hors de ses 8 domaines (les autres moteurs essaient alors). */
+    private fun moteursReply(raw: String, recentrer: Boolean): String? {
+        val o = moteurs ?: return null
+        val pol = instr.politesse
+        o.options.politesse = if (pol.startsWith("tu")) ModePolitesse.TUTOIEMENT else if (pol.startsWith("auto")) ModePolitesse.AUTO else ModePolitesse.VOUVOIEMENT
+        val t = instr.tone
+        o.options.tonFixe = if (t.contains("cool") || t.contains("chaleur") || t.contains("amical") || t.contains("decontract")) Ton.AMICAL
+            else if (t.contains("pro") || t.contains("formel") || t.contains("serieux")) Ton.PROFESSIONNEL else null
+        val r = o.traiter("web", raw, if (st.name.isNotEmpty()) st.name else null, null, !recentrer)
+        if (r.passe) return null
+        val kind = when (r.type) {
+            TypeResultat.DETRESSE -> "safety"
+            TypeResultat.HORS_DOMAINE -> "fallback"
+            TypeResultat.CLARIFICATION -> "clarification"
+            else -> "moteur"
+        }
+        st.last = null; st.lastLife = null
+        val intent = r.theme ?: (r.domaine?.name?.lowercase() ?: r.type.name.lowercase())
+        val extra = ",\"parts\":" + jsonListe(r.parties) + ",\"moteur\":" + jsonChaine(r.domaine?.name ?: "") +
+            ",\"theme\":" + jsonChaine(r.theme ?: "") + ",\"secondaire\":" + jsonChaine(r.secondaire?.name ?: "") +
+            ",\"confiance\":" + r.confiance + ",\"sujetChange\":" + r.sujetChange + ",\"donnees\":" + r.donnees +
+            ",\"debug\":" + jsonListe(r.journal)
+        return outX(r.parties.joinToString("\n\n"), r.chips, kind, intent, extra)
+    }
+
+    /** Comme reply(), mais prépare d'abord les données en direct (météo, actualité) : renvoie une promesse. */
+    fun replyAsync(input: String): Promise<String> = Promise { resolve, _ ->
+        val mo = moteurs
+        if (mo == null) {
+            resolve(doReply(input))
+        } else {
+            mo.precharger("web", input.trim()) {
+                val texte = try {
+                    doReply(input)
+                } catch (e: Throwable) {
+                    "{\"text\":\"Une erreur est survenue, pouvez-vous reformuler ?\",\"chips\":[],\"kind\":\"fallback\",\"intent\":\"\"}"
+                }
+                resolve(texte)
+            }
+        }
+    }
+
+    /** Journal de debug des 8 moteurs : pourquoi tel moteur, score, sujet verrouillé, contrôle qualité. */
+    fun journal(): String = jsonListe(moteurs?.journal?.derniers(80) ?: emptyList())
+
+    /** Conversation de la personne (10 derniers échanges + état) : à garder dans le navigateur. */
+    fun exportConversation(): String =
+        "{\"v\":1,\"name\":" + jsonChaine(st.name) + ",\"conv\":" + (moteurs?.exporter("web") ?: "null") + "}"
+
+    fun importConversation(json: String): String {
+        return try {
+            val d: dynamic = JSON.parse<dynamic>(json)
+            if (d.name != undefined && d.name != null) st.name = d.name as String
+            val mo = moteurs
+            if (mo != null && d.conv != undefined && d.conv != null) mo.importer("web", d.conv)
+            "{\"ok\":true}"
+        } catch (e: Throwable) {
+            "{\"ok\":false}"
+        }
+    }
+
+    /** Réglages de l'actualité en direct : {"proxy":"https://mon-relais"} (adresse du relais /actualite). */
+    fun configureLive(json: String): String {
+        return try {
+            val d: dynamic = JSON.parse<dynamic>(json)
+            val mo = moteurs
+            if (mo != null && d.proxy != undefined && d.proxy != null) mo.configurerActualite(d.proxy as String)
+            "{\"ok\":true}"
+        } catch (e: Throwable) {
+            "{\"ok\":false}"
+        }
     }
 
     private fun disp(s: String): String = cap(s.split(" ").joinToString(" ") { acc[it] ?: it })
@@ -367,7 +474,7 @@ class ShamanEngine(lexJson: String, coursesJson: String, seed: Int) {
         val ins = Instr()
         var ok = 0
         val ignored = ArrayList<String>()
-        val kvRe = Regex("^(nom|ton|signature|interdit|info)\\s*[:=]\\s*(.+)$", RegexOption.IGNORE_CASE)
+        val kvRe = Regex("^(nom|ton|signature|interdit|info|politesse)\\s*[:=]\\s*(.+)$", RegexOption.IGNORE_CASE)
         val ruleRe = Regex("^si\\s+(.+?)\\s+alors\\s+(.+)$", RegexOption.IGNORE_CASE)
         val splitRe = Regex(",|;|\\sou\\s", RegexOption.IGNORE_CASE)
         for (line in text.split("\n")) {
@@ -381,6 +488,7 @@ class ShamanEngine(lexJson: String, coursesJson: String, seed: Int) {
                     "nom" -> ins.name = v
                     "ton" -> ins.tone = norm(v)
                     "signature" -> ins.signature = v
+                    "politesse" -> ins.politesse = norm(v)
                     "interdit" -> for (w in v.split(Regex("[,;]"))) { val f = norm(w); if (f.isNotEmpty()) ins.forbidden.add(f) }
                     "info" -> ins.facts.add(Fact(v, sig(norm(v), 3)))
                 }
@@ -475,6 +583,19 @@ class ShamanEngine(lexJson: String, coursesJson: String, seed: Int) {
         if (fc != null) return out("Voici l'information de l'agence : " + fc.txt, ArrayList(), "rule", "")
         val cr = courseTurn(n, pad, toks)
         if (cr != null) return cr
+        val mo = moteurs
+        if (mo != null) {
+            // Les 8 moteurs thématiques passent avant les intentions « vie courante » ; les réponses curatées de l'agence gardent la priorité.
+            val pre = score(pad, toks)
+            val agenceGagne = pre != null && agence.contains(pre.def.id) &&
+                (pre.score >= 4.0 || (pre.def.light && pre.score >= 2.0) ||
+                    (pre.score >= 2.0 && mo.apercu("web", raw).principal.let { it == null || it == Domaine.RECRUTEMENT }))
+            if (!agenceGagne) {
+                if (pre == null || pre.score < 4.0) { val sr0 = sectorTurn(n, toks); if (sr0 != null) return sr0 }
+                val mr = moteursReply(raw, false)
+                if (mr != null) return mr
+            }
+        }
         val fu = followUp(n, toks)
         if (fu != null) return fu
 
@@ -488,6 +609,8 @@ class ShamanEngine(lexJson: String, coursesJson: String, seed: Int) {
         if (lb != null && ls >= 2.0) return composeLife(lb.t)
         val ll = st.lastLife
         if (ll != null && toks.size <= 12) { val lc = lifeMore(ll, true); if (lc != null) return lc }
+        val rc = moteursReply(raw, true) // hors de tous les domaines : recentrage poli sur ce que l'assistant sait faire
+        if (rc != null) return rc
         return out(pick("lfb", lifeFallback), fallbackChips, "fallback", "")
     }
 

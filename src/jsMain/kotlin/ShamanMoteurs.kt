@@ -1005,8 +1005,9 @@ class ActualiteMoteur(
                 val src = if (c.source == undefined || c.source == null) "" else c.source as String
                 val dateTexte = if (c.updated != undefined && c.updated != null) c.updated as String
                     else if (d.updated != undefined && d.updated != null) d.updated as String else ""
-                val parse = if (dateTexte.isEmpty()) Double.NaN else Date.parse(dateTexte)
-                val maj = if (parse.isNaN()) maintenant() else parse
+                val analyseurDate: dynamic = js("Date.parse")
+                val parse: Double = if (dateTexte.isEmpty()) Double.NaN else (analyseurDate(dateTexte) as Number).toDouble()
+                val maj: Double = if (parse.isNaN()) maintenant() else parse
                 val items = ArrayList<ItemActu>()
                 for (j in 0 until (arr.length as Int)) {
                     val x = arr[j]
@@ -1136,7 +1137,11 @@ class ActualiteMoteur(
                 variantes[BlocType.OUVERTURE] = intro.modele
                 blocs.add(BlocType.OUVERTURE)
                 val comb = intro.texte + " " + parts[0]
-                if (comb.length <= LIMITE_SMS) parts[0] = comb else parts.add(0, intro.texte)
+                if (comb.length <= LIMITE_SMS) {
+                    parts[0] = comb
+                } else {
+                    parts.add(0, intro.texte)
+                }
                 parts = parts.take(MAX_PARTIES).toMutableList()
             }
             val dernier = parts.size - 1
@@ -1400,8 +1405,11 @@ class AnalyseurDeMessage(
             }
         }
         var urgence = Urgence.AUCUNE
-        if (detresse) urgence = if (trouve("urgence_critique", toks, n).isNotEmpty()) Urgence.CRITIQUE else Urgence.ELEVEE
-        else if (trouve("urgence_elevee", toks, n).isNotEmpty()) urgence = Urgence.ELEVEE
+        if (detresse) {
+            urgence = if (trouve("urgence_critique", toks, n).isNotEmpty()) Urgence.CRITIQUE else Urgence.ELEVEE
+        } else if (trouve("urgence_elevee", toks, n).isNotEmpty()) {
+            urgence = Urgence.ELEVEE
+        }
         val changements = trouve("changement", toks, n)
         val suiteMots = trouve("suite", toks, n).isNotEmpty() && toks.size <= 8
         return AnalyseMessage(
@@ -1811,11 +1819,14 @@ class AssistantSmsOrchestrateur(
             " | top : " + tri.take(3).joinToString(", ") { it.domaine.name + " " + fixe2(it.confiance) + (if (it.theme != null) "/" + it.theme else "") })
         when (options.politesse) {
             ModePolitesse.AUTO -> {
-                if (an.vous && !an.tu) etat.politesse = Politesse.VOUVOIEMENT
-                else if (an.tu && !an.vous) etat.politesse = Politesse.TUTOIEMENT
+                if (an.vous && !an.tu) {
+                    etat.politesse = Politesse.VOUVOIEMENT
+                } else if (an.tu && !an.vous) {
+                    etat.politesse = Politesse.TUTOIEMENT
+                }
             }
-            ModePolitesse.TUTOIEMENT -> etat.politesse = Politesse.TUTOIEMENT
-            ModePolitesse.VOUVOIEMENT -> etat.politesse = Politesse.VOUVOIEMENT
+            ModePolitesse.TUTOIEMENT -> { etat.politesse = Politesse.TUTOIEMENT }
+            ModePolitesse.VOUVOIEMENT -> { etat.politesse = Politesse.VOUVOIEMENT }
         }
 
         // Détresse grave : soutien et orientation, avant tout le reste.

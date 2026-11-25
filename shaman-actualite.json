@@ -1,9 +1,9 @@
 {
- "updated": "2026-11-25T00:36:34.982Z",
+ "updated": "2026-11-25T09:47:25.310Z",
  "cats": {
   "sport": {
    "source": "RFI",
-   "updated": "2026-11-25T00:36:34.982Z",
+   "updated": "2026-11-25T09:47:25.310Z",
    "items": [
     {
      "title": "Ligue des champions: le Real renversant, Lens encore à terre",
@@ -49,54 +49,74 @@
   },
   "infos": {
    "source": "RFI",
-   "updated": "2026-11-25T00:36:34.982Z",
+   "updated": "2026-11-25T09:47:25.310Z",
    "items": [
+    {
+     "title": "Cameroun: Maurice Kamto dépose sa candidature aux législatives dans la région de Yaoundé",
+     "date": "Wed, 25 Nov 2026 09:24:04 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "RDC: le gouvernement s'explique auprès du Vatican après les incidents visant l'Église catholique",
+     "date": "Wed, 25 Nov 2026 03:10:26 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Mali: près de 350 combattants russes tués en trois ans, selon une enquête du «Guardian»",
+     "date": "Wed, 25 Nov 2026 03:12:40 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Mali: les jihadistes du Jnim lancent un ultimatum aux habitants de Tonka, dans la région de Tombouctou",
+     "date": "Wed, 25 Nov 2026 03:13:46 GMT",
+     "source": "RFI"
+    },
     {
      "title": "CAN 2025: le Sénégal en joie après sa victoire réattribuée par le TAS, le Maroc fataliste",
      "date": "Tue, 24 Nov 2026 21:09:23 GMT",
      "source": "RFI"
     },
     {
-     "title": "Ghana: Spiro, le pari gagnant du passage à la moto électrique?",
-     "date": "Tue, 24 Nov 2026 23:02:44 GMT",
+     "title": "Cameroun: le leader séparatiste anglophone Lucas Cho Ayaba plaide non coupable à son procès en Norvège",
+     "date": "Wed, 25 Nov 2026 03:09:19 GMT",
      "source": "RFI"
     },
     {
-     "title": "«Congo Boy»: à Bangui, quatre frères et sœurs à nourrir, et un rêve de rappeur",
-     "date": "Tue, 24 Nov 2026 23:14:25 GMT",
+     "title": "Madagascar: après la destitution du président de l'Assemblée, «la pratique politique ne change pas», déplore un député",
+     "date": "Wed, 25 Nov 2026 06:05:53 GMT",
      "source": "RFI"
     },
     {
-     "title": "Ebola en RDC: «Le nombre de décès excédentaires était sept fois plus élevé que le nombre de décès officiels» mi-2026 à Bunia",
-     "date": "Tue, 24 Nov 2026 15:12:52 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Guinée: la troupe du Circus Baobab donne rendez-vous au festival de la Biennale internationale de Cirque Yiriwa à Conakry",
-     "date": "Tue, 24 Nov 2026 23:22:47 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "En Libye, les appels au départ des forces étrangères se multiplient après l'attaque ukrainienne de Benghazi",
-     "date": "Tue, 24 Nov 2026 14:57:52 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Éthiopie: Amnesty réclame une enquête sur de possibles crimes de guerre de l'armée fédérale au Tigré",
-     "date": "Tue, 24 Nov 2026 13:11:38 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "La Mauritanie et l'Union européenne s'accordent sur un nouveau protocole de pêche",
-     "date": "Tue, 24 Nov 2026 13:06:18 GMT",
+     "title": "Centrafrique: une journée sans information pour dénoncer les menaces contre les journalistes",
+     "date": "Wed, 25 Nov 2026 06:02:44 GMT",
      "source": "RFI"
     }
    ]
   },
   "geopolitique": {
    "source": "RFI",
-   "updated": "2026-11-25T00:36:34.982Z",
+   "updated": "2026-11-25T09:47:25.310Z",
    "items": [
+    {
+     "title": "COP 31: faut-il changer les règles des négociations ?",
+     "date": "Wed, 25 Nov 2026 09:05:46 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Tuuli Duneton: «La menace russe existe et on doit s'y préparer»",
+     "date": "Wed, 25 Nov 2026 07:20:43 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Ce que la guerre fait aux femmes",
+     "date": "Wed, 25 Nov 2026 06:00:45 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Du Pakistan aux Parlements d’Europe, les femmes politiques victimes de deepfakes pornographiques",
+     "date": "Wed, 25 Nov 2026 05:44:07 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Comment l'IA infuse dans la société chinoise?",
      "date": "Tue, 24 Nov 2026 17:33:46 GMT",
@@ -115,26 +135,6 @@
     {
      "title": "À la Une: le retour de Jensen Huang à la tête de Nvidia",
      "date": "Tue, 24 Nov 2026 07:56:01 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Champignons : un super-aliment à cuisiner à toutes les sauces",
-     "date": "Tue, 24 Nov 2026 06:00:25 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "À la Une: une COP qui fait flop",
-     "date": "Mon, 23 Nov 2026 08:52:19 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "L'IA va t-elle creuser les inégalités entre étudiants?",
-     "date": "Mon, 23 Nov 2026 06:00:25 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Quelle place pour la télévision en République tchèque au Cameroun et au Brésil?",
-     "date": "Sun, 22 Nov 2026 10:27:32 GMT",
      "source": "RFI"
     }
    ]

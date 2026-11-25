@@ -31,6 +31,41 @@ jobs:
       - name: Tests des 8 moteurs thématiques (55 scénarios, version JavaScript de référence)
         run: node test-moteurs.cjs
 
+      - name: Nettoyer les fichiers Kotlin en double ou mal placés
+        run: |
+          CIBLE=src/jsMain/kotlin/shaman
+          mkdir -p "$CIBLE"
+          # Anciens fichiers « autonomes » (package com.shaman.sms.moteurs) : ils ne font pas partie du projet web.
+          grep -rl --include='*.kt' "package com.shaman.sms.moteurs" src 2>/dev/null | while read -r f; do
+            echo "Suppression d'un ancien fichier : $f"
+            git rm -q -f "$f" || rm -f "$f"
+          done
+          # $1 = nom du fichier ; $2 = texte qui prouve que c'est la version à jour.
+          nettoyer() {
+            mapfile -t TOUS < <(find src -name "$1" | sort)
+            if [ ${#TOUS[@]} -eq 0 ]; then echo "ATTENTION : $1 est introuvable"; return 0; fi
+            GARDE=""
+            for f in "${TOUS[@]}"; do
+              if grep -q "$2" "$f"; then GARDE="$f"; break; fi
+            done
+            if [ -z "$GARDE" ]; then GARDE="${TOUS[0]}"; fi
+            for f in "${TOUS[@]}"; do
+              if [ "$f" != "$GARDE" ]; then
+                echo "Suppression du doublon : $f"
+                git rm -q -f "$f" || rm -f "$f"
+              fi
+            done
+            if [ "$GARDE" != "$CIBLE/$1" ]; then
+              echo "Déplacement : $GARDE -> $CIBLE/$1"
+              mkdir -p "$CIBLE"
+              git mv -f "$GARDE" "$CIBLE/$1" || mv -f "$GARDE" "$CIBLE/$1"
+            fi
+          }
+          nettoyer ShamanEngine.kt "AssistantSmsOrchestrateur"
+          nettoyer ShamanMoteurs.kt "package shaman.moteurs"
+          echo "Fichiers Kotlin du projet :"
+          find src -name '*.kt' | sort
+
       - name: Compiler le moteur Kotlin vers JavaScript
         run: |
           set -o pipefail
@@ -43,7 +78,9 @@ jobs:
             echo "### Erreurs de compilation Kotlin"
             echo '```'
             if [ -f build.log ]; then
-              grep -E "^e: " build.log | sed -E 's#file:///home/runner/work/[^/]+/[^/]+/##' | head -40
+              echo "Fichiers Kotlin :"; find src -name '*.kt' | sort
+              echo "--- Erreurs ---"
+              grep -E "^e: " build.log | sed -E 's#file:///home/runner/work/[^/]+/[^/]+/##' | head -25 | fold -s -w 60
               echo "--- Résumé Gradle ---"
               grep -A6 "What went wrong" build.log | head -12
             else
@@ -71,5 +108,5 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add shaman-engine-kotlin.js
+          git add -A src shaman-engine-kotlin.js
           git diff --cached --quiet || (git commit -m "Build du moteur Kotlin du chatbot" && git push)

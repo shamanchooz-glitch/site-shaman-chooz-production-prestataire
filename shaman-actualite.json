@@ -1,9 +1,9 @@
 {
- "updated": "2026-11-26T02:47:09.725Z",
+ "updated": "2026-11-26T12:17:22.431Z",
  "cats": {
   "sport": {
    "source": "RFI",
-   "updated": "2026-11-26T02:47:09.725Z",
+   "updated": "2026-11-26T12:17:22.431Z",
    "items": [
     {
      "title": "Ligue des champions: le PSG accroché par la Roma, Lille s’offre le Bayern",
@@ -49,54 +49,74 @@
   },
   "infos": {
    "source": "RFI",
-   "updated": "2026-11-26T02:47:09.725Z",
+   "updated": "2026-11-26T12:17:22.431Z",
    "items": [
     {
-     "title": "Afrique du Sud: le président Ramaphosa gagne son recours contre un rapport d'«impeachment»",
-     "date": "Wed, 25 Nov 2026 21:39:24 GMT",
+     "title": "Guinée-Bissau: un an après le putsch, la transition militaire s'éternise",
+     "date": "Thu, 26 Nov 2026 03:30:45 GMT",
      "source": "RFI"
     },
     {
-     "title": "Côte d'Ivoire: les producteurs de miel veulent passer à la vitesse supérieure",
-     "date": "Wed, 25 Nov 2026 23:22:50 GMT",
+     "title": "RDC: le chef de l'armée ougandaise menace d'intervenir dans le pays, Kinshasa réclame des explications",
+     "date": "Thu, 26 Nov 2026 03:20:45 GMT",
      "source": "RFI"
     },
     {
-     "title": "Côte d'Ivoire: à Abidjan, les ambitions de productions audiovisuelles de Canal+",
-     "date": "Thu, 26 Nov 2026 00:08:15 GMT",
+     "title": "«Ça donne de l'espoir, des gens y arrivent»: Au Sénégal, des vidéos TikTok vantent la traversée vers l'Europe",
+     "date": "Thu, 26 Nov 2026 10:53:17 GMT",
      "source": "RFI"
     },
     {
-     "title": "Zambie: des manifestations annulées sur fond de crainte d'un troisième mandat d'Hichilema",
-     "date": "Wed, 25 Nov 2026 22:01:02 GMT",
+     "title": "Nigeria: l'émir de Daura suspendu après des accusations d'agression sexuelle sur une touriste polonaise",
+     "date": "Thu, 26 Nov 2026 10:42:36 GMT",
      "source": "RFI"
     },
     {
-     "title": "Mali: 349 combattants russes tués en trois ans, des chiffres «élevés, crédibles et cohérents»",
-     "date": "Wed, 25 Nov 2026 15:50:18 GMT",
+     "title": "Dans l’ouest du Tchad, des autorités confrontées à l’afflux de communautés arabes poussées au départ par le Niger",
+     "date": "Thu, 26 Nov 2026 09:51:52 GMT",
      "source": "RFI"
     },
     {
-     "title": "Dans l’ouest du Tchad, la lassitude des refugiées de communautés arabes expulsées du Niger",
-     "date": "Wed, 25 Nov 2026 16:12:43 GMT",
+     "title": "Soudan: il y a «des fosses communes avec des milliers de corps» à El-Fasher, accuse un général ayant déserté les FSR",
+     "date": "Thu, 26 Nov 2026 08:26:34 GMT",
      "source": "RFI"
     },
     {
-     "title": "Au Gabon, le combat d'une militante et de son ONG contre les violences faites aux femmes",
-     "date": "Wed, 25 Nov 2026 15:01:21 GMT",
+     "title": "Sénégal: la majorité parlementaire adopte une résolution contre le passage par décret du budget rectificatif 2026",
+     "date": "Thu, 26 Nov 2026 08:09:06 GMT",
      "source": "RFI"
     },
     {
-     "title": "Le leader de l'Est libyen Khalifa Haftar rencontre Recep Tayyip Erdogan et d'autres responsables en Turquie",
-     "date": "Wed, 25 Nov 2026 14:59:42 GMT",
+     "title": "Madagascar: Marco Tsaradia élu à la tête de l'Assemblée après la destitution de son président pour «motif grave»",
+     "date": "Thu, 26 Nov 2026 03:35:46 GMT",
      "source": "RFI"
     }
    ]
   },
   "geopolitique": {
    "source": "RFI",
-   "updated": "2026-11-26T02:47:09.725Z",
+   "updated": "2026-11-26T12:17:22.431Z",
    "items": [
+    {
+     "title": "À la Une: droits de douane, Trump persiste et signe",
+     "date": "Thu, 26 Nov 2026 09:21:49 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Lola Vallejo: «On a encore besoin des COP climat pour avoir tous les pays autour de la table»",
+     "date": "Thu, 26 Nov 2026 07:46:51 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Trouver un emploi - conseils aux jeunes diplômés",
+     "date": "Thu, 26 Nov 2026 06:00:47 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "L'annonce de nouveaux droits de douane américains par Washington suscite l'indignation des pays visés",
+     "date": "Thu, 26 Nov 2026 05:42:06 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Peut-on s’opposer aux data centers?",
      "date": "Wed, 25 Nov 2026 16:57:24 GMT",
@@ -115,26 +135,6 @@
     {
      "title": "À la Une: l’hécatombe dans la guerre en Ukraine",
      "date": "Wed, 25 Nov 2026 10:14:02 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "COP 31: faut-il changer les règles des négociations?",
-     "date": "Wed, 25 Nov 2026 09:05:46 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Tuuli Duneton: «La menace russe existe et on doit s'y préparer»",
-     "date": "Wed, 25 Nov 2026 07:20:43 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Ce que la guerre fait aux femmes",
-     "date": "Wed, 25 Nov 2026 06:00:45 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Du Pakistan aux Parlements d’Europe, les femmes politiques victimes de deepfakes pornographiques",
-     "date": "Wed, 25 Nov 2026 05:44:07 GMT",
      "source": "RFI"
     }
    ]

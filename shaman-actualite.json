@@ -1,10 +1,20 @@
 {
- "updated": "2026-11-26T12:17:22.431Z",
+ "updated": "2026-11-26T22:16:41.431Z",
  "cats": {
   "sport": {
    "source": "RFI",
-   "updated": "2026-11-26T12:17:22.431Z",
+   "updated": "2026-11-26T22:16:41.431Z",
    "items": [
+    {
+     "title": "Ligue des Champions : Lille renverse le Bayern, la Roma freine Paris !",
+     "date": "Thu, 26 Nov 2026 17:49:32 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "En France, le sport amateur pèse près de 1,9 milliard d’euros par an",
+     "date": "Thu, 26 Nov 2026 15:27:33 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Ligue des champions: le PSG accroché par la Roma, Lille s’offre le Bayern",
      "date": "Wed, 25 Nov 2026 22:00:10 GMT",
@@ -34,23 +44,38 @@
      "title": "Ligue des champions: le Real renversant, Lens encore à terre",
      "date": "Tue, 24 Nov 2026 22:04:55 GMT",
      "source": "RFI"
-    },
-    {
-     "title": "Devant le TAS, le Sénégal récupère son titre de champion d'Afrique aux dépens du Maroc",
-     "date": "Tue, 24 Nov 2026 17:00:46 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Cyclisme: Egan Bernal prolonge officiellement avec l'équipe Netcompany-Ineos",
-     "date": "Tue, 24 Nov 2026 15:04:32 GMT",
-     "source": "RFI"
     }
    ]
   },
   "infos": {
    "source": "RFI",
-   "updated": "2026-11-26T12:17:22.431Z",
+   "updated": "2026-11-26T22:16:41.431Z",
    "items": [
+    {
+     "title": "En visite au Mali, le nouveau directeur international de Barrick Mining tourne définitivement la page du conflit",
+     "date": "Thu, 26 Nov 2026 16:40:07 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "En Afrique de l'Ouest et au Sahel, «la situation agropastorale 2026-2027 est alarmante»",
+     "date": "Thu, 26 Nov 2026 16:46:11 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Rencontre régionale à Dakar pour trouver des solutions aux crises pastorales en Afrique de l'Ouest et centrale",
+     "date": "Thu, 26 Nov 2026 15:10:31 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Au Nigeria, cinq Mexicains arrêtés dans le cadre d’une opération contre un laboratoire de drogue de synthèse",
+     "date": "Thu, 26 Nov 2026 15:01:29 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Guinée: adoption du projet de loi créant un fonds souverain alimenté par l'exploitation de la mine de Simandou",
+     "date": "Thu, 26 Nov 2026 13:26:24 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Guinée-Bissau: un an après le putsch, la transition militaire s'éternise",
      "date": "Thu, 26 Nov 2026 03:30:45 GMT",
@@ -62,41 +87,21 @@
      "source": "RFI"
     },
     {
-     "title": "«Ça donne de l'espoir, des gens y arrivent»: Au Sénégal, des vidéos TikTok vantent la traversée vers l'Europe",
+     "title": "Sénégal: des vidéos TikTok vantent la pourtant périlleuse traversée vers l'Europe",
      "date": "Thu, 26 Nov 2026 10:53:17 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Nigeria: l'émir de Daura suspendu après des accusations d'agression sexuelle sur une touriste polonaise",
-     "date": "Thu, 26 Nov 2026 10:42:36 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Dans l’ouest du Tchad, des autorités confrontées à l’afflux de communautés arabes poussées au départ par le Niger",
-     "date": "Thu, 26 Nov 2026 09:51:52 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Soudan: il y a «des fosses communes avec des milliers de corps» à El-Fasher, accuse un général ayant déserté les FSR",
-     "date": "Thu, 26 Nov 2026 08:26:34 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Sénégal: la majorité parlementaire adopte une résolution contre le passage par décret du budget rectificatif 2026",
-     "date": "Thu, 26 Nov 2026 08:09:06 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Madagascar: Marco Tsaradia élu à la tête de l'Assemblée après la destitution de son président pour «motif grave»",
-     "date": "Thu, 26 Nov 2026 03:35:46 GMT",
      "source": "RFI"
     }
    ]
   },
   "geopolitique": {
    "source": "RFI",
-   "updated": "2026-11-26T12:17:22.431Z",
+   "updated": "2026-11-26T22:16:41.431Z",
    "items": [
+    {
+     "title": "Shanley Clemot Mc Laren: militante pour les droits numériques",
+     "date": "Thu, 26 Nov 2026 17:28:53 GMT",
+     "source": "RFI"
+    },
     {
      "title": "À la Une: droits de douane, Trump persiste et signe",
      "date": "Thu, 26 Nov 2026 09:21:49 GMT",
@@ -130,11 +135,6 @@
     {
      "title": "Violences faites aux femmes: comment passer des avancées législatives à une justice effective?",
      "date": "Wed, 25 Nov 2026 10:24:17 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "À la Une: l’hécatombe dans la guerre en Ukraine",
-     "date": "Wed, 25 Nov 2026 10:14:02 GMT",
      "source": "RFI"
     }
    ]

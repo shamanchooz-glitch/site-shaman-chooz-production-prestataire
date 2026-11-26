@@ -1,10 +1,20 @@
 {
- "updated": "2026-11-25T19:53:28.575Z",
+ "updated": "2026-11-26T02:47:09.725Z",
  "cats": {
   "sport": {
    "source": "RFI",
-   "updated": "2026-11-25T19:53:28.575Z",
+   "updated": "2026-11-26T02:47:09.725Z",
    "items": [
+    {
+     "title": "Ligue des champions: le PSG accroché par la Roma, Lille s’offre le Bayern",
+     "date": "Wed, 25 Nov 2026 22:00:10 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Football: un an de prison avec sursis pour l'international anglais Sterling après un accident de la route",
+     "date": "Wed, 25 Nov 2026 19:54:54 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Au Salon des maires, Teddy Riner retrouve la foule et la polémique",
      "date": "Wed, 25 Nov 2026 17:41:40 GMT",
@@ -34,23 +44,33 @@
      "title": "Cyclisme: Egan Bernal prolonge officiellement avec l'équipe Netcompany-Ineos",
      "date": "Tue, 24 Nov 2026 15:04:32 GMT",
      "source": "RFI"
-    },
-    {
-     "title": "Badminton: le Français Christo Popov n’est plus numéro 1 mondial",
-     "date": "Tue, 24 Nov 2026 13:32:01 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "CAN 2025 : le Tribunal Arbitral du Sport rendra sa décision demain",
-     "date": "Mon, 23 Nov 2026 17:00:24 GMT",
-     "source": "RFI"
     }
    ]
   },
   "infos": {
    "source": "RFI",
-   "updated": "2026-11-25T19:53:28.575Z",
+   "updated": "2026-11-26T02:47:09.725Z",
    "items": [
+    {
+     "title": "Afrique du Sud: le président Ramaphosa gagne son recours contre un rapport d'«impeachment»",
+     "date": "Wed, 25 Nov 2026 21:39:24 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Côte d'Ivoire: les producteurs de miel veulent passer à la vitesse supérieure",
+     "date": "Wed, 25 Nov 2026 23:22:50 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Côte d'Ivoire: à Abidjan, les ambitions de productions audiovisuelles de Canal+",
+     "date": "Thu, 26 Nov 2026 00:08:15 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Zambie: des manifestations annulées sur fond de crainte d'un troisième mandat d'Hichilema",
+     "date": "Wed, 25 Nov 2026 22:01:02 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Mali: 349 combattants russes tués en trois ans, des chiffres «élevés, crédibles et cohérents»",
      "date": "Wed, 25 Nov 2026 15:50:18 GMT",
@@ -70,32 +90,12 @@
      "title": "Le leader de l'Est libyen Khalifa Haftar rencontre Recep Tayyip Erdogan et d'autres responsables en Turquie",
      "date": "Wed, 25 Nov 2026 14:59:42 GMT",
      "source": "RFI"
-    },
-    {
-     "title": "RDC: le procès de l'opposant Prince Epenge pour «propagation de faux bruits» renvoyé au 11 décembre",
-     "date": "Wed, 25 Nov 2026 14:30:11 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Cameroun: Maurice Kamto dépose sa candidature aux législatives dans la région de Yaoundé",
-     "date": "Wed, 25 Nov 2026 09:24:04 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Guinée: le FMI approuve un programme de 425 millions de dollars sur trois ans",
-     "date": "Wed, 25 Nov 2026 10:00:37 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "VIH: la riposte mondiale sous pression malgré des avancées, selon l'Onusida",
-     "date": "Wed, 25 Nov 2026 11:15:48 GMT",
-     "source": "RFI"
     }
    ]
   },
   "geopolitique": {
    "source": "RFI",
-   "updated": "2026-11-25T19:53:28.575Z",
+   "updated": "2026-11-26T02:47:09.725Z",
    "items": [
     {
      "title": "Peut-on s’opposer aux data centers?",

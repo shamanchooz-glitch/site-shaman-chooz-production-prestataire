@@ -143,9 +143,9 @@
     if (!engine) return;
     var s = JSON.parse(engine.stats()), n = function (x) { return Math.round(x / 1e6); };
     var m = mergedMemory();
-    note(adminStatus, '⚙️ Moteur : ' + engineName + (engineName === 'Kotlin' ? ' ✅ (compilé par GitHub)' : ' — version JavaScript (le build Kotlin n\'est pas actif)') +
+    note(adminStatus, '⚙️ Moteur : ' + engineName + (engineName === 'Kotlin' ? ' ✅ (compilé par GitHub)' : ' — version JavaScript (le build Kotlin se met à jour)') +
       '\n💬 Messages possibles : ' + n(s.combinations) + ' M (emploi et recrutement) + ' + n(s.lifeCombinations) + ' M (vie courante) = ' + (n(s.combinations) + n(s.lifeCombinations)) + ' M' +
-      (s.moteurs ? '\n🧠 8 moteurs thématiques (travail, perso, famille, couple, social, argent, recrutement, actualité) : ' + (Math.round(s.moteurs.total / 1e8) / 10) + ' milliards de messages complets possibles' : '\n🧠 8 moteurs thématiques : actifs au prochain build Kotlin') +
+      (s.moteurs ? '\n🧠 ' + Object.keys(s.moteurs.moteurs).length + ' moteurs thématiques (travail, perso, famille, couple, social, argent, recrutement, actualité, casting, études, numérique, démarches, business, logement, image, management) : ' + (Math.round(s.moteurs.total / 1e8) / 10) + ' milliards de messages complets possibles' : '\n🧠 8 moteurs thématiques : actifs au prochain build Kotlin') +
       (s.moteurs && typeof engine.journal === 'function' ? '\n🔎 Dernier routage : ' + (JSON.parse(engine.journal()).filter(function (l) { return l.indexOf('ÉTAPES 4-5') >= 0; }).slice(-1)[0] || 'aucun message pour l\'instant') + '  (journal complet : ShamanDebug() dans la console)' : '') +
       '\n🧭 Sujets de vie courante : ' + s.lifeTopics + ' · Intentions du site : ' + s.intents +
       '\n🎓 Cours : ' + s.chapters + ' chapitres dans ' + s.subjects + ' matières' +
@@ -293,8 +293,12 @@
       try {
         var k = window.createShamanEngine(lex, cours, 0); JSON.parse(k.stats()); JSON.parse(k.reply('bonjour')); k.reset();
         /* Un ancien build Kotlin (sans les 8 moteurs thématiques) est mis de côté tant que le prochain build n'a pas tourné. */
-        if (typeof k.replyAsync === 'function' || !window.ShamanEngineJS) { engineName = 'Kotlin'; return k; }
-        console.warn('[Shaman] build Kotlin sans les 8 moteurs : port JS utilisé en attendant le prochain build GitHub');
+        /* Le build Kotlin doit connaître tous les moteurs du lexique ; sinon le port JS (à jour) est utilisé en attendant le prochain build. */
+        var attendus = 0, presents = 0;
+        try { attendus = ((JSON.parse(lex).moteurs || {}).domaines || []).length; } catch (e2) { attendus = 0; }
+        try { var ks = JSON.parse(k.stats()); presents = ks.moteurs && ks.moteurs.moteurs ? Object.keys(ks.moteurs.moteurs).length : 0; } catch (e3) { presents = 0; }
+        if ((typeof k.replyAsync === 'function' && presents >= attendus) || !window.ShamanEngineJS) { engineName = 'Kotlin'; return k; }
+        console.warn('[Shaman] build Kotlin pas à jour (moteurs : ' + presents + '/' + attendus + ') : port JS utilisé en attendant le prochain build GitHub');
       }
       catch (e) { console.warn('[Shaman] moteur Kotlin inutilisable, repli sur le port JS', e); }
     }

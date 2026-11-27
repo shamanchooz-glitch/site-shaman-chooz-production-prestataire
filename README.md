@@ -120,7 +120,13 @@ garde le serveur toujours actif.
 - Meta offre un quota de conversations gratuites par mois, au-delà
   c'est payant selon le pays.
 
-## Les 8 moteurs thématiques (travail, perso, famille, couple, social, argent, recrutement, actualité)
+## Les 16 moteurs thématiques
+
+Huit moteurs de vie (travail, perso, famille, couple, social, argent, recrutement, actualité) et huit moteurs liés aux activités de
+l'agence et à ses visiteurs (**casting**, **études**, **numérique** et arnaques en ligne, **démarches** administratives, **business**,
+**logement**, **image** et prise de parole, **management**). Chacun a 5 à 8 sous-sujets, des conseils propres à chaque sous-sujet et
+8 blocs de 15 variantes (plus de 2,5 milliards de messages complets par moteur). Les boutons « ponts » renvoient vers les réponses de l'agence
+(créer mon profil, documents à fournir, contact, frais, conseils CV, fiabilité) : voir `ponts` dans `shaman-lexicon.json`.
 
 Ils sont branchés dans le chatbot **en plus** de tout ce qui existait (intentions de l'agence, vie courante, cours, quiz,
 règles et consignes, réponses apprises, garde-fous). Chaque message passe par l'orchestrateur en 8 étapes :
@@ -133,12 +139,12 @@ contrôle qualité → mise à jour de l'état.
 | `src/jsMain/kotlin/shaman/moteurs/*.kt` | Version Kotlin (compilée par GitHub dans `shaman-engine-kotlin.js`) |
 | `shaman-moteurs.js` | Même algorithme en JavaScript : repli tant que le build Kotlin n'a pas tourné, et référence testable |
 | `shaman-lexicon.json` → clé `moteurs` | Toutes les données : mots-clés, sous-sujets, conseils, 8 blocs × 15 variantes par moteur, messages fixes |
-| `test-moteurs.cjs` | 55 scénarios (détection, changement de sujet, ambigu, mixte, suite, hors domaine, détresse, SMS, combinaisons, anti-répétition, politesse, actualité) |
+| `test-moteurs.cjs` | plus de 75 scénarios (détection, changement de sujet, ambigu, mixte, suite, hors domaine, détresse, SMS, combinaisons, anti-répétition, politesse, actualité) |
 | `actualite-flux.cjs` | Robot GitHub : lit les flux d'actualité et écrit `shaman-actualite.json` |
-| `test-chatbot-moteurs.cjs` | 17 vérifications à travers l'API du chatbot (`reply`, `replyAsync`, `stats`, `journal`) |
+| `test-chatbot-moteurs.cjs` | 23 vérifications à travers l'API du chatbot (`reply`, `replyAsync`, `stats`, `journal`) |
 
 **Priorités dans `doReply`** : sécurité, nom, quiz, interdits, règles, réponses apprises, informations, cours → *intentions propres
-à l'agence quand elles sont fortes* (inscription, frais, suivi, contact…) → **8 moteurs** → vie courante (cuisine, humour, heure…) →
+à l'agence quand elles sont fortes* (inscription, frais, suivi, contact…) → **16 moteurs** → vie courante (cuisine, humour, heure…) →
 recentrage poli. Un message hors des 8 domaines est laissé aux autres moteurs ; s'ils n'ont rien non plus, l'assistant recentre.
 
 **Réglages (consignes du chatbot)** : `politesse: vous` (défaut, règle de l'agence), `politesse: tu`, `politesse: auto` ;

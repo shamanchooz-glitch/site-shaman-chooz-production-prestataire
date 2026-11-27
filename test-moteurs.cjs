@@ -1,4 +1,4 @@
-// Tests des 8 moteurs + orchestrateur (35 scénarios). Usage : node test-moteurs.cjs [shaman-moteurs.js]
+// Tests des 8 moteurs + orchestrateur (plus de 75 scénarios). Usage : node test-moteurs.cjs [shaman-moteurs.js]
 // Ce script teste l'implémentation JavaScript ; le même fichier, lancé avec le moteur Kotlin compilé,
 // est utilisé par smoke-test.cjs via engine.reply() (voir la fin de ce fichier pour les tests « chatbot »).
 const fs = require('fs'), path = require('path');
@@ -37,6 +37,41 @@ const fakeFetch = (log) => (url) => {
     ['Quelle est la météo à Abidjan demain ?', 'ACTUALITE', 'meteo'],
     ['Qui a gagné le match de foot hier ?', 'ACTUALITE', 'sport'],
   ];
+  /* --- les 8 nouveaux moteurs (casting, études, numérique, démarches, business, logement, image, management) --- */
+  const det2 = [
+    ['Je prépare un casting pour mannequin demain', 'CASTING', 'mannequinat'],
+    ['Je cherche des photos pour mon book', 'CASTING', 'dossier_casting'],
+    ['Je veux devenir figurant dans un film', 'CASTING', 'cinema_figuration'],
+    ['Que faire après le bac ? Je dois choisir une filière', 'ETUDES', 'orientation'],
+    ['Comment préparer mes examens ?', 'ETUDES', 'examens'],
+    ["Mon compte WhatsApp a été piraté, on a changé mon mot de passe", 'NUMERIQUE', 'comptes_securite'],
+    ["On m'a envoyé un lien suspect et on me demande de l'argent", 'NUMERIQUE', 'arnaques_en_ligne'],
+    ['Comment faire renouveler mon passeport ?', 'DEMARCHES', 'identite'],
+    ['Où obtenir un casier judiciaire ?', 'DEMARCHES', 'certificats'],
+    ['Comment trouver mes premiers clients pour ma boutique ?', 'BUSINESS', 'trouver_clients'],
+    ["Je n'ai pas de clients dans mon commerce", 'BUSINESS', 'trouver_clients'],
+    ['Je cherche un appartement à louer', 'LOGEMENT', 'chercher_logement'],
+    ["J'ai le trac pour mon discours, comment parler en public ?", 'IMAGE', 'parler_en_public'],
+    ['Comment motiver mon équipe, plusieurs employés sont démotivés ?', 'MANAGEMENT', 'motiver_equipe'],
+    ["Comment gérer un conflit dans l'équipe avec un employé insolent ?", 'MANAGEMENT', 'discipline_conflits'],
+  ];
+  det2.forEach(([msg, dom, th], i) => {
+    const r = say(mk(), msg);
+    ok(r.type === 'MOTEUR' && r.domaine === dom && r.theme === th, `N${i + 1} nouveau moteur : « ${msg} » -> ${dom}/${th}`, `obtenu ${r.type} ${r.domaine}/${r.theme}`);
+  });
+  const mixte = say(mk(), "Mon propriétaire veut augmenter le loyer, que dit le bail ?");
+  ok(mixte.domaine === 'LOGEMENT' && mixte.secondaire === 'FINANCE', 'N16 message mixte : logement (principal) + argent (secondaire)', `${mixte.domaine}+${mixte.secondaire}`);
+  const mixte2 = say(mk(), "Comment bien m'habiller pour un entretien ?");
+  ok(mixte2.domaine === 'IMAGE' && mixte2.secondaire === 'PROFESSIONNEL', 'N17 message mixte : image (principal) + travail (secondaire)', `${mixte2.domaine}+${mixte2.secondaire}`);
+  const pontsOk = say(mk(), 'Je prépare un casting pour mannequin demain');
+  ok(pontsOk.chips.indexOf('Créer mon profil') >= 0 && pontsOk.chips.length <= 6, 'N18 casting : boutons « ponts » vers les réponses de l\'agence (profil, contact…)', JSON.stringify(pontsOk.chips));
+  ok(say(mk(), 'Bonjour').chips.indexOf('Casting') >= 0, 'N19 accueil : le bouton « Casting » est proposé', JSON.stringify(say(mk(), 'Bonjour').chips));
+  const exp = say(mk(), "Mon propriétaire menace d'expulsion");
+  ok(exp.domaine === 'LOGEMENT' && /juriste|avocat/.test(exp.parties.slice(1).join(' ')), 'N20 garde-fou juridique : litige de logement renvoyé vers un juriste', exp.texte);
+  const neutres = ['Quelle heure est-il ?', 'Donne-moi une recette de poulet braisé', 'Raconte-moi une blague', 'Combien font 12 fois 15 ?', 'Explique-moi la photosynthèse', 'Traduis bonjour en anglais', 'Quel est le plus grand pays du monde ?', 'Explique la différence entre un virus et une bactérie', 'Où se trouve la Tour Eiffel ?', 'Comment ça marche ?', 'Écris un poème sur la mer', "C'est quoi un trou noir ?"];
+  const faux = neutres.filter(m => say(mk(), m, { passerHorsDomaine: true }).type !== 'HORS_DOMAINE' && say(mk(), m, { passerHorsDomaine: true }).type !== 'FIXE');
+  ok(faux.length === 0, `N21 pas de faux positifs : ${neutres.length} messages hors sujet restent hors domaine`, JSON.stringify(faux));
+
   det.forEach(([msg, dom, th], i) => {
     const r = say(mk(), msg);
     ok(r.type === 'MOTEUR' && r.domaine === dom && r.theme === th, `S${i + 1} détection : « ${msg} » -> ${dom}/${th}`, `obtenu ${r.type} ${r.domaine}/${r.theme}`);
@@ -92,7 +127,7 @@ const fakeFetch = (log) => (url) => {
   ok(d3.type === 'DETRESSE', 'S27 violence : message de soutien', d3.type);
 
   /* --- règles SMS (S28-S30) --- */
-  const msgs = det.map(x => x[0]).concat(['Je suis très stressé par mon travail', 'Dis-moi en détail les étapes pour négocier mon salaire avec mon patron']);
+  const msgs = det.map(x => x[0]).concat(det2.map(x => x[0])).concat(['Je suis très stressé par mon travail', 'Dis-moi en détail les étapes pour négocier mon salaire avec mon patron']);
   let maxLen = 0, maxParts = 0, vides = 0, marq = 0;
   for (let i = 0; i < 80; i++) msgs.forEach(msg => {
     const r = say(mk({ seed: 100 + i }), msg);
@@ -105,7 +140,7 @@ const fakeFetch = (log) => (url) => {
 
   /* --- combinaisons (S31) --- */
   const st = mk().stats();
-  ok(Object.keys(st.moteurs).length === 8 && Object.values(st.moteurs).every(x => x.combinaisons >= 5e8), `S31 combinaisons : 8 moteurs, chacun > 500 millions (${(Object.values(st.moteurs)[0].combinaisons / 1e9).toFixed(2)} milliards)`);
+  ok(Object.keys(st.moteurs).length === 16 && Object.values(st.moteurs).every(x => x.combinaisons >= 5e8), `S31 combinaisons : 16 moteurs, chacun > 500 millions (${(Object.values(st.moteurs)[0].combinaisons / 1e9).toFixed(2)} milliards, ${(st.total / 1e9).toFixed(1)} au total)`);
 
   /* --- anti-répétition (S32-S33) --- */
   o = mk(); say(o, 'Mon patron me met la pression');

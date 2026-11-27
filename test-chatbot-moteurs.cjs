@@ -32,12 +32,19 @@ const fakeFetch = (url) => /geocoding/.test(url) ? J({ results: [{ name: 'Abidja
   e = fresh(); r = R(e, 'Mon patron me met la pression'); ok(!/\b(tu|ton|ta|tes|toi)\b/i.test(r.text.replace(/un ton calme/g, '')), 'C10 vouvoiement par défaut (règle de l\'agence)', r.text);
   e = fresh(); R(e, 'Mon fils ne fait pas ses devoirs'); const dbg = JSON.parse(e.journal());
   ok(dbg.some(l => /ÉTAPE 7/.test(l)) && dbg.some(l => /ÉTAPES 4-5/.test(l)), 'C11 journal de debug : routage, score, sujet verrouillé, contrôle qualité', dbg.slice(-4).join('\n'));
-  const st = JSON.parse(e.stats()); ok(st.moteurs && Object.keys(st.moteurs.moteurs).length === 8 && st.moteurs.total >= 4e9, 'C12 stats : 8 moteurs, plus de 4 milliards de combinaisons au total');
+  const st = JSON.parse(e.stats()); ok(st.moteurs && Object.keys(st.moteurs.moteurs).length === 16 && st.moteurs.total >= 4e10, 'C12 stats : 16 moteurs, plus de 40 milliards de combinaisons au total');
   e = fresh(); R(e, 'Mon patron me met la pression'); const dump = e.exportConversation(); const e2 = fresh(); e2.importConversation(dump);
   r = R(e2, 'oui'); ok(r.moteur === 'PROFESSIONNEL', 'C13 conversation exportée puis rechargée : le sujet est retrouvé');
   e.reset(); r = R(e, 'oui'); ok(r.moteur !== 'PROFESSIONNEL', 'C14 reset : le sujet verrouillé est effacé');
   e = fresh(); R(e, 'Mon patron me met la pression'); let prev = '', dup = 0; for (let i = 0; i < 30; i++) { const t = R(e, i % 2 ? 'oui' : 'et ensuite').text; if (t === prev) dup++; prev = t; }
   ok(dup === 0, 'C15 anti-répétition : jamais deux fois le même texte de suite');
+  e = fresh(); r = R(e, 'Je prépare un casting pour mannequin demain');
+  ok(r.moteur === 'CASTING' && r.chips.indexOf('Créer mon profil') >= 0, 'C18 casting : le chatbot répond avec le moteur Casting et propose un pont vers l\'agence', JSON.stringify([r.moteur, r.chips]));
+  r = R(e, 'Créer mon profil'); ok(r.intent === 'candidate', 'C19 le bouton « Créer mon profil » ouvre la réponse de l\'agence (candidat)', JSON.stringify([r.kind, r.intent]));
+  r = R(fresh(), 'Où obtenir un casier judiciaire ?'); ok(r.moteur === 'DEMARCHES', 'C20 démarches : casier judiciaire -> moteur Démarches', JSON.stringify([r.kind, r.moteur]));
+  r = R(fresh(), 'Je suis recruteur'); ok(r.intent === 'recruiter', 'C21 « Je suis recruteur » reste une réponse de l\'agence', JSON.stringify([r.kind, r.intent]));
+  r = R(fresh(), 'Est-ce fiable ?'); ok(r.intent === 'security', 'C22 « Est-ce fiable ? » reste une réponse de l\'agence (sécurité)', JSON.stringify([r.kind, r.intent]));
+  const st2 = JSON.parse(fresh().stats()); ok(st2.moteurs && Object.keys(st2.moteurs.moteurs).length === 16, 'C23 stats : 16 moteurs thématiques actifs');
   if (typeof e.replyAsync === 'function') {
     const old = globalThis.fetch; globalThis.fetch = fakeFetch;
     e = fresh(); r = JSON.parse(await e.replyAsync('Quelle est la météo à Abidjan ?'));

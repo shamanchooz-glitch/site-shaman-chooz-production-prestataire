@@ -641,10 +641,16 @@
     return { type: 'CLARIFICATION', parties: parts, texte: t, chips: P.length ? P.map(function (id) { return majuscule(self.moteurs[id].court); }).concat(['Autre sujet']) : this.chipsDomaines(), question: t, journal: J };
   };
   Orchestrateur.prototype.chipsDomaines = function () {
-    var self = this; return this.ordre.map(function (id) { return majuscule(self.moteurs[id].court); }).slice(0, 7);
+    var self = this;
+    if (this.lm.chips && this.lm.chips.length) return this.lm.chips.slice();
+    return this.ordre.map(function (id) { return majuscule(self.moteurs[id].court); }).slice(0, 7);
   };
+  /* Boutons de suite : jusqu'à 2 « ponts » vers les réponses de l'agence (profil, documents, contact…), puis Oui/Non et changement de sujet. */
   Orchestrateur.prototype.chipsSuite = function (rep) {
-    var c = []; if (rep.question) c.push('Oui', 'Non'); c.push('Un autre conseil', 'Changeons de sujet'); return c;
+    var c = ((this.lm.ponts && this.lm.ponts[rep.domaine]) || []).slice(0, 2);
+    if (rep.question) c.push('Oui', 'Non');
+    c.push('Un autre conseil', 'Changeons de sujet');
+    return c.slice(0, 6);
   };
   /* Décision de routage « à blanc » (aucun effet sur l'état) : utilisée par le chatbot pour arbitrer avec ses intentions agence. */
   Orchestrateur.prototype.apercu = function (personne, message) {

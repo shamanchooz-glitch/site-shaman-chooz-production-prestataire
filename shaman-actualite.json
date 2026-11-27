@@ -1,10 +1,15 @@
 {
- "updated": "2026-11-27T14:57:52.365Z",
+ "updated": "2026-11-27T23:24:18.119Z",
  "cats": {
   "sport": {
    "source": "RFI",
-   "updated": "2026-11-27T14:57:52.365Z",
+   "updated": "2026-11-27T23:24:18.119Z",
    "items": [
+    {
+     "title": "Le Café des Sports : Marseille-Levski Sofia, de violents affrontements entre supporters au Vélodrome",
+     "date": "Fri, 27 Nov 2026 18:04:39 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Ligue des Champions : Lille renverse le Bayern, la Roma freine Paris !",
      "date": "Thu, 26 Nov 2026 17:49:32 GMT",
@@ -39,64 +44,69 @@
      "title": "Présidence de la Fifa: Kozo Tashima promet s'il est élu de n'effectuer qu'un seul mandat",
      "date": "Wed, 25 Nov 2026 14:43:49 GMT",
      "source": "RFI"
-    },
-    {
-     "title": "Ligue des champions: le Real renversant, Lens encore à terre",
-     "date": "Tue, 24 Nov 2026 22:04:55 GMT",
-     "source": "RFI"
     }
    ]
   },
   "infos": {
    "source": "RFI",
-   "updated": "2026-11-27T14:57:52.365Z",
+   "updated": "2026-11-27T23:24:18.119Z",
    "items": [
+    {
+     "title": "Massacre de Shakahola au Kenya: le gourou Mackenzie, qui affamait ses fidèles, coupable de 123 homicides",
+     "date": "Fri, 27 Nov 2026 19:56:57 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "CAN 2025: pour les Congolais, la décision du TAS réhabilite l’arbitre Jean-Jacques Ndala",
+     "date": "Fri, 27 Nov 2026 11:26:14 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "En Afrique subsaharienne, le mariage forcé persiste «dans une société misogyne qui cherche à contrôler les femmes»",
+     "date": "Fri, 27 Nov 2026 15:12:50 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Mali: Alger dénonce l'«alliance» des indépendantistes du FLA avec les «terroristes» du Jnim",
+     "date": "Fri, 27 Nov 2026 12:56:07 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Ligue des champions CAF: une course au titre ouverte en l’absence d’Al Ahly et de Sundowns",
+     "date": "Fri, 27 Nov 2026 15:47:01 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Classes surchargées, insalubrité: en Afrique du Sud, un rapport étrille les manquements de l’école publique",
+     "date": "Fri, 27 Nov 2026 10:52:17 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Sénégal: le président de l'Assemblée nationale presse le chef de l’État de procéder à une dissolution",
      "date": "Fri, 27 Nov 2026 13:54:24 GMT",
      "source": "RFI"
     },
     {
-     "title": "Alger accuse Paris d'avoir maltraité un agent consulaire détenu en France",
-     "date": "Fri, 27 Nov 2026 13:31:12 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "RDC: Vital Kamerhe contesté par des cadres de son parti après ses propos sur la guerre dans l'Est",
-     "date": "Fri, 27 Nov 2026 09:56:42 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Guinée-Bissau: report de deux ans de la présidentielle initialement prévue le 6 décembre",
-     "date": "Thu, 26 Nov 2026 20:48:54 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Burkina Faso: reprise des activités d’une mine de zinc à l'arrêt depuis des inondations mortelles en 2022",
-     "date": "Fri, 27 Nov 2026 09:10:38 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Kokou Ferdinand Makouvia: «J’invite le public à rêver avec moi»",
-     "date": "Fri, 27 Nov 2026 10:31:20 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Madagascar: la récolte de litchis affectée par le passage du cyclone Gezani en février dernier",
-     "date": "Fri, 27 Nov 2026 10:58:46 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Massacre de Shakahola au Kenya: le gourou de la secte, son épouse et son bras droit reconnus coupables de terrorisme",
-     "date": "Thu, 26 Nov 2026 22:56:19 GMT",
+     "title": "Coupe de la Confédération: l’USM Alger en route pour un troisième sacre ?",
+     "date": "Fri, 27 Nov 2026 14:01:10 GMT",
      "source": "RFI"
     }
    ]
   },
   "geopolitique": {
    "source": "RFI",
-   "updated": "2026-11-27T14:57:52.365Z",
+   "updated": "2026-11-27T23:24:18.119Z",
    "items": [
+    {
+     "title": "Liberté d'informer et secret défense : quelles limites?",
+     "date": "Fri, 27 Nov 2026 17:10:47 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Sciences et information climatique, comment pallier les défaillances des IA",
+     "date": "Fri, 27 Nov 2026 16:47:35 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Le Costa Rica refoule la rapporteure pour les Palestiniens, l'ONU appelle à reconsidérer",
      "date": "Fri, 27 Nov 2026 13:44:15 GMT",
@@ -125,16 +135,6 @@
     {
      "title": "Shanley Clemot McLaren: militante pour les droits numériques",
      "date": "Thu, 26 Nov 2026 17:28:53 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "À la Une: droits de douane, Trump persiste et signe",
-     "date": "Thu, 26 Nov 2026 09:21:49 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Lola Vallejo: «On a encore besoin des COP climat pour avoir tous les pays autour de la table»",
-     "date": "Thu, 26 Nov 2026 07:46:51 GMT",
      "source": "RFI"
     }
    ]

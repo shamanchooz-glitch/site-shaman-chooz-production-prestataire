@@ -58,7 +58,15 @@ enum class Domaine(val libelleDe: String, val libelleCourt: String) {
     SOCIAL("de la vie sociale", "vie sociale"),
     FINANCE("de l'argent", "argent"),
     RECRUTEMENT("du recrutement", "recrutement"),
-    ACTUALITE("de l'actualité", "actualité")
+    ACTUALITE("de l'actualité", "actualité"),
+    CASTING("du casting et du spectacle", "casting"),
+    ETUDES("des études", "études"),
+    NUMERIQUE("du numérique", "numérique"),
+    DEMARCHES("des démarches administratives", "démarches"),
+    BUSINESS("du business", "business"),
+    LOGEMENT("du logement", "logement"),
+    IMAGE("de l'image et de la prise de parole", "image"),
+    MANAGEMENT("du management", "management")
 }
 
 /** Les 8 blocs qui composent une réponse. */
@@ -384,7 +392,11 @@ class DonneesMoteurs(
     val domaines: List<DonneesDomaine>,
     val analyse: Map<String, String>,
     val messages: Map<String, List<String>>,
-    val actualite: ConfigActualite
+    val actualite: ConfigActualite,
+    /** « Ponts » : boutons qui renvoient vers les réponses de l'agence (profil, documents, contact…), par domaine. */
+    val ponts: Map<String, List<String>> = emptyMap(),
+    /** Boutons proposés à l'accueil et quand le sujet est à préciser. */
+    val chips: List<String> = emptyList()
 )
 
 /** Lit la clé « moteurs » du lexique (objet JSON déjà analysé). */
@@ -432,7 +444,10 @@ object ChargeurDonnees {
         val cat = HashMap<String, String>()
         if (a.libelleCat != undefined) for (k in cles(a.libelleCat)) cat[k] = a.libelleCat[k] as String
         val cfg = ConfigActualite(texte(a.meteoUrl, ""), texte(a.geoUrl, ""), texte(a.proxy, ""), nombres(a.cacheMin), nombres(a.perimeMaxH), cat)
-        return DonneesMoteurs(domaines, analyse, messages, cfg)
+        val ponts = HashMap<String, List<String>>()
+        if (m.ponts != undefined && m.ponts != null) for (k in cles(m.ponts)) ponts[k] = chaines(m.ponts[k])
+        val chips: List<String> = if (m.chips != undefined && m.chips != null) chaines(m.chips) else emptyList()
+        return DonneesMoteurs(domaines, analyse, messages, cfg, ponts, chips)
     }
 }
 
@@ -848,6 +863,70 @@ class RecrutementMoteur(donnees: DonneesDomaine, hasard: Random = Random.Default
 // ============================================================================
 // ActualiteMoteur
 // ============================================================================
+/**
+ * Moteur n°9 : casting, mannequinat, cinéma, figuration et scène.
+ * Sous-sujets : dossier de casting, préparation, mannequinat, cinéma et figuration, scène, contrats et cachets.
+ * Données (mots-clés, conseils par sous-sujet, 8 blocs de 15 variantes) : shaman-lexicon.json, clé « moteurs », domaine « CASTING ».
+ */
+class CastingMoteur(donnees: DonneesDomaine, hasard: Random = Random.Default) :
+    MoteurThematique(Domaine.CASTING, donnees, hasard)
+
+/**
+ * Moteur n°10 : études, orientation et formation.
+ * Sous-sujets : orientation, examens, méthode de travail, financement, stages, reprise d'études.
+ * Données (mots-clés, conseils par sous-sujet, 8 blocs de 15 variantes) : shaman-lexicon.json, clé « moteurs », domaine « ETUDES ».
+ */
+class EtudesMoteur(donnees: DonneesDomaine, hasard: Random = Random.Default) :
+    MoteurThematique(Domaine.ETUDES, donnees, hasard)
+
+/**
+ * Moteur n°11 : réseaux sociaux, image en ligne et sécurité numérique.
+ * Sous-sujets : sécurité des comptes, arnaques en ligne, visibilité, image en ligne, téléphone.
+ * Données (mots-clés, conseils par sous-sujet, 8 blocs de 15 variantes) : shaman-lexicon.json, clé « moteurs », domaine « NUMERIQUE ».
+ */
+class NumeriqueMoteur(donnees: DonneesDomaine, hasard: Random = Random.Default) :
+    MoteurThematique(Domaine.NUMERIQUE, donnees, hasard)
+
+/**
+ * Moteur n°12 : démarches administratives et papiers.
+ * Sous-sujets : papiers d'identité, certificats et casier judiciaire, droits au travail, impôts, état civil, permis.
+ * Données (mots-clés, conseils par sous-sujet, 8 blocs de 15 variantes) : shaman-lexicon.json, clé « moteurs », domaine « DEMARCHES ».
+ */
+class DemarchesMoteur(donnees: DonneesDomaine, hasard: Random = Random.Default) :
+    MoteurThematique(Domaine.DEMARCHES, donnees, hasard)
+
+/**
+ * Moteur n°13 : business, ventes et clients.
+ * Sous-sujets : recherche de clients, prix, publicité, fidélisation, organisation commerciale, développement.
+ * Données (mots-clés, conseils par sous-sujet, 8 blocs de 15 variantes) : shaman-lexicon.json, clé « moteurs », domaine « BUSINESS ».
+ */
+class BusinessMoteur(donnees: DonneesDomaine, hasard: Random = Random.Default) :
+    MoteurThematique(Domaine.BUSINESS, donnees, hasard)
+
+/**
+ * Moteur n°14 : logement et vie pratique.
+ * Sous-sujets : recherche de logement, bail et propriétaire, déménagement, colocation, réparations.
+ * Données (mots-clés, conseils par sous-sujet, 8 blocs de 15 variantes) : shaman-lexicon.json, clé « moteurs », domaine « LOGEMENT ».
+ */
+class LogementMoteur(donnees: DonneesDomaine, hasard: Random = Random.Default) :
+    MoteurThematique(Domaine.LOGEMENT, donnees, hasard)
+
+/**
+ * Moteur n°15 : image, prise de parole et communication.
+ * Sous-sujets : prise de parole, tenue, présence et posture, réseau, messages écrits.
+ * Données (mots-clés, conseils par sous-sujet, 8 blocs de 15 variantes) : shaman-lexicon.json, clé « moteurs », domaine « IMAGE ».
+ */
+class ImageMoteur(donnees: DonneesDomaine, hasard: Random = Random.Default) :
+    MoteurThematique(Domaine.IMAGE, donnees, hasard)
+
+/**
+ * Moteur n°16 : management et gestion d'équipe.
+ * Sous-sujets : diriger une équipe, nouvel employé, délégation, motivation, conflits et discipline, évaluation.
+ * Données (mots-clés, conseils par sous-sujet, 8 blocs de 15 variantes) : shaman-lexicon.json, clé « moteurs », domaine « MANAGEMENT ».
+ */
+class ManagementMoteur(donnees: DonneesDomaine, hasard: Random = Random.Default) :
+    MoteurThematique(Domaine.MANAGEMENT, donnees, hasard)
+
 /** Cache à durée de vie : une valeur est « fraîche » pendant [ttlMs], utilisable (périmée mais datée) jusqu'à [perimeMs]. */
 class CacheTtl(private val maintenant: () -> Double) {
     class Lecture(val valeur: Any, val ageMs: Double, val frais: Boolean)
@@ -1658,7 +1737,9 @@ class AssistantSmsOrchestrateur(
     maintenant: () -> Double = { Date.now() }
 ) {
     private val hasard: Random = if (seed != 0) Random(seed) else Random.Default
-    private val ordre: List<Domaine> = donnees.domaines.map { Domaine.valueOf(it.id) }
+    private val ordre: List<Domaine> = donnees.domaines.mapNotNull { d -> Domaine.values().firstOrNull { it.name == d.id } }
+    private val ponts: Map<String, List<String>> = donnees.ponts
+    private val chipsAccueil: List<String> = donnees.chips
     private val moteurs: Map<Domaine, MoteurThematique>
     private val messages: Map<String, List<String>> = donnees.messages
     private val analyseur: AnalyseurDeMessage
@@ -1672,7 +1753,7 @@ class AssistantSmsOrchestrateur(
     init {
         val m = LinkedHashMap<Domaine, MoteurThematique>()
         for (d in donnees.domaines) {
-            val dom = Domaine.valueOf(d.id)
+            val dom = Domaine.values().firstOrNull { it.name == d.id } ?: continue // domaine inconnu de cette version : ignoré
             m[dom] = when (dom) {
                 Domaine.PROFESSIONNEL -> ProfessionnelMoteur(d, hasard)
                 Domaine.PERSONNEL -> PersonnelMoteur(d, hasard)
@@ -1682,6 +1763,14 @@ class AssistantSmsOrchestrateur(
                 Domaine.FINANCE -> FinanceMoteur(d, hasard)
                 Domaine.RECRUTEMENT -> RecrutementMoteur(d, hasard)
                 Domaine.ACTUALITE -> ActualiteMoteur(d, hasard, donnees.actualite, maintenant)
+                Domaine.CASTING -> CastingMoteur(d, hasard)
+                Domaine.ETUDES -> EtudesMoteur(d, hasard)
+                Domaine.NUMERIQUE -> NumeriqueMoteur(d, hasard)
+                Domaine.DEMARCHES -> DemarchesMoteur(d, hasard)
+                Domaine.BUSINESS -> BusinessMoteur(d, hasard)
+                Domaine.LOGEMENT -> LogementMoteur(d, hasard)
+                Domaine.IMAGE -> ImageMoteur(d, hasard)
+                Domaine.MANAGEMENT -> ManagementMoteur(d, hasard)
             }
         }
         moteurs = m
@@ -1752,14 +1841,17 @@ class AssistantSmsOrchestrateur(
         return if (d == Domaine.PROFESSIONNEL || d == Domaine.FINANCE || d == Domaine.RECRUTEMENT || d == Domaine.ACTUALITE) Ton.PROFESSIONNEL else Ton.AMICAL
     }
 
-    private fun chipsDomaines(): List<String> = ordre.map { Texte.majuscule(it.libelleCourt) }.take(7)
+    private fun chipsDomaines(): List<String> =
+        if (chipsAccueil.isNotEmpty()) chipsAccueil else ordre.map { Texte.majuscule(it.libelleCourt) }.take(7)
 
+    /** Boutons de suite : jusqu'à 2 « ponts » vers les réponses de l'agence, puis Oui/Non et changement de sujet. */
     private fun chipsSuite(rep: ReponseSms): List<String> {
         val c = ArrayList<String>()
+        for (p in ponts[rep.domaine.name] ?: emptyList<String>()) if (c.size < 2) c.add(p)
         if (rep.question != null) { c.add("Oui"); c.add("Non") }
         c.add("Un autre conseil")
         c.add("Changeons de sujet")
-        return c
+        return c.take(6)
     }
 
     private fun clarifier(conv: ConversationPersonne, dec: Decision, message: String, element: String, j: MutableList<String>): ResultatTraitement {

@@ -1,9 +1,9 @@
 {
- "updated": "2026-11-27T23:24:18.119Z",
+ "updated": "2026-11-28T07:38:42.549Z",
  "cats": {
   "sport": {
    "source": "RFI",
-   "updated": "2026-11-27T23:24:18.119Z",
+   "updated": "2026-11-28T07:38:42.549Z",
    "items": [
     {
      "title": "Le Café des Sports : Marseille-Levski Sofia, de violents affrontements entre supporters au Vélodrome",
@@ -49,7 +49,7 @@
   },
   "infos": {
    "source": "RFI",
-   "updated": "2026-11-27T23:24:18.119Z",
+   "updated": "2026-11-28T07:38:42.549Z",
    "items": [
     {
      "title": "Massacre de Shakahola au Kenya: le gourou Mackenzie, qui affamait ses fidèles, coupable de 123 homicides",
@@ -57,46 +57,66 @@
      "source": "RFI"
     },
     {
-     "title": "CAN 2025: pour les Congolais, la décision du TAS réhabilite l’arbitre Jean-Jacques Ndala",
-     "date": "Fri, 27 Nov 2026 11:26:14 GMT",
+     "title": "RDC: l'armée ougandaise annonce son retrait dans l'Est, Kinshasa et Kampala tentent d'apaiser les tensions",
+     "date": "Sat, 28 Nov 2026 03:36:11 GMT",
      "source": "RFI"
     },
     {
-     "title": "En Afrique subsaharienne, le mariage forcé persiste «dans une société misogyne qui cherche à contrôler les femmes»",
-     "date": "Fri, 27 Nov 2026 15:12:50 GMT",
+     "title": "Soudan du Sud: l'état d'urgence levé dans quatre États à l'approche des élections générales",
+     "date": "Sat, 28 Nov 2026 03:35:46 GMT",
      "source": "RFI"
     },
     {
-     "title": "Mali: Alger dénonce l'«alliance» des indépendantistes du FLA avec les «terroristes» du Jnim",
-     "date": "Fri, 27 Nov 2026 12:56:07 GMT",
+     "title": "Burundi: la candidature de l'opposant Agathon Rwasa à la présidentielle de 2027 rejetée",
+     "date": "Sat, 28 Nov 2026 03:37:27 GMT",
      "source": "RFI"
     },
     {
-     "title": "Ligue des champions CAF: une course au titre ouverte en l’absence d’Al Ahly et de Sundowns",
-     "date": "Fri, 27 Nov 2026 15:47:01 GMT",
+     "title": "RDC: près de 29 millions de personnes en situation de crise alimentaire, le PAM revoit sa stratégie",
+     "date": "Sat, 28 Nov 2026 03:36:21 GMT",
      "source": "RFI"
     },
     {
-     "title": "Classes surchargées, insalubrité: en Afrique du Sud, un rapport étrille les manquements de l’école publique",
-     "date": "Fri, 27 Nov 2026 10:52:17 GMT",
+     "title": "Aliou Sow, éditeur jeunesse guinéen : «Il faut une politique des livres»",
+     "date": "Sat, 28 Nov 2026 07:35:30 GMT",
      "source": "RFI"
     },
     {
-     "title": "Sénégal: le président de l'Assemblée nationale presse le chef de l’État de procéder à une dissolution",
-     "date": "Fri, 27 Nov 2026 13:54:24 GMT",
+     "title": "Algérie: le président Tebboune crée un prix des droits de l'homme, des défenseurs des libertés s'indignent",
+     "date": "Sat, 28 Nov 2026 03:36:00 GMT",
      "source": "RFI"
     },
     {
-     "title": "Coupe de la Confédération: l’USM Alger en route pour un troisième sacre ?",
-     "date": "Fri, 27 Nov 2026 14:01:10 GMT",
+     "title": "Les échanges commerciaux entre les pays africains ont triplé depuis 2020",
+     "date": "Sat, 28 Nov 2026 04:41:15 GMT",
      "source": "RFI"
     }
    ]
   },
   "geopolitique": {
    "source": "RFI",
-   "updated": "2026-11-27T23:24:18.119Z",
+   "updated": "2026-11-28T07:38:42.549Z",
    "items": [
+    {
+     "title": "Meilleur pâtissier : Benoît Castel a fait des gâteaux et de la gourmandise son métier",
+     "date": "Sat, 28 Nov 2026 06:00:53 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "«Au bord du monde» de Bernard Werber, et si la vérité ne tournait plus rond?",
+     "date": "Sat, 28 Nov 2026 06:00:50 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "«Le supplément du samedi» du 28 novembre 2026",
+     "date": "Sat, 28 Nov 2026 06:00:48 GMT",
+     "source": "RFI"
+    },
+    {
+     "title": "Les devenirs en jeu des juifs maghrébins - destins entrelacés (1/2)",
+     "date": "Sat, 28 Nov 2026 06:00:46 GMT",
+     "source": "RFI"
+    },
     {
      "title": "Liberté d'informer et secret défense : quelles limites?",
      "date": "Fri, 27 Nov 2026 17:10:47 GMT",
@@ -115,26 +135,6 @@
     {
      "title": "Baltique, Méditerranée: l’Ukraine va-t-elle trop loin dans sa guerre maritime contre la Russie?",
      "date": "Fri, 27 Nov 2026 12:51:46 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "À la Une: sommet écourté et constat d'échec à Bruxelles",
-     "date": "Fri, 27 Nov 2026 10:38:21 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "François Villeroy de Galhau: «La désunion européenne produit la disparition européenne»",
-     "date": "Fri, 27 Nov 2026 07:13:04 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Des millions de personnes dans le monde concernées par les mariages précoces et forcés, alerte l'ONU",
-     "date": "Fri, 27 Nov 2026 06:06:34 GMT",
-     "source": "RFI"
-    },
-    {
-     "title": "Shanley Clemot McLaren: militante pour les droits numériques",
-     "date": "Thu, 26 Nov 2026 17:28:53 GMT",
      "source": "RFI"
     }
    ]
